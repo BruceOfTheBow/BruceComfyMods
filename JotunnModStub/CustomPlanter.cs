@@ -64,9 +64,12 @@ namespace CustomPlanter
 
         }
 
-        private void PlantMaker()
+
+        /// you will care about copying basically this chunk of code right here 
+        private void PlantMaker() //this is the function name you need to change it 
         {
-            var planterthing = plants.LoadAsset<GameObject>("customitem_birdofparadise");
+            var planterthing = plants.LoadAsset<GameObject>("customitem_birdofparadise"); //this defines the prefab name in your uniy project 
+           // you need to change planterthing and planter every time you copy this 
             var planter = new CustomPiece(planterthing,
                 new PieceConfig
                 {
@@ -79,5 +82,8 @@ namespace CustomPlanter
                 });
             PieceManager.Instance.AddPiece(planter);
         }
+
+        // to here 
+
     }
 }
