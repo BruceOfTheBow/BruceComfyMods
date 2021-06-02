@@ -1,10 +1,10 @@
 ﻿{
-  "name": "JotunnModStub",
-  "description": "",
-  "version_number": "1.0.0",
+  "name": "PlantIt",
+  "description": "Adds lots of buildable custom plants. Use the custom item called Shovel to place them. Still a work in progress - more plants will be added.",
+  "version_number": "0.0.1",
   "website_url": "",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.601",
-    ""
+    "denikson-BepInExPack_Valheim-5.4.1001",
+    "ValheimModding-Jotunn-2.0.9"
   ]
 }
