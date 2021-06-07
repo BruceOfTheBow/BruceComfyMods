@@ -20,7 +20,7 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.0.5";
+        public const string PluginVersion = "0.0.6";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
@@ -106,7 +106,7 @@ namespace PlantIt
 
         private void LoadShovel()
         {
-            var shovelfab = assetplanter.LoadAsset<GameObject>("Shovel");
+            var shovelfab = assetplanter.LoadAsset<GameObject>("$PlumgaPlantItShovel");
             var shovel = new CustomItem(shovelfab, fixReference: true,
                 new ItemConfig
                 {
