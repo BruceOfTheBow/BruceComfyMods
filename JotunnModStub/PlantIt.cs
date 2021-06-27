@@ -20,11 +20,12 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.0.6";
+        public const string PluginVersion = "0.0.7";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
         private AssetBundle plants3;
+        private AssetBundle chairs;
 
 
         private void Awake()
@@ -82,6 +83,23 @@ namespace PlantIt
             Vines2_Plant();
             Weirdflowers_Plant();
 
+            //stumpchairs
+            stump1();
+            stump2();
+            stump3();
+            stump4();
+            stump5();
+            stump6();
+            stump7();
+
+            //logbenches
+            log1();
+            log2();
+            log3();
+            log4();
+            log5();
+
+            stumptable();
 
         }
 
@@ -92,6 +110,7 @@ namespace PlantIt
             plants = AssetUtils.LoadAssetBundleFromResources("custompiece_plantsetfixedcolliders", typeof(PlantIt).Assembly);
             plants2 = AssetUtils.LoadAssetBundleFromResources("custompiece_plantset2", typeof(PlantIt).Assembly);
             plants3 = AssetUtils.LoadAssetBundleFromResources("plantset3", typeof(PlantIt).Assembly);
+            chairs = AssetUtils.LoadAssetBundleFromResources("stumpsandlogs", typeof(PlantIt).Assembly);
 
         }
 
@@ -125,11 +144,10 @@ namespace PlantIt
 
         //plants
 
-        /// you will care about copying basically this chunk of code right here 
-        private void Bird_of_Paradise_Plant() //this is the function name you need to change it 
+
+        private void Bird_of_Paradise_Plant() //done
         {
-            var Bird_of_Paradise_Thing = plants.LoadAsset<GameObject>("custompiece_birdofparadise"); //this defines the prefab name in your uniy project 
-           // you need to change planterthing and planter every time you copy this 
+            var Bird_of_Paradise_Thing = plants.LoadAsset<GameObject>("custompiece_birdofparadise");
             var Bird_of_Paradise = new CustomPiece(Bird_of_Paradise_Thing,
                 new PieceConfig
                 {
@@ -603,6 +621,7 @@ namespace PlantIt
 
 
         //plants3
+
         private void Aeoniums_Plant() //done
         {
             var Aeoniums_Thing = plants3.LoadAsset<GameObject>("custompiece_aeoniums");
@@ -910,6 +929,231 @@ namespace PlantIt
         }
 
 
+
+        //stumpchairs
+        private void stump1()
+        {
+            var stump1fab = chairs.LoadAsset<GameObject>("$custompiece_stump1");
+
+            var stump1 = new CustomPiece(stump1fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump1);
+        }
+
+        private void stump2()
+        {
+            var stump2fab = chairs.LoadAsset<GameObject>("$custompiece_stump2");
+
+            var stump2 = new CustomPiece(stump2fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump2);
+        }
+
+        private void stump3()
+        {
+            var stump3fab = chairs.LoadAsset<GameObject>("$custompiece_stump3");
+
+            var stump3 = new CustomPiece(stump3fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump3);
+        }
+
+        private void stump4()
+        {
+            var stump4fab = chairs.LoadAsset<GameObject>("$custompiece_stump4");
+
+            var stump4 = new CustomPiece(stump4fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump4);
+        }
+
+        private void stump5()
+        {
+            var stump5fab = chairs.LoadAsset<GameObject>("$custompiece_stump5");
+
+            var stump5 = new CustomPiece(stump5fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump5);
+        }
+
+        private void stump6()
+        {
+            var stump6fab = chairs.LoadAsset<GameObject>("$custompiece_stump6");
+
+            var stump6 = new CustomPiece(stump6fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump6);
+        }
+
+        private void stump7()
+        {
+            var stump7fab = chairs.LoadAsset<GameObject>("$custompiece_stump7");
+
+            var stump7 = new CustomPiece(stump7fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(stump7);
+        }
+
+
+        //logbenches
+        private void log1()
+        {
+            var logfab = chairs.LoadAsset<GameObject>("$custompiece_log1");
+
+            var log = new CustomPiece(logfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(log);
+        }
+
+        private void log2()
+        {
+            var log2fab = chairs.LoadAsset<GameObject>("$custompiece_log2");
+
+            var log2 = new CustomPiece(log2fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(log2);
+        }
+
+        private void log3()
+        {
+            var log3fab = chairs.LoadAsset<GameObject>("$custompiece_log3");
+
+            var log3 = new CustomPiece(log3fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(log3);
+        }
+
+        private void log4()
+        {
+            var log4fab = chairs.LoadAsset<GameObject>("$custompiece_log4");
+
+            var log4 = new CustomPiece(log4fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(log4);
+        }
+
+        private void log5()
+        {
+            var log5fab = chairs.LoadAsset<GameObject>("$custompiece_log5");
+
+            var log5 = new CustomPiece(log5fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(log5);
+        }
+
+        //stumptable
+        private void stumptable()
+        {
+            var stfab = chairs.LoadAsset<GameObject>("$custompiece_stumptable");
+
+            var st = new CustomPiece(stfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(st);
+        }
 
 
         // to here 
