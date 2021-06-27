@@ -20,7 +20,7 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.0.7";
+        public const string PluginVersion = "0.0.8";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
