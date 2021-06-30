@@ -20,12 +20,13 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.0.8";
+        public const string PluginVersion = "0.0.9";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
         private AssetBundle plants3;
         private AssetBundle chairs;
+        private AssetBundle misc;
 
 
         private void Awake()
@@ -101,6 +102,15 @@ namespace PlantIt
 
             stumptable();
 
+            //misc
+            GrassBlockS();
+            GrassBlockM();
+            GrassBlockL();
+            DirtBlockS();
+            DirtBlockM();
+            DirtBlockL();
+            BlackPineTree();
+
         }
 
 
@@ -111,17 +121,49 @@ namespace PlantIt
             plants2 = AssetUtils.LoadAssetBundleFromResources("custompiece_plantset2", typeof(PlantIt).Assembly);
             plants3 = AssetUtils.LoadAssetBundleFromResources("plantset3", typeof(PlantIt).Assembly);
             chairs = AssetUtils.LoadAssetBundleFromResources("stumpsandlogs", typeof(PlantIt).Assembly);
+            misc = AssetUtils.LoadAssetBundleFromResources("misc", typeof(PlantIt).Assembly);
 
         }
 
         //assetplanter
 
+        // private void LoadTable()
+        // {
+        //     PieceManager.Instance.AddPieceTable(assetplanter.LoadAsset<GameObject>("_PlantitPieceTable"));
+        //     LoadShovel();
+
+        //  }
+
+      //  private void LoadTable()
+      //  {
+      //      GameObject tablePrefab = assetplanter.LoadAsset<GameObject>("_PlantitPieceTable");
+       //     CustomPieceTable CPT = new CustomPieceTable(tablePrefab);
+        //    PieceManager.Instance.AddPieceTable(CPT);
+
+       //     LoadShovel();
+      //  }
+
         private void LoadTable()
         {
-            PieceManager.Instance.AddPieceTable(assetplanter.LoadAsset<GameObject>("_PlantitPieceTable"));
-            LoadShovel();
+            // Add a custom piece table with custom categories
+            var table_prefab = assetplanter.LoadAsset<GameObject>("_PlantitPieceTable");
+            CustomPieceTable plant_table = new CustomPieceTable(table_prefab,
+                new PieceTableConfig
+                {
+                    CanRemovePieces = false,
+                    UseCategories = false,
+                    UseCustomCategories = true,
+                    CustomCategories = new string[]
+                    {
+                        "Misc", "Hanging", "No Pot", "Potted"
+                    }
+                }
+            );
+            PieceManager.Instance.AddPieceTable(plant_table);
 
+            LoadShovel();
         }
+
 
         private void LoadShovel()
         {
@@ -138,7 +180,7 @@ namespace PlantIt
                         new RequirementConfig { Item = "Wood", Amount = 1}
                     }
                 });
-            ItemManager.Instance.AddItem(shovel);
+        ItemManager.Instance.AddItem(shovel);
 
         }
 
@@ -152,6 +194,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -170,6 +213,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -186,6 +230,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -201,7 +246,8 @@ namespace PlantIt
             var Fiddle_Leaf = new CustomPiece(Fiddle_Leaf_Thing,
                 new PieceConfig
                 {
-                    PieceTable = "_PlantitPieceTable",
+                    PieceTable = "_PlantitPieceTable", 
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -218,6 +264,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -234,6 +281,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -250,6 +298,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -266,6 +315,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -283,6 +333,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -299,6 +350,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -310,11 +362,12 @@ namespace PlantIt
 
         private void Cactus1Big_Plant() //done
         {
-            var Cactus1Big_Thing = plants2.LoadAsset<GameObject>("custompiece_cactus1.2");
+            var Cactus1Big_Thing = plants.LoadAsset<GameObject>("custompiece_cactus1.2");
             var Cactus1Big = new CustomPiece(Cactus1Big_Thing,
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -332,6 +385,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -348,6 +402,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -364,6 +419,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -380,6 +436,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -396,6 +453,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -412,6 +470,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -428,6 +487,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -444,6 +504,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -460,6 +521,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -478,6 +540,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -494,6 +557,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -510,6 +574,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -527,6 +592,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -543,6 +609,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -559,6 +626,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -576,6 +644,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -593,6 +662,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -610,6 +680,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -629,6 +700,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -645,6 +717,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -662,6 +735,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -679,6 +753,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -696,6 +771,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -712,6 +788,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -731,6 +808,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -747,6 +825,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -766,6 +845,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -783,6 +863,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -800,6 +881,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -817,6 +899,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -834,6 +917,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -851,6 +935,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -868,6 +953,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -885,6 +971,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -902,6 +989,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -919,6 +1007,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Potted", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -939,6 +1028,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -956,6 +1046,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -973,6 +1064,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -990,6 +1082,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1007,6 +1100,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1024,6 +1118,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1041,6 +1136,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1060,6 +1156,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1077,6 +1174,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1094,6 +1192,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1111,6 +1210,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1128,6 +1228,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1146,6 +1247,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1155,6 +1257,139 @@ namespace PlantIt
             PieceManager.Instance.AddPiece(st);
         }
 
+
+
+        //misc
+        private void GrassBlockS()
+        {
+            var gbsfab = misc.LoadAsset<GameObject>("$custompiece_grassblock_small");
+
+            var gbs = new CustomPiece(gbsfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(gbs);
+        }
+
+        private void GrassBlockM()
+        {
+            var gbmfab = misc.LoadAsset<GameObject>("$custompiece_grassblock_medium");
+
+            var gbm = new CustomPiece(gbmfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(gbm);
+        }
+
+        private void GrassBlockL()
+        {
+            var gblfab = misc.LoadAsset<GameObject>("$custompiece_grassblock_large");
+
+            var gbl = new CustomPiece(gblfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(gbl);
+        }
+
+
+        private void DirtBlockS()
+        {
+            var dbsfab = misc.LoadAsset<GameObject>("$custompiece_dirtblock_small");
+
+            var dbs = new CustomPiece(dbsfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc", 
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(dbs);
+        }
+
+        private void DirtBlockM()
+        {
+            var dbmfab = misc.LoadAsset<GameObject>("$custompiece_dirtblock_medium");
+
+            var dbm = new CustomPiece(dbmfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(dbm);
+        }
+
+        private void DirtBlockL()
+        {
+            var dblfab = misc.LoadAsset<GameObject>("$custompiece_dirtblock_large");
+
+            var dbl = new CustomPiece(dblfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(dbl);
+        }
+
+
+
+        private void BlackPineTree()
+        {
+            var bptfab = misc.LoadAsset<GameObject>("$custompiece_blackpine");
+
+            var bpt = new CustomPiece(bptfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot", 
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(bpt);
+        }
+
+       
 
         // to here 
 
