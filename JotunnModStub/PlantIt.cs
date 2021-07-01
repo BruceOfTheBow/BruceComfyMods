@@ -20,7 +20,7 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.0.9";
+        public const string PluginVersion = "0.1.0";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
@@ -150,7 +150,7 @@ namespace PlantIt
             CustomPieceTable plant_table = new CustomPieceTable(table_prefab,
                 new PieceTableConfig
                 {
-                    CanRemovePieces = false,
+                    CanRemovePieces = true,
                     UseCategories = false,
                     UseCustomCategories = true,
                     CustomCategories = new string[]
