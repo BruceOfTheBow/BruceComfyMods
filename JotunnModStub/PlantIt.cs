@@ -11,6 +11,8 @@ using Jotunn.Configs;
 using Jotunn.Managers;
 using Jotunn.Entities;
 using Jotunn.Utils;
+using System;
+using Object = UnityEngine.Object;
 
 namespace PlantIt
 {
@@ -20,18 +22,19 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.1.0";
+        public const string PluginVersion = "0.1.1";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
         private AssetBundle plants3;
         private AssetBundle chairs;
         private AssetBundle misc;
+        private AssetBundle pottedsucculents;
 
 
         private void Awake()
         {
-
+           // SetupPlacementHooks();
             LoadAssets();
             LoadTable();
             Bird_of_Paradise_Plant();
@@ -110,8 +113,43 @@ namespace PlantIt
             DirtBlockM();
             DirtBlockL();
             BlackPineTree();
+          //  GrassBlockSTest();
+          //  GrassBlockSTest2();
+
+            //pottedsucculents
+            S1();
+            S2();
+            S3();
+            S4();
+            S5();
+            S6();
+            S7();
+            S8();
+            S9();
+            S10();
+            S11();
+            S12();
+            S13();
+            S14();
+            S15();
 
         }
+
+
+     //   private void SetupPlacementHooks()
+     //   {
+     //       On.Player.UpdatePlacementGhost += OnUpdatePlacementGhost;
+     //   }
+
+     //   private void OnUpdatePlacementGhost(On.Player.orig_UpdatePlacementGhost orig, Player self, bool flashGuardStone)
+      //  {
+      //      orig(self, flashGuardStone);
+      //      if (self && self.m_placementMarkerInstance && self.m_buildPieces.name == "_PlantitPieceTable")
+      //      {
+     //           Object.Destroy(self.m_placementMarkerInstance);
+     //       }
+     //   }
+
 
 
         private void LoadAssets()
@@ -122,6 +160,7 @@ namespace PlantIt
             plants3 = AssetUtils.LoadAssetBundleFromResources("plantset3", typeof(PlantIt).Assembly);
             chairs = AssetUtils.LoadAssetBundleFromResources("stumpsandlogs", typeof(PlantIt).Assembly);
             misc = AssetUtils.LoadAssetBundleFromResources("misc", typeof(PlantIt).Assembly);
+            pottedsucculents =  AssetUtils.LoadAssetBundleFromResources("pottedsucculents", typeof(PlantIt).Assembly);
 
         }
 
@@ -155,7 +194,7 @@ namespace PlantIt
                     UseCustomCategories = true,
                     CustomCategories = new string[]
                     {
-                        "Misc", "Hanging", "No Pot", "Potted"
+                        "Misc.", "Hanging", "No Pot", "Potted"
                     }
                 }
             );
@@ -177,7 +216,7 @@ namespace PlantIt
                     MinStationLevel = 1,
                     Requirements = new[]
                     {
-                        new RequirementConfig { Item = "Wood", Amount = 1}
+                        new RequirementConfig { Item = "Wood", Amount = 1, AmountPerLevel = 1}
                     }
                 });
         ItemManager.Instance.AddItem(shovel);
@@ -1028,7 +1067,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1046,7 +1085,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1064,7 +1103,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1082,7 +1121,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1100,7 +1139,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1118,7 +1157,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1136,7 +1175,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1156,7 +1195,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1174,7 +1213,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1192,7 +1231,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1210,7 +1249,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1228,7 +1267,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1247,7 +1286,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1268,11 +1307,11 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
-                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
                     }
                 });
             PieceManager.Instance.AddPiece(gbs);
@@ -1286,11 +1325,11 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc",
+                    Category = "Misc.",
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
-                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
                     }
                 });
             PieceManager.Instance.AddPiece(gbm);
@@ -1304,7 +1343,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc",
+                    Category = "Misc.",
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1323,11 +1362,11 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc", 
+                    Category = "Misc.", 
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
-                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
                     }
                 });
             PieceManager.Instance.AddPiece(dbs);
@@ -1341,11 +1380,11 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc",
+                    Category = "Misc.",
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
-                        new RequirementConfig {Item = "Wood", Amount = 10, Recover = true}
+                        new RequirementConfig {Item = "Wood", Amount = 5, Recover = true}
                     }
                 });
             PieceManager.Instance.AddPiece(dbm);
@@ -1359,7 +1398,7 @@ namespace PlantIt
                 new PieceConfig
                 {
                     PieceTable = "_PlantitPieceTable",
-                    Category = "Misc",
+                    Category = "Misc.",
                     AllowedInDungeons = false,
                     Requirements = new[]
                     {
@@ -1389,7 +1428,332 @@ namespace PlantIt
             PieceManager.Instance.AddPiece(bpt);
         }
 
-       
+
+        private void GrassBlockSTest()
+        {
+            var gbstfab = misc.LoadAsset<GameObject>("$custompiece_grassblock_small_test");
+
+            var gbst = new CustomPiece(gbstfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(gbst);
+        }
+
+        private void GrassBlockSTest2()
+        {
+            var gbst2fab = misc.LoadAsset<GameObject>("$custompiece_grassblock_small_test2");
+
+            var gbst2 = new CustomPiece(gbst2fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(gbst2);
+        }
+
+
+        //pottedsucculents
+
+
+        private void S1()
+        {
+            var S1fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s1_roundcactuspinkflowers");
+
+            var S1 = new CustomPiece(S1fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S1);
+        }
+
+        private void S2()
+        {
+            var S2fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s2_tallcactusredflower");
+
+            var S2 = new CustomPiece(S2fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S2);
+        }
+
+
+        private void S3()
+        {
+            var S3fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s3_pottedpricklypear");
+
+            var S3 = new CustomPiece(S3fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S3);
+        }
+
+
+        private void S4()
+        {
+            var S4fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s4_snakeplant");
+
+            var S4 = new CustomPiece(S4fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S4);
+        }
+
+
+        private void S5()
+        {
+            var S5fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s5_aloe");
+
+            var S5 = new CustomPiece(S5fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S5);
+        }
+
+
+        private void S6()
+        {
+            var S6fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s6_pachy");
+
+            var S6 = new CustomPiece(S6fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S6);
+        }
+
+
+        private void S7()
+        {
+            var S7fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s7_calisunset");
+
+            var S7 = new CustomPiece(S7fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S7);
+        }
+
+
+        private void S8()
+        {
+            var S8fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s8_towercactus");
+
+            var S8 = new CustomPiece(S8fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S8);
+        }
+
+
+        private void S9()
+        {
+            var S9fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s9_whiteflowers");
+
+            var S9 = new CustomPiece(S9fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S9);
+        }
+
+
+        private void S10()
+        {
+            var S10fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s10_fatboi");
+
+            var S10 = new CustomPiece(S10fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S10);
+        }
+
+
+        private void S11()
+        {
+            var S11fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s11_cLehmannii");
+
+            var S11 = new CustomPiece(S11fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S11);
+        }
+
+
+        private void S12()
+        {
+            var S12fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s12_splitrocks");
+
+            var S12 = new CustomPiece(S12fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S12);
+        }
+
+
+        private void S13()
+        {
+            var S13fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s13_roundcactusyellowflowers");
+
+            var S13 = new CustomPiece(S13fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S13);
+        }
+
+
+        private void S14()
+        {
+            var S14fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s14_roseaeonium");
+
+            var S14 = new CustomPiece(S14fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S14);
+        }
+
+
+        private void S15()
+        {
+            var S15fab = pottedsucculents.LoadAsset<GameObject>("$custompiece_s15_euphorbia");
+
+            var S15 = new CustomPiece(S15fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Potted",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(S15);
+        }
+
+
+
 
         // to here 
 
