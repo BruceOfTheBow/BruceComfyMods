@@ -22,7 +22,7 @@ namespace PlantIt
     {
         public const string PluginGUID = "com.jotunn.PlantIt";
         public const string PluginName = "PlantIt";
-        public const string PluginVersion = "0.1.1";
+        public const string PluginVersion = "0.1.2";
         private AssetBundle assetplanter;
         private AssetBundle plants;
         private AssetBundle plants2;
@@ -30,6 +30,7 @@ namespace PlantIt
         private AssetBundle chairs;
         private AssetBundle misc;
         private AssetBundle pottedsucculents;
+        private AssetBundle plants4;
 
 
         private void Awake()
@@ -133,6 +134,39 @@ namespace PlantIt
             S14();
             S15();
 
+            //plants4
+
+            //pots
+            Pot1();
+            Pot2();
+            Pot3();
+            Pot4();
+            Pot5();
+            Pot6();
+            Pot7();
+            Pot8();
+            Pot9();
+            Pot10();
+            Pot11();
+            Pot12();
+            Pot13();
+            Pot14();
+
+            //vines
+            Vines3();
+            Vines4();
+            Vines5();
+            Vines6();
+            Vines7();
+            Vines8();
+            Vines9();
+            Vines10();
+            Vines11();
+            Vines12();
+            VinesVanilla();
+            VinesVanillaBig();
+            VinesVanillaStretched();
+
         }
 
 
@@ -161,6 +195,7 @@ namespace PlantIt
             chairs = AssetUtils.LoadAssetBundleFromResources("stumpsandlogs", typeof(PlantIt).Assembly);
             misc = AssetUtils.LoadAssetBundleFromResources("misc", typeof(PlantIt).Assembly);
             pottedsucculents =  AssetUtils.LoadAssetBundleFromResources("pottedsucculents", typeof(PlantIt).Assembly);
+            plants4 = AssetUtils.LoadAssetBundleFromResources("plantset4", typeof(PlantIt).Assembly);
 
         }
 
@@ -222,6 +257,491 @@ namespace PlantIt
         ItemManager.Instance.AddItem(shovel);
 
         }
+
+
+
+        //plantset4
+
+        //pots
+
+        private void Pot1() //done
+        {
+            var p1fab = plants4.LoadAsset<GameObject>("custompiece_fancypot");
+            var p1 = new CustomPiece(p1fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p1);
+        }
+
+        private void Pot2() //done
+        {
+            var p2fab = plants4.LoadAsset<GameObject>("custompiece_fancypotL");
+            var p2 = new CustomPiece(p2fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p2);
+        }
+
+
+        private void Pot3() //done
+        {
+            var p3fab = plants4.LoadAsset<GameObject>("custompiece_hangingpot_large");
+            var p3 = new CustomPiece(p3fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p3);
+        }
+
+
+        private void Pot4() //done
+        {
+            var p4fab = plants4.LoadAsset<GameObject>("custompiece_hangingpot_small");
+            var p4 = new CustomPiece(p4fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p4);
+        }
+
+
+        private void Pot5() //done
+        {
+            var p5fab = plants4.LoadAsset<GameObject>("custompiece_TCpot1");
+            var p5 = new CustomPiece(p5fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p5);
+        }
+
+
+        private void Pot6() //done
+        {
+            var p6fab = plants4.LoadAsset<GameObject>("custompiece_TCpot1L");
+            var p6 = new CustomPiece(p6fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p6);
+        }
+
+
+        private void Pot7() //done
+        {
+            var p7fab = plants4.LoadAsset<GameObject>("custompiece_TCpot2");
+            var p7 = new CustomPiece(p7fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p7);
+        }
+
+
+        private void Pot8() //done
+        {
+            var p8fab = plants4.LoadAsset<GameObject>("custompiece_TCpot2L");
+            var p8 = new CustomPiece(p8fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p8);
+        }
+
+
+        private void Pot9() //done
+        {
+            var p9fab = plants4.LoadAsset<GameObject>("custompiece_TCpot3");
+            var p9 = new CustomPiece(p9fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p9);
+        }
+
+
+        private void Pot10() //done
+        {
+            var p10fab = plants4.LoadAsset<GameObject>("custompiece_TCpot3L");
+            var p10 = new CustomPiece(p10fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p10);
+        }
+
+
+        private void Pot11() //done
+        {
+            var p11fab = plants4.LoadAsset<GameObject>("custompiece_TCpotrectangle");
+            var p11 = new CustomPiece(p11fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p11);
+        }
+
+
+        private void Pot12() //done
+        {
+            var p12fab = plants4.LoadAsset<GameObject>("custompiece_TCpotrectangleL");
+            var p12 = new CustomPiece(p12fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p12);
+        }
+
+
+        private void Pot13() //done
+        {
+            var p13fab = plants4.LoadAsset<GameObject>("custompiece_TCpotsquare");
+            var p13 = new CustomPiece(p13fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p13);
+        }
+
+
+        private void Pot14() //done
+        {
+            var p14fab = plants4.LoadAsset<GameObject>("custompiece_TCpotsquareL");
+            var p14 = new CustomPiece(p14fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Misc.",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(p14);
+        }
+
+
+
+        //vines
+
+        private void Vines3() //done
+        {
+            var v3fab = plants4.LoadAsset<GameObject>("custompiece_vines3");
+            var v3 = new CustomPiece(v3fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v3);
+        }
+
+        private void Vines4() //done
+        {
+            var v4fab = plants4.LoadAsset<GameObject>("custompiece_vines4");
+            var v4 = new CustomPiece(v4fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v4);
+        }
+
+        private void Vines5() //done
+        {
+            var v5fab = plants4.LoadAsset<GameObject>("custompiece_vines5");
+            var v5 = new CustomPiece(v5fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v5);
+        }
+
+        private void Vines6() //done
+        {
+            var v6fab = plants4.LoadAsset<GameObject>("custompiece_vines6");
+            var v6 = new CustomPiece(v6fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v6);
+        }
+
+        private void Vines7() //done
+        {
+            var v7fab = plants4.LoadAsset<GameObject>("custompiece_vines7");
+            var v7 = new CustomPiece(v7fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v7);
+        }
+
+        private void Vines8() //done
+        {
+            var v8fab = plants4.LoadAsset<GameObject>("custompiece_vines8");
+            var v8 = new CustomPiece(v8fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v8);
+        }
+
+        private void Vines9() //done
+        {
+            var v9fab = plants4.LoadAsset<GameObject>("custompiece_vines9");
+            var v9 = new CustomPiece(v9fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "No Pot",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v9);
+        }
+
+        private void Vines10() //done
+        {
+            var v10fab = plants4.LoadAsset<GameObject>("custompiece_vines10");
+            var v10 = new CustomPiece(v10fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v10);
+        }
+
+        private void Vines11() //done
+        {
+            var v11fab = plants4.LoadAsset<GameObject>("custompiece_vines11");
+            var v11 = new CustomPiece(v11fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v11);
+        }
+
+        private void Vines12() //done
+        {
+            var v12fab = plants4.LoadAsset<GameObject>("custompiece_vines12");
+            var v12 = new CustomPiece(v12fab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(v12);
+        }
+
+
+        private void VinesVanilla() //done
+        {
+            var vvfab = plants4.LoadAsset<GameObject>("custompiece_vinesvanilla");
+            var vv = new CustomPiece(vvfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(vv);
+        }
+
+        private void VinesVanillaBig() //done
+        {
+            var vvbfab = plants4.LoadAsset<GameObject>("custompiece_vinesvanillabig");
+            var vvb = new CustomPiece(vvbfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(vvb);
+        }
+
+        private void VinesVanillaStretched() //done
+        {
+            var vvsfab = plants4.LoadAsset<GameObject>("custompiece_vinesvanillastretched");
+            var vvs = new CustomPiece(vvsfab,
+                new PieceConfig
+                {
+                    PieceTable = "_PlantitPieceTable",
+                    Category = "Hanging",
+                    AllowedInDungeons = false,
+                    Requirements = new[]
+                    {
+                        new RequirementConfig {Item = "Wood", Amount = 2, Recover = true}
+                    }
+                });
+            PieceManager.Instance.AddPiece(vvs);
+        }
+
+
+
 
         //plants
 
