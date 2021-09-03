@@ -1,10 +1,10 @@
 ﻿{
   "name": "PlantIt",
   "description": "Adds lots of buildable custom plants. Use the custom item called Shovel to place them.",
-  "version_number": "0.1.1",
+  "version_number": "0.1.2",
   "website_url": "https://github.com/plumga/PlantIt/tree/PlantIt",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.1100",
-    "ValheimModding-Jotunn-2.1.2"
+    "denikson-BepInExPack_Valheim-5.4.1500",
+    "ValheimModding-Jotunn-2.2.7"
   ]
 }

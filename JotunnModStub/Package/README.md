@@ -14,9 +14,10 @@ There's a shovel. And some plants. And you use the shovel to place the plants. H
 
 Thanks to sbtoonz, Gravebear, and RockerKitten for all the help! Couldn't have done it without you guys :D
 
-Thanks to Poly for the models!
+Thanks to Poly, Dunmr, RockerKitten and Namdinh for the models!
 
 ## Changelog
+V0.1.2 added more vines, empty pots, and fixed some colliders to make it easier to delete certain plants.
 V0.1.1 - added some new plants and did some other stuff.
 V0.1.0 - fixed not being able to destroy placed items with the shovel.
 V0.0.9 - made the plants smooth, fixed some textures. Added a tree, grass blocks, and dirt blocks. Added custom category names in piece table. Upgraded to Jotunn 2.1.0
