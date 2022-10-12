@@ -93,7 +93,6 @@
   <ItemGroup>
     <Compile Include="ComfyBatchDeposit.cs" />
     <Compile Include="InventoryGridPatch.cs" />
-    <Compile Include="HumanoidPatch.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

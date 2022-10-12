@@ -1,6 +1,6 @@
 {
   "name": "ComfyBatchDeposit",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "author": "ComfyMods",
   "description": "Single-click batch action of inventory items of similar type.",
   "website_url": "https://github.com/BruceOfTheBow/ComfyBatchDeposit",

@@ -10,10 +10,9 @@ namespace BatchDeposit {
   public class ComfyBatchDeposit : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfybatchdeposit";
     public const string PluginName = "ComfyBatchDeposit";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginVersion = "1.0.1";
 
     static ManualLogSource _logger;
-    static bool _debug = true;
 
     Harmony _harmony;
 
@@ -25,12 +24,6 @@ namespace BatchDeposit {
 
     public void OnDestroy() {
       _harmony?.UnpatchSelf();
-    }
-
-    public static void log(string message) {
-      if (_debug) {
-        _logger.LogInfo(message);
-      }
     }
   }
 }
