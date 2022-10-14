@@ -17,6 +17,8 @@
 
 ## Changelog
 
+### 1.0.2
+  * Updated icon
 
 ### 1.0.1
   * Changed deposit order to be reverse of ctrl + click order.
