@@ -7,7 +7,7 @@ using BepInEx.Configuration;
 
 using UnityEngine;
 
-namespace BatchDeposit {
+namespace ComfyBatchDeposit {
   public class PluginConfig {
     public static ConfigEntry<bool> IsModEnabled = default!;
     public static ConfigEntry<KeyCode> Modifier = default!;

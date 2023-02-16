@@ -1,8 +1,9 @@
 # ComfyBatchDeposit
 
   * Single-click batch action of inventory items of similar type. 
+  * Sort and stack items within a chest with a single button press.
   * Mass drops or adds to container/inventory using left alt + left click by default.
-  * Modifier key configurable
+  *   Modifier key configurable
 
 ## Instructions
 
@@ -12,10 +13,21 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.0.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.1.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
+## Attributions
+
+  * Button code and sort code taken in part from StorageUtils by turtton [https://github.com/turtton/StorageUtils]
+  * License maintained as GPL
+
 ## Changelog
+
+### 1.1.0
+
+  * Added sorting function pulled from StorageUtils by turtton
+  * Fixed sort function to not stack fish of differing qualities
+  * Fixed sort function to properly store items with TopFirst
 
 ### 1.0.2
   * Updated icon

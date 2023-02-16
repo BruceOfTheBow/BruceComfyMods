@@ -1,13 +1,18 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
-using static BatchDeposit.PluginConfig;
+using UnityEngine;
+using UnityEngine.UI;
+
+using static ComfyBatchDeposit.PluginConfig;
+using static ComfyBatchDeposit.ComfyBatchDeposit;
 
 namespace BatchDeposit {
   [HarmonyPatch(typeof(InventoryGrid))]
   public class InventoryGridPatch {
+    private static RectTransform _sortButton;
+
     [HarmonyPrefix]
-    [HarmonyPatch(typeof(InventoryGrid), "OnLeftClick")]
+    [HarmonyPatch(nameof(InventoryGrid.OnLeftClick))]
     public static bool OnLeftClickPrefix(InventoryGrid __instance, UIInputHandler clickHandler) {
       if (IsModEnabled.Value && Input.GetKey(Modifier.Value)) {
         GameObject gameObject = clickHandler.gameObject;

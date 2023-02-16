@@ -92,7 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComfyBatchDeposit.cs" />
-    <Compile Include="InventoryGridPatch.cs" />
+    <Compile Include="Patches\InventoryGridPatch.cs" />
+    <Compile Include="Patches\InventoryGuiPatch.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
