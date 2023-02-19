@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using static ComfyBatchDeposit.ComfyBatchDeposit;
+using static ComfyBatchDeposit.PluginConfig;
 
 namespace ComfyBatchDeposit.Patches {
   [HarmonyPatch(typeof(InventoryGui))]
   public class InventoryGuiPatch {
     private static RectTransform _sortButton;
+    private static RectTransform _dumpButton;
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.Show))]
@@ -24,6 +26,19 @@ namespace ComfyBatchDeposit.Patches {
         if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
 
         SortInventory(__instance.m_containerGrid.GetInventory(), false);
+      });
+
+      _dumpButton = PrepareButton(__instance, "dump", "D");
+      RelocateButtons(_dumpButton, 1.5f);
+      _dumpButton.GetComponent<Button>().onClick.AddListener(() => {
+        if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
+
+        DumpItems(__instance.m_playerGrid.GetInventory(), __instance.m_containerGrid.GetInventory(), !Input.GetKey(KeyCode.LeftShift));
+
+        if (SortOnDump.Value) {
+          SortInventory(__instance.m_containerGrid.GetInventory(), false);
+        }
+        
       });
     }
 

@@ -1,7 +1,9 @@
 # ComfyBatchDeposit
 
   * Single-click batch action of inventory items of similar type. 
-  * Sort and stack items within a chest with a single button press.
+  * Sort and stack items within a chest with a single button press (S).
+  * Dump like-type items into chest with a single button press (D).
+    * Toggle to sort automatically after dumping player inventory contents.
   * Mass drops or adds to container/inventory using left alt + left click by default.
   *   Modifier key configurable
 
@@ -13,7 +15,7 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.1.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.2.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Attributions
@@ -22,6 +24,12 @@
   * License maintained as GPL
 
 ## Changelog
+
+### 1.2.0
+
+  * Added dump feature
+    * Deposits all items from your inventory that are in the currently opened chest/container.
+  * Added toggle to sort items whenever dumped into chest.
 
 ### 1.1.0
 

@@ -14,7 +14,7 @@ namespace ComfyBatchDeposit {
   public class ComfyBatchDeposit : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfybatchdeposit";
     public const string PluginName = "ComfyBatchDeposit";
-    public const string PluginVersion = "1.1.0";
+    public const string PluginVersion = "1.2.0";
 
     static ManualLogSource _logger;
 
@@ -82,6 +82,70 @@ namespace ComfyBatchDeposit {
       }
 
       inventory.Changed();
+    }
+
+    public static void DumpItems(Inventory from, Inventory target, bool stackOnly) {
+      List<ItemDrop.ItemData> targetItems = target.GetAllItems();
+      // Must use name + quality concatenation for comparison to avoid stacking differing qualities of fish
+      List<string> targetItemCompare = targetItems.ConvertAll(input => input.m_shared.m_name + input.m_quality.ToString());
+      List<ItemDrop.ItemData> fromInvItems = from.GetAllItems()
+          .FindAll(data => !stackOnly || !from.TopFirst(data) && targetItemCompare.Contains(data.m_shared.m_name + data.m_quality.ToString()));
+
+      if (Player.m_localPlayer.GetInventory() == from) {
+        fromInvItems = fromInvItems.FindAll(data => !Player.m_localPlayer.IsItemEquiped(data) && !Player.m_localPlayer.IsEquipActionQueued(data))
+            .FindAll(data => stackOnly || data.m_gridPos.y != 0);
+      }
+
+      foreach (Tuple<string, int> compareItems in fromInvItems.ConvertAll(input => Tuple.Create(input.m_shared.m_name, input.m_quality)).Distinct()) {
+        string name = compareItems.Item1;
+        string compareString = compareItems.Item1 + compareItems.Item2.ToString();
+        List<ItemDrop.ItemData> items = fromInvItems.FindAll(data => data.m_shared.m_name + data.m_quality.ToString() == compareString);
+
+        var item = items.First().Clone();
+        var maxStackSize = item.m_shared.m_maxStackSize;
+
+        if (maxStackSize <= 1) {
+          foreach (var itemData in items) {
+            if (target.AddItem(itemData)) {
+              from.RemoveItem(itemData);
+            } else {
+              break;
+            }
+          }
+        } else {
+          int currentAmount = items.ConvertAll(input => input.m_stack).Sum();
+          int surplus = targetItems.FindAll(data => data.m_shared.m_name + data.m_quality.ToString() == compareString).ConvertAll(input => input.m_stack).Sum() % maxStackSize;
+
+          int emptyAmount = surplus == 0 ? 0 : maxStackSize - surplus;
+          emptyAmount += target.GetEmptySlots() * maxStackSize;
+
+          int movableAmount = emptyAmount >= currentAmount ? currentAmount : emptyAmount;
+
+          if (movableAmount <= 0) continue;
+
+          int stackAmount = movableAmount / maxStackSize;
+          int amount = movableAmount - stackAmount * maxStackSize;
+
+          if (stackAmount > 0) {
+            for (int i = 0; i < stackAmount; i++) {
+              ItemDrop.ItemData clone = item.Clone();
+              clone.m_stack = maxStackSize;
+              target.AddItem(clone);
+            }
+          }
+
+          if (amount > 0) {
+            ItemDrop.ItemData clone = item.Clone();
+            clone.m_stack = amount;
+            target.AddItem(clone);
+          }
+
+          from.RemoveItem(name, movableAmount);
+        }
+      }
+
+      target.Changed();
+      from.Changed();
     }
   }
 }
