@@ -15,15 +15,20 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.2.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.2.1.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Attributions
 
   * Button code and sort code taken in part from StorageUtils by turtton [https://github.com/turtton/StorageUtils]
   * License maintained as GPL
+  * Icon provided by Lyka on Comfy AKA @Jenniely on twitter.
 
 ## Changelog
+
+### 1.2.1
+
+  * Fixed performance issue.
 
 ### 1.2.0
 

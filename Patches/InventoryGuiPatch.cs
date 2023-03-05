@@ -19,27 +19,31 @@ namespace ComfyBatchDeposit.Patches {
       if (!__instance.IsContainerOpen()) {
         return;
       }
-      ZLog.Log("Show Inventory GUI postifx and adding button.");
-      _sortButton = PrepareButton(__instance, "sort", "S");
-      RelocateButtons(_sortButton, 0.3f);
-      _sortButton.GetComponent<Button>().onClick.AddListener(() => {
-        if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
+      if (_sortButton == null) {
+        _sortButton = PrepareButton(__instance, "sort", "S");
+        RelocateButtons(_sortButton, 0.3f);
+        _sortButton.GetComponent<Button>().onClick.AddListener(() => {
+          if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
 
-        SortInventory(__instance.m_containerGrid.GetInventory(), false);
-      });
-
-      _dumpButton = PrepareButton(__instance, "dump", "D");
-      RelocateButtons(_dumpButton, 1.5f);
-      _dumpButton.GetComponent<Button>().onClick.AddListener(() => {
-        if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
-
-        DumpItems(__instance.m_playerGrid.GetInventory(), __instance.m_containerGrid.GetInventory(), !Input.GetKey(KeyCode.LeftShift));
-
-        if (SortOnDump.Value) {
           SortInventory(__instance.m_containerGrid.GetInventory(), false);
-        }
-        
-      });
+        });
+      }
+     
+     
+      if (_dumpButton == null) {
+        _dumpButton = PrepareButton(__instance, "dump", "D");
+        RelocateButtons(_dumpButton, 1.5f);
+        _dumpButton.GetComponent<Button>().onClick.AddListener(() => {
+          if (Player.m_localPlayer.IsTeleporting() || !(bool)__instance.m_containerGrid) return;
+
+          DumpItems(__instance.m_playerGrid.GetInventory(), __instance.m_containerGrid.GetInventory(), !Input.GetKey(KeyCode.LeftShift));
+
+          if (SortOnDump.Value) {
+            SortInventory(__instance.m_containerGrid.GetInventory(), false);
+          }
+
+        });
+      }
     }
 
     private static RectTransform PrepareButton(InventoryGui instance, string name, string text) {
