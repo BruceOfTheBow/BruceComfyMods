@@ -4,7 +4,7 @@
 
 ## Instructions
 
-
+Select the item you want to delete and press the delete key. Delete key is delete by default and configurable with Configuration Manager. No confirm window so be careful.
 
 ### Manual
 
