@@ -10,7 +10,7 @@ namespace DumpsterFire.Patches {
   public class InventoryGuiPatch {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.UpdateItemDrag))]
-    public static void UpdateItemDragPostfix(InventoryGui __instance, ref GameObject __m_dragGo) {
+    public static void UpdateItemDragPostfix(InventoryGui __instance) {
       if (!IsModEnabled.Value || !DeleteKey.Value.IsDown()) {
         return;
       }
@@ -21,7 +21,8 @@ namespace DumpsterFire.Patches {
       } else {
         __instance.m_dragInventory.RemoveItem(__instance.m_dragItem, __instance.m_dragAmount);
       }
-      
+
+      __instance.SetupDragItem(null, null, 1);
     }
   }
 }
