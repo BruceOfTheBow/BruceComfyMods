@@ -4,6 +4,8 @@ using HarmonyLib;
 
 using System.Reflection;
 
+using static DumpsterFire.PluginConfig;
+
 namespace DumpsterFire {
   [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
   public class DumpsterFire : BaseUnityPlugin {
@@ -11,9 +13,15 @@ namespace DumpsterFire {
     public const string PluginName = "DumpsterFire";
     public const string PluginVersion = "1.0.0";
 
+    internal static ManualLogSource _logger;
+
     Harmony _harmony;
 
     public void Awake() {
+      _logger = Logger;
+
+      BindConfig(Config);
+
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
     }
 
