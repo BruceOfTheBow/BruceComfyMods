@@ -1,8 +1,8 @@
 {
   "name": "DumpsterFire",
-  "version_number": "1.0.0",
+  "version_number": "1.1.0",
   "author": "bruceofthebow",
   "description": "Why use the trash, when you can use a dumpster fire.",
-  "website_url": "Mod website.",
+  "website_url": "https://github.com/BruceOfTheBow/DumpsterFire",
   "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2100" ]
 }

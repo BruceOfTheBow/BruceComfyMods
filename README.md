@@ -12,10 +12,21 @@ Select the item you want to delete and press the delete key. Delete key is delet
 
 ### Thunderstore (manual)
 
-  2. Go to Settings > Import local mod > Select `DumpsterFire_v1.0.0.zip`.
+  2. Go to Settings > Import local mod > Select `DumpsterFire_v1.1.0.zip`.
   3. Click "OK/Import local mod" on the pop-up for information.
 
+## Attributions
+
+  * Thunderstore icon by yours truly, Bruce.
+  * Dumpster sprite by author exocet found [https://opengameart.org/content/3d-dumpstergarbage-bin]
+    * Licensed under CC BY 3.0 [https://creativecommons.org/licenses/by/3.0/legalcode]
+  * Audio sourced from [https://pixabay.com/]. Free to use audio and images.
+
 ## Changelog
+
+### 1.1.0
+
+  * Added drag and drop delete functionality with dumpster icon in player inventory.
 
 ### 1.0.0
 
