@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="AssemblyLine.cs" />
     <Compile Include="Patches\InventoryGuiPatch.cs" />
+    <Compile Include="Patches\InventoryPatch.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

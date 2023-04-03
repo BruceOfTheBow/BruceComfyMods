@@ -31,6 +31,7 @@ namespace AssemblyLine {
     public void OnDestroy() {
       _harmony?.UnpatchSelf();
     }
+
     public static void LogInfo(string message) {
       Chat.m_instance.AddString(message);
       _logger.LogInfo($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {message}");
