@@ -21,10 +21,15 @@
 
   1. **Disable or uninstall** the existing `Gizmo v1.0.0` mod by Rolo.
   2. **Disable or uninstall** any manually installed `ComfyGizmo_v1.3.0` or earlier.
-  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.5.0.zip`.
+  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.6.0.zip`.
   4. Click "OK/Import local mod" on the pop-up for information.
   
 ## Changelog
+
+### 1.6.0
+
+  * Moved patches to their own files
+  * Added color configuration values for each gizmo (x, y, and z) updating on change.
 
 ### 1.5.1
   * Added toggle to allow for v1.2.0 rotation scheme versus v1.3.0 rotation scheme. Restart required on enabling/disabling

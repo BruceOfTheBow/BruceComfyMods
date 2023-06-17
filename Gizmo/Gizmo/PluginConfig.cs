@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Gizmo {
   public static class PluginConfig {
     public static ConfigEntry<int> SnapDivisions { get; private set; }
-
     public static ConfigEntry<KeyboardShortcut> XRotationKey;
     public static ConfigEntry<KeyboardShortcut> ZRotationKey;
     public static ConfigEntry<KeyboardShortcut> ResetRotationKey;
@@ -19,6 +18,14 @@ namespace Gizmo {
     public static ConfigEntry<bool> ResetRotationOnModeChange;
     public static ConfigEntry<bool> ResetRotationOnSnapDivisionChange;
     public static ConfigEntry<bool> NewGizmoRotation;
+
+    public static ConfigEntry<Color> XGizmoColor { get; private set; }
+    public static ConfigEntry<Color> YGizmoColor { get; private set; }
+    public static ConfigEntry<Color> ZGizmoColor { get; private set; }
+
+    public static ConfigEntry<float> XEmissionColorFactor { get; private set; }
+    public static ConfigEntry<float> YEmissionColorFactor { get; private set; }
+    public static ConfigEntry<float> ZEmissionColorFactor { get; private set; }
 
     public static int MaxSnapDivisions = 256;
     public static int MinSnapDivisions = 2;
@@ -89,6 +96,54 @@ namespace Gizmo {
               "snapDivisionDecrement",
               new KeyboardShortcut(KeyCode.PageDown),
               "Doubles snap divisions from current.");
+
+      XGizmoColor =
+          config.Bind(
+              "GizmoColors - X",
+              "xGizmoColor",
+              new Color(1,0,0, 0.502f),
+              "Sets the color of x gizmo (rotations about x axis).");
+
+      YGizmoColor =
+         config.Bind(
+            "GizmoColors - Y",
+            "yGizmoColor",
+            new Color(0, 1, 0, 0.502f),
+            "Sets the color of y gizmo (rotations about y axis).");
+
+      ZGizmoColor =
+         config.Bind(
+            "GizmoColors - Z",
+            "zGizmoColor",
+            new Color(0, 0, 1, 0.502f),
+            "Sets the color of z gizmo (rotations about z axis).");
+
+      XEmissionColorFactor =
+          config.Bind(
+            "GizmoColors - X",
+            "emissionColorFactorX",
+            0.4f,
+            new ConfigDescription(
+                  "Factor to multiply the target color by and set as emission color.",
+                  new AcceptableValueRange<float>(0f, 3f)));
+
+      YEmissionColorFactor =
+          config.Bind(
+            "GizmoColors - Y",
+            "emissionColorFactorY",
+            0.4f,
+            new ConfigDescription(
+                  "Factor to multiply the target color by and set as emission color.",
+                  new AcceptableValueRange<float>(0f, 3f)));
+
+      ZEmissionColorFactor =
+          config.Bind(
+            "GizmoColors - Z",
+            "emissionColorFactorZ",
+            0.4f,
+            new ConfigDescription(
+                  "Factor to multiply the target color by and set as emission color.",
+                  new AcceptableValueRange<float>(0f, 3f)));
 
       ShowGizmoPrefab = config.Bind("UI", "showGizmoPrefab", true, "Show the Gizmo prefab in placement mode.");
 

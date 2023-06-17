@@ -17,28 +17,34 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.5.1";
+    public const string PluginVersion = "1.6.0";
 
-    static GameObject _gizmoPrefab = null;
-    static Transform _gizmoRoot;
+    public static GameObject GizmoPrefab = null;
+    public static Transform GizmoRoot;
 
-    static Transform _xGizmo;
-    static Transform _yGizmo;
-    static Transform _zGizmo;
+    public static Transform XGizmo;
+    public static Transform YGizmo;
+    public static Transform ZGizmo;
 
-    static Transform _xGizmoRoot;
-    static Transform _yGizmoRoot;
-    static Transform _zGizmoRoot;
+    public static Transform XGizmoRoot;
+    public static Transform YGizmoRoot;
+    public static Transform ZGizmoRoot;
 
-    static GameObject _comfyGizmo;
-    static Transform _comfyGizmoRoot;
+    public static GameObject ComfyGizmoObj;
+    public static Transform _comfyGizmoRoot;
 
-    static Vector3 _eulerAngles;
+    public static Vector3 EulerAngles;
     static float _rotation;
 
-    static bool _localFrame;
+    public static bool LocalFrame;
 
     static float _snapAngle;
+
+    static Material _xMaterial;
+    static Material _yMaterial;
+    static Material _zMaterial;
+
+
 
     Harmony _harmony;
 
@@ -48,8 +54,38 @@ namespace Gizmo {
       SnapDivisions.SettingChanged += (sender, eventArgs) => _snapAngle = 180f / SnapDivisions.Value;
       _snapAngle = 180f / SnapDivisions.Value;
 
-      _gizmoPrefab = LoadGizmoPrefab();
-     
+      GizmoPrefab = LoadGizmoPrefab();
+
+      XGizmoColor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetXGizmoColor();
+      };
+
+      YGizmoColor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetYGizmoColor();
+        };
+
+      ZGizmoColor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetZGizmoColor();
+        };
+
+      XEmissionColorFactor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetXGizmoColor();
+        };
+
+      YEmissionColorFactor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetYGizmoColor();
+        };
+
+      ZEmissionColorFactor.SettingChanged +=
+        (sender, eventArgs) => {
+          SetZGizmoColor();
+        };
+
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
     }
 
@@ -57,157 +93,22 @@ namespace Gizmo {
       _harmony?.UnpatchSelf();
     }
 
-    [HarmonyPatch(typeof(Game))]
-    static class GamePatch {
-      [HarmonyPostfix]
-      [HarmonyPatch(nameof(Game.Start))]
-      static void StartPostfix() {
-        Destroy(_gizmoRoot);
-        _gizmoRoot = CreateGizmoRoot();
-
-        Destroy(_comfyGizmo);
-        _comfyGizmo = new("ComfyGizmo");
-        _comfyGizmoRoot = _comfyGizmo.transform;
-        _localFrame = false;
-      }
-    }
-
-    [HarmonyPatch(typeof(Player))]
-    static class PlayerPatch {
-      [HarmonyTranspiler]
-      [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
-      static IEnumerable<CodeInstruction> UpdatePlacementGhostTranspiler(IEnumerable<CodeInstruction> instructions) {
-        if(NewGizmoRotation.Value) {
-          return new CodeMatcher(instructions)
-            .MatchForward(
-                useEnd: false,
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Player), nameof(Player.m_placeRotation))),
-                new CodeMatch(OpCodes.Conv_R4),
-                new CodeMatch(OpCodes.Mul),
-                new CodeMatch(OpCodes.Ldc_R4),
-                new CodeMatch(OpCodes.Call),
-                new CodeMatch(OpCodes.Stloc_S))
-            .Advance(offset: 5)
-            .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => _comfyGizmoRoot.rotation))
-            .InstructionEnumeration();
-        } else {
-          return new CodeMatcher(instructions)
-          .MatchForward(
-              useEnd: false,
-              new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Player), nameof(Player.m_placeRotation))),
-              new CodeMatch(OpCodes.Conv_R4),
-              new CodeMatch(OpCodes.Mul),
-              new CodeMatch(OpCodes.Ldc_R4),
-              new CodeMatch(OpCodes.Call),
-              new CodeMatch(OpCodes.Stloc_S))
-          .Advance(offset: 5)
-          .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => _xGizmoRoot.rotation))
-          .InstructionEnumeration();
-        }
-        
-      }
-
-      [HarmonyPostfix]
-      [HarmonyPatch(nameof(Player.UpdatePlacement))]
-      static void UpdatePlacementPostfix(ref Player __instance, ref bool takeInput) {
-        if (__instance.m_placementMarkerInstance) {
-          _gizmoRoot.gameObject.SetActive(ShowGizmoPrefab.Value && __instance.m_placementMarkerInstance.activeSelf);
-          _gizmoRoot.position = __instance.m_placementMarkerInstance.transform.position + (Vector3.up * 0.5f);
-        }
-
-        if (!__instance.m_buildPieces || !takeInput) {
-          return;
-        }
-
-        if(Input.GetKeyDown(SnapDivisionIncrementKey.Value.MainKey)) {
-          if(SnapDivisions.Value * 2 <= MaxSnapDivisions) {
-            MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions increased to {SnapDivisions.Value * 2}");
-            SnapDivisions.Value = SnapDivisions.Value * 2;
-            if(ResetRotationOnSnapDivisionChange.Value) {
-              if(_localFrame) {
-                ResetRotationsLocalFrame();
-              } else {
-                ResetRotations();
-              }
-              return;
-            }
-          }
-        }
-
-        if (Input.GetKeyDown(SnapDivisionDecrementKey.Value.MainKey)) {
-          if(Math.Floor(SnapDivisions.Value/2f) == SnapDivisions.Value/2f && SnapDivisions.Value/2 >= MinSnapDivisions) {
-            MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions decreased to {SnapDivisions.Value / 2}");
-            SnapDivisions.Value = SnapDivisions.Value / 2;
-            if (ResetRotationOnSnapDivisionChange.Value) {
-              if (_localFrame) {
-                ResetRotationsLocalFrame();
-              } else {
-                ResetRotations();
-              }
-              return;
-            }
-          }
-        }
-
-        if (Input.GetKey(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
-          MatchPieceRotation(__instance.m_hoveringPiece);
-        }
-
-        // Change Rotation Frames
-        if (Input.GetKeyDown(ChangeRotationModeKey.Value.MainKey)) {
-          if(_localFrame) {
-            MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Default rotation mode enabled");
-            if (ResetRotationOnModeChange.Value) {
-              ResetRotationsLocalFrame();
-            } else {
-              _eulerAngles = _comfyGizmo.transform.eulerAngles;
-              ResetGizmoRoot();
-              RotateGizmoComponents(_eulerAngles);
-            }
-            
-          } else {
-            MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Local frame rotation mode enabled");
-            if (ResetRotationOnModeChange.Value) {
-              ResetRotations();
-            } else {
-              Quaternion currentRotation = _comfyGizmoRoot.rotation;
-              ResetGizmoComponents();
-              _gizmoRoot.rotation = currentRotation;
-            }
-          }
-          
-          _localFrame = !_localFrame;
-          return;
-        }
-
-        _xGizmo.localScale = Vector3.one;
-        _yGizmo.localScale = Vector3.one;
-        _zGizmo.localScale = Vector3.one;
-
-        if (!_localFrame) {
-          Rotate();
-        } else {
-          RotateLocalFrame();
-        }
-      }
-    }
-
-    static void Rotate() {
+    public static void Rotate() {
       if (Input.GetKey(ResetAllRotationKey.Value.MainKey)) {
         ResetRotations();
       } else if (Input.GetKey(XRotationKey.Value.MainKey)) {
-        HandleAxisInput(ref _eulerAngles.x, _xGizmo);
+        HandleAxisInput(ref EulerAngles.x, XGizmo);
       } else if (Input.GetKey(ZRotationKey.Value.MainKey)) {
-        HandleAxisInput(ref _eulerAngles.z, _zGizmo);
+        HandleAxisInput(ref EulerAngles.z, ZGizmo);
       } else {
-        HandleAxisInput(ref _eulerAngles.y, _yGizmo);
+        HandleAxisInput(ref EulerAngles.y, YGizmo);
       }
 
-      _comfyGizmo.transform.localRotation = Quaternion.Euler(_eulerAngles);
-      RotateGizmoComponents(_eulerAngles);
+      ComfyGizmoObj.transform.localRotation = Quaternion.Euler(EulerAngles);
+      RotateGizmoComponents(EulerAngles);
     }
 
-    static void RotateLocalFrame() {
+    public static void RotateLocalFrame() {
       if (Input.GetKey(ResetAllRotationKey.Value.MainKey)) {
         ResetRotationsLocalFrame();
         return;
@@ -217,28 +118,28 @@ namespace Gizmo {
       Vector3 rotVector;
 
       if (Input.GetKey(XRotationKey.Value.MainKey)) {
-        _xGizmo.localScale = Vector3.one * 1.5f;
+        XGizmo.localScale = Vector3.one * 1.5f;
         rotVector = Vector3.right;
-        HandleAxisInputLocalFrame(ref _rotation, rotVector, _xGizmo);
+        HandleAxisInputLocalFrame(ref _rotation, rotVector, XGizmo);
       } else if (Input.GetKey(ZRotationKey.Value.MainKey)) {
-        _zGizmo.localScale = Vector3.one * 1.5f;
+        ZGizmo.localScale = Vector3.one * 1.5f;
         rotVector = Vector3.forward;
-        HandleAxisInputLocalFrame(ref _rotation, rotVector, _zGizmo);
+        HandleAxisInputLocalFrame(ref _rotation, rotVector, ZGizmo);
       } else {
-        _yGizmo.localScale = Vector3.one * 1.5f;
+        YGizmo.localScale = Vector3.one * 1.5f;
         rotVector = Vector3.up;
-        HandleAxisInputLocalFrame(ref _rotation, rotVector, _yGizmo);
+        HandleAxisInputLocalFrame(ref _rotation, rotVector, YGizmo);
       }
 
       RotateAxes(_rotation, rotVector);
     }
 
-    static void RotateAxes(float rotation, Vector3 rotVector) {
-      _comfyGizmo.transform.rotation *= Quaternion.AngleAxis(rotation, rotVector);
-      _gizmoRoot.rotation *= Quaternion.AngleAxis(rotation, rotVector);
+    public static void RotateAxes(float rotation, Vector3 rotVector) {
+      ComfyGizmoObj.transform.rotation *= Quaternion.AngleAxis(rotation, rotVector);
+      GizmoRoot.rotation *= Quaternion.AngleAxis(rotation, rotVector);
     }
 
-    static void HandleAxisInput(ref float rotation, Transform gizmo) {
+    public static void HandleAxisInput(ref float rotation, Transform gizmo) {
       gizmo.localScale = Vector3.one * 1.5f;
       rotation += Math.Sign(Input.GetAxis("Mouse ScrollWheel")) * _snapAngle;
 
@@ -247,7 +148,7 @@ namespace Gizmo {
       }
     }
 
-    static void HandleAxisInputLocalFrame(ref float rotation, Vector3 rotVector, Transform gizmo) {
+    public static void HandleAxisInputLocalFrame(ref float rotation, Vector3 rotVector, Transform gizmo) {
       gizmo.localScale = Vector3.one * 1.5f;
       rotation = Math.Sign(Input.GetAxis("Mouse ScrollWheel")) * _snapAngle;
 
@@ -256,47 +157,47 @@ namespace Gizmo {
         ResetRotationLocalFrameAxis(rotVector);
       }
     }
-    static void MatchPieceRotation(Piece target) {
-      if (_localFrame) {
-        _comfyGizmo.transform.rotation = target.GetComponent<Transform>().localRotation;
-        _gizmoRoot.rotation = target.GetComponent<Transform>().localRotation;
+    public static void MatchPieceRotation(Piece target) {
+      if (LocalFrame) {
+        ComfyGizmoObj.transform.rotation = target.GetComponent<Transform>().localRotation;
+        GizmoRoot.rotation = target.GetComponent<Transform>().localRotation;
       } else {
-        _eulerAngles = target.GetComponent<Transform>().eulerAngles;
+        EulerAngles = target.GetComponent<Transform>().eulerAngles;
         Rotate();
       }
     }
-    static void ResetRotations() {
-      _eulerAngles = Vector3.zero;
-      _comfyGizmo.transform.localRotation = Quaternion.Euler(Vector3.zero);
+    public static void ResetRotations() {
+      EulerAngles = Vector3.zero;
+      ComfyGizmoObj.transform.localRotation = Quaternion.Euler(Vector3.zero);
       RotateGizmoComponents(Vector3.zero);
     }
 
-    static void ResetGizmoComponents() {
-      _eulerAngles = Vector3.zero;
+    public static void ResetGizmoComponents() {
+      EulerAngles = Vector3.zero;
       RotateGizmoComponents(Vector3.zero);
     }
 
-    static void ResetGizmoRoot() {
-      _gizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.up);
-      _gizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.right);
-      _gizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.forward);
+    public static void ResetGizmoRoot() {
+      GizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.up);
+      GizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.right);
+      GizmoRoot.rotation = Quaternion.AngleAxis(0f, Vector3.forward);
     }
 
-    static void RotateGizmoComponents(Vector3 eulerAngles) {
-      _xGizmoRoot.localRotation = Quaternion.Euler(eulerAngles.x, 0f, 0f);
-      _yGizmoRoot.localRotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
-      _zGizmoRoot.localRotation = Quaternion.Euler(0f, 0f, eulerAngles.z);
+    public static void RotateGizmoComponents(Vector3 eulerAngles) {
+      XGizmoRoot.localRotation = Quaternion.Euler(eulerAngles.x, 0f, 0f);
+      YGizmoRoot.localRotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
+      ZGizmoRoot.localRotation = Quaternion.Euler(0f, 0f, eulerAngles.z);
     }
 
-    static void ResetRotationsLocalFrame() {
+    public static void ResetRotationsLocalFrame() {
       ResetRotationLocalFrameAxis(Vector3.up);
       ResetRotationLocalFrameAxis(Vector3.right);
       ResetRotationLocalFrameAxis(Vector3.forward);
     }
 
-    static void ResetRotationLocalFrameAxis(Vector3 axis) {
-      _comfyGizmo.transform.rotation = Quaternion.AngleAxis(0f, axis);
-      _gizmoRoot.rotation = Quaternion.AngleAxis(0f, axis);
+    public static void ResetRotationLocalFrameAxis(Vector3 axis) {
+      ComfyGizmoObj.transform.rotation = Quaternion.AngleAxis(0f, axis);
+      GizmoRoot.rotation = Quaternion.AngleAxis(0f, axis);
     }
 
     static GameObject LoadGizmoPrefab() {
@@ -318,19 +219,40 @@ namespace Gizmo {
       return data;
     }
 
-    static Transform CreateGizmoRoot() {
-      _gizmoRoot = Instantiate(_gizmoPrefab).transform;
+    public static Transform CreateGizmoRoot() {
+      GizmoRoot = Instantiate(GizmoPrefab).transform;
 
       // ??? Something about quaternions.
-      _xGizmo = _gizmoRoot.Find("YRoot/ZRoot/XRoot/X");
-      _yGizmo = _gizmoRoot.Find("YRoot/Y");
-      _zGizmo = _gizmoRoot.Find("YRoot/ZRoot/Z");
+      XGizmo = GizmoRoot.Find("YRoot/ZRoot/XRoot/X");
+      YGizmo = GizmoRoot.Find("YRoot/Y");
+      ZGizmo = GizmoRoot.Find("YRoot/ZRoot/Z");
 
-      _xGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot/XRoot");
-      _yGizmoRoot = _gizmoRoot.Find("YRoot");
-      _zGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot");
+      _xMaterial = XGizmo.gameObject.GetComponent<Renderer>().material;
+      _yMaterial = YGizmo.gameObject.GetComponent<Renderer>().material;
+      _zMaterial = ZGizmo.gameObject.GetComponent<Renderer>().material;
 
-      return _gizmoRoot.transform;
+      SetXGizmoColor();
+      SetYGizmoColor();
+      SetZGizmoColor();
+
+      XGizmoRoot = GizmoRoot.Find("YRoot/ZRoot/XRoot");
+      YGizmoRoot = GizmoRoot.Find("YRoot");
+      ZGizmoRoot = GizmoRoot.Find("YRoot/ZRoot");
+
+      return GizmoRoot.transform;
+    }
+
+    public static void SetXGizmoColor() {
+      _xMaterial.SetColor("_Color", XGizmoColor.Value * XEmissionColorFactor.Value);
+    }
+
+    public static void SetYGizmoColor() {
+      _yMaterial.SetColor("_Color", YGizmoColor.Value * YEmissionColorFactor.Value);
+    }
+
+    public static void SetZGizmoColor() {
+      _zMaterial.SetColor("_Color", ZGizmoColor.Value * ZEmissionColorFactor.Value);
+      
     }
   }
 }
