@@ -1,4 +1,4 @@
-# ComfyGizmo v1.5.0
+# ComfyGizmo
 
 *Comfy-specific version of Gizmo.*
 
