@@ -16,7 +16,43 @@ using static Gizmo.PluginConfig;
 namespace Gizmo.Patches {
   [HarmonyPatch(typeof(Player))]
   internal class PlayerPatch {
-    
+    static bool _isHammerTableInitialized = false;
+    static bool _targetSelection = false;
+
+    [HarmonyPrefix]
+    [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
+    static void UpdatePlacementGhostPrefix(ref Player __instance, bool flashGuardStone) {
+      if (Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)) {
+        if (IsHammerTableChanged(__instance)) {
+          CacheHammerTable(__instance);
+        }
+
+        if (!__instance.GetHoveringPiece() || !PieceLocations.ContainsKey(__instance.GetHoveringPiece().m_name)) {
+          return;
+        }
+
+        _targetSelection = true;
+        CurrentPieceIndex = -1;
+        SetSelectedPiece(__instance, __instance.GetHoveringPiece());
+      }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Player.SetSelectedPiece))]
+    static void SetSelectedPiecePostfix(ref Player __instance, Vector2Int p) {
+      if (Hud.instance.m_pieceSelectionWindow.activeSelf || _targetSelection) {
+        CurrentPieceIndex = -1;
+        _targetSelection = false;
+      }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Player.SetPlaceMode))]
+    static void AwakePostfix(ref Player __instance, ref PieceTable buildPieces) {
+      if (buildPieces == null) {
+        return;
+      }
+    }
 
     [HarmonyTranspiler]
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]

@@ -17,7 +17,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.6.0";
+    public const string PluginVersion = "1.7.0";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
@@ -44,7 +44,10 @@ namespace Gizmo {
     static Material _yMaterial;
     static Material _zMaterial;
 
-
+    public static Piece LastSelected;
+    public static int CurrentPieceIndex = -1;
+    public static Dictionary<string, Vector2Int> PieceLocations = new();
+    public static int _cachedAvailablePieceCount = -1;
 
     Harmony _harmony;
 
@@ -253,6 +256,50 @@ namespace Gizmo {
     public static void SetZGizmoColor() {
       _zMaterial.SetColor("_Color", ZGizmoColor.Value * ZEmissionColorFactor.Value);
       
+    }
+
+    public static bool IsHammerTableChanged(Player player) {
+      int currentPieceCount = 0;
+
+      for (int i = 0; i < player.m_buildPieces.m_availablePieces.Count; i++) {
+        currentPieceCount += player.m_buildPieces.m_availablePieces[i].Count;
+      }
+
+      if (currentPieceCount == _cachedAvailablePieceCount) {
+        return false;
+      }
+
+      return true;
+    }
+
+    public static void CacheHammerTable(Player player) {
+      PieceTable hammerPieceTable = player.m_buildPieces;
+      _cachedAvailablePieceCount = 0;
+      PieceLocations = new();
+
+      for (int i = 0; i < hammerPieceTable.m_availablePieces.Count; i++) {
+        List<Piece> categoryPieces = hammerPieceTable.m_availablePieces[i];
+
+        for (int j = 0; j < categoryPieces.Count; j++) {
+          if (!PieceLocations.ContainsKey(categoryPieces[j].m_name)) {
+            PieceLocations.Add(categoryPieces[j].m_name, new Vector2Int(i, j));
+            _cachedAvailablePieceCount++;
+          }
+        }
+      }
+    }
+
+    public static void SetSelectedPiece(Player player, Piece piece) {
+      Vector2Int pieceLocation = PieceLocations[piece.m_name];
+      Piece.PieceCategory previousCategory = player.m_buildPieces.m_selectedCategory;
+
+      player.m_buildPieces.m_selectedCategory = (Piece.PieceCategory)pieceLocation.x;
+      player.SetSelectedPiece(new Vector2Int(pieceLocation.y % 15, pieceLocation.y / 15));
+      player.SetupPlacementGhost();
+
+      if (previousCategory != player.m_buildPieces.m_selectedCategory) {
+        Hud.instance.UpdatePieceList(player, new Vector2Int(pieceLocation.y % 15, pieceLocation.y / 15), (Piece.PieceCategory)pieceLocation.x, true);
+      }
     }
   }
 }

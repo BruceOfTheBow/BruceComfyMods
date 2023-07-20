@@ -11,6 +11,7 @@ namespace Gizmo {
     public static ConfigEntry<KeyboardShortcut> ResetAllRotationKey;
     public static ConfigEntry<KeyboardShortcut> ChangeRotationModeKey;
     public static ConfigEntry<KeyboardShortcut> CopyPieceRotationKey;
+    public static ConfigEntry<KeyboardShortcut> SelectTargetPieceKey;
     public static ConfigEntry<KeyboardShortcut> SnapDivisionIncrementKey;
     public static ConfigEntry<KeyboardShortcut> SnapDivisionDecrementKey;
 
@@ -82,6 +83,13 @@ namespace Gizmo {
               "copyPieceRotation",
               KeyboardShortcut.Empty,
               "Press this key to copy targeted piece's rotation.");
+
+      SelectTargetPieceKey =
+          config.Bind(
+              "Keys",
+              "selectTargetPieceKey",
+              new KeyboardShortcut(KeyCode.P),
+              "Selects target piece to be used.");
 
       SnapDivisionIncrementKey =
           config.Bind(

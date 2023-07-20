@@ -21,10 +21,14 @@
 
   1. **Disable or uninstall** the existing `Gizmo v1.0.0` mod by Rolo.
   2. **Disable or uninstall** any manually installed `ComfyGizmo_v1.3.0` or earlier.
-  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.6.0.zip`.
+  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.7.0.zip`.
   4. Click "OK/Import local mod" on the pop-up for information.
   
 ## Changelog
+
+### 1.7.0
+
+  * Added feature to copy target piece for placing. Default keybind 'P'.
 
 ### 1.6.0
 
