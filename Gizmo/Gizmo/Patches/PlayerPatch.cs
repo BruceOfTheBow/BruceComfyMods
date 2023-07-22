@@ -23,6 +23,11 @@ namespace Gizmo.Patches {
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
     static void UpdatePlacementGhostPrefix(ref Player __instance, bool flashGuardStone) {
       if (Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)) {
+        if (SearsCatalogColumns.Value != -1 && SearsCatalogColumns.Value != ColumnCount) {
+          ColumnCount = SearsCatalogColumns.Value;
+          CacheHammerTable(__instance);
+        }
+
         if (IsHammerTableChanged(__instance)) {
           CacheHammerTable(__instance);
         }

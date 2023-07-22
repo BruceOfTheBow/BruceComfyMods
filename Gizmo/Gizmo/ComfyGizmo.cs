@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 
@@ -17,7 +19,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.7.0";
+    public const string PluginVersion = "1.7.1";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
@@ -48,6 +50,11 @@ namespace Gizmo {
     public static int CurrentPieceIndex = -1;
     public static Dictionary<string, Vector2Int> PieceLocations = new();
     public static int _cachedAvailablePieceCount = -1;
+
+    public static int ColumnCount = 15;
+    private static readonly string _searsCatalogGUID = "redseiko.valheim.searscatalog";
+    public static BaseUnityPlugin SearsCatalog;
+    public static ConfigEntry<int> SearsCatalogColumns;
 
     Harmony _harmony;
 
@@ -294,12 +301,46 @@ namespace Gizmo {
       Piece.PieceCategory previousCategory = player.m_buildPieces.m_selectedCategory;
 
       player.m_buildPieces.m_selectedCategory = (Piece.PieceCategory)pieceLocation.x;
-      player.SetSelectedPiece(new Vector2Int(pieceLocation.y % 15, pieceLocation.y / 15));
+      player.SetSelectedPiece(new Vector2Int(pieceLocation.y % ColumnCount, pieceLocation.y / ColumnCount));
       player.SetupPlacementGhost();
 
       if (previousCategory != player.m_buildPieces.m_selectedCategory) {
         Hud.instance.UpdatePieceList(player, new Vector2Int(pieceLocation.y % 15, pieceLocation.y / 15), (Piece.PieceCategory)pieceLocation.x, true);
       }
+    }
+
+    public static BaseUnityPlugin GetSearsCatalogPlugin() {
+      Dictionary<string, BaseUnityPlugin> plugins = GetLoadedPlugins().Where(plugin => plugin.Info.Metadata.GUID == _searsCatalogGUID).ToDictionary(plugin => plugin.Info.Metadata.GUID);
+      if (plugins.TryGetValue(_searsCatalogGUID, out BaseUnityPlugin plugin)) {
+        return plugin;
+      }
+
+      return null;
+    }
+
+    private static IEnumerable<BaseUnityPlugin> GetLoadedPlugins() {
+      return BepInEx.Bootstrap.Chainloader.PluginInfos
+                    .Where(x => x.Value != null && x.Value.Instance != null)
+                    .Select(x => x.Value.Instance);
+    }
+
+    public static bool IsSearsCatalogEnabled() {
+      SearsCatalog = GetSearsCatalogPlugin();
+
+      if (!SearsCatalog) {
+        return false;
+      }
+
+      return true;
+    }
+
+    public static int GetBuildPanelColumns() {
+      if(SearsCatalog.Config.TryGetEntry(new ConfigDefinition("BuildHud.Panel", "buildHudPanelColumns"), out ConfigEntry<int> columns)) {
+        SearsCatalogColumns = columns;
+        return columns.Value;
+      }
+
+      return -1;
     }
   }
 }
