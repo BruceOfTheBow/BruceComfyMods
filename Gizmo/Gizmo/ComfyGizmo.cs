@@ -19,7 +19,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.7.1";
+    public const string PluginVersion = "1.7.2";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
@@ -266,6 +266,9 @@ namespace Gizmo {
     }
 
     public static bool IsHammerTableChanged(Player player) {
+      if (!player || !player.m_buildPieces || player.m_buildPieces.m_availablePieces == null) {
+        return false;
+      }
       int currentPieceCount = 0;
 
       for (int i = 0; i < player.m_buildPieces.m_availablePieces.Count; i++) {

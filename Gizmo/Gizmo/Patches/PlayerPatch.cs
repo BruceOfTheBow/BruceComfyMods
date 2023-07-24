@@ -16,13 +16,16 @@ using static Gizmo.PluginConfig;
 namespace Gizmo.Patches {
   [HarmonyPatch(typeof(Player))]
   internal class PlayerPatch {
-    static bool _isHammerTableInitialized = false;
     static bool _targetSelection = false;
 
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
     static void UpdatePlacementGhostPrefix(ref Player __instance, bool flashGuardStone) {
       if (Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)) {
+        if (!__instance || !__instance.m_buildPieces || __instance.m_buildPieces.m_availablePieces == null) {
+          return;
+        }
+
         if (SearsCatalogColumns.Value != -1 && SearsCatalogColumns.Value != ColumnCount) {
           ColumnCount = SearsCatalogColumns.Value;
           CacheHammerTable(__instance);
