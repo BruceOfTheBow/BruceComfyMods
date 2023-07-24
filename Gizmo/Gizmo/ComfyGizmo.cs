@@ -19,7 +19,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.7.2";
+    public const string PluginVersion = "1.7.3";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;

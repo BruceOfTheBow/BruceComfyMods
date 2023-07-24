@@ -26,7 +26,7 @@ namespace Gizmo.Patches {
           return;
         }
 
-        if (SearsCatalogColumns.Value != -1 && SearsCatalogColumns.Value != ColumnCount) {
+        if (SearsCatalogColumns != null && SearsCatalogColumns.Value != -1 && SearsCatalogColumns.Value != ColumnCount) {
           ColumnCount = SearsCatalogColumns.Value;
           CacheHammerTable(__instance);
         }
