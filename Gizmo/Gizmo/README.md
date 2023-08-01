@@ -21,10 +21,14 @@
 
   1. **Disable or uninstall** the existing `Gizmo v1.0.0` mod by Rolo.
   2. **Disable or uninstall** any manually installed `ComfyGizmo_v1.3.0` or earlier.
-  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.7.3.zip`.
+  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.7.4.zip`.
   4. Click "OK/Import local mod" on the pop-up for information.
   
 ## Changelog
+
+### 1.7.4
+
+  * Updated piece cache to name + description to disambiguate between vertical and horizontal item stands
 
 ### 1.7.3
 

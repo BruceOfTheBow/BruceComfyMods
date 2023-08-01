@@ -19,7 +19,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.7.3";
+    public const string PluginVersion = "1.7.4";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
@@ -291,8 +291,8 @@ namespace Gizmo {
         List<Piece> categoryPieces = hammerPieceTable.m_availablePieces[i];
 
         for (int j = 0; j < categoryPieces.Count; j++) {
-          if (!PieceLocations.ContainsKey(categoryPieces[j].m_name)) {
-            PieceLocations.Add(categoryPieces[j].m_name, new Vector2Int(i, j));
+          if (!PieceLocations.ContainsKey(GetPieceIdentifier(categoryPieces[j]))) {
+            PieceLocations.Add(GetPieceIdentifier(categoryPieces[j]), new Vector2Int(i, j));
             _cachedAvailablePieceCount++;
           }
         }
@@ -300,7 +300,7 @@ namespace Gizmo {
     }
 
     public static void SetSelectedPiece(Player player, Piece piece) {
-      Vector2Int pieceLocation = PieceLocations[piece.m_name];
+      Vector2Int pieceLocation = PieceLocations[GetPieceIdentifier(piece)];
       Piece.PieceCategory previousCategory = player.m_buildPieces.m_selectedCategory;
 
       player.m_buildPieces.m_selectedCategory = (Piece.PieceCategory)pieceLocation.x;
@@ -344,6 +344,10 @@ namespace Gizmo {
       }
 
       return -1;
+    }
+
+    public static string GetPieceIdentifier(Piece piece) {
+      return piece.m_name + piece.m_description;
     }
   }
 }

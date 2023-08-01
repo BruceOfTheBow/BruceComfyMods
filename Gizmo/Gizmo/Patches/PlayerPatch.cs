@@ -35,7 +35,7 @@ namespace Gizmo.Patches {
           CacheHammerTable(__instance);
         }
 
-        if (!__instance.GetHoveringPiece() || !PieceLocations.ContainsKey(__instance.GetHoveringPiece().m_name)) {
+        if (!__instance.GetHoveringPiece() || !PieceLocations.ContainsKey(GetPieceIdentifier(__instance.GetHoveringPiece()))) {
           return;
         }
 
