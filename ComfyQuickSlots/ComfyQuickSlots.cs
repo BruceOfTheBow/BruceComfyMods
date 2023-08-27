@@ -17,7 +17,7 @@ namespace ComfyQuickSlots {
   public class ComfyQuickSlots : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfyquickslots";
     public const string PluginName = "ComfyQuickSlots";
-    public const string PluginVersion = "1.3.0";
+    public const string PluginVersion = "1.4.0";
 
     public const string playerDataKey = "ComfyQuickSlotsInventory";
     private static ConfigFile configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "ComfyQuickSlots.cfg"), true);
@@ -310,7 +310,7 @@ namespace ComfyQuickSlots {
       int i = 0;
       if (item.m_shared.m_maxStackSize > 1) {
         while (i < item.m_stack) {
-          ItemDrop.ItemData itemData = inventory.FindFreeStackItem(item.m_shared.m_name, item.m_quality);
+          ItemDrop.ItemData itemData = inventory.FindFreeStackItem(item.m_shared.m_name, item.m_quality, item.m_worldLevel);
           if (itemData != null) {
             itemData.m_stack++;
             i++;

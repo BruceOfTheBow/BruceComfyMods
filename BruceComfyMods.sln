@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BruceComfyMods", "BruceComfyMods\BruceComfyMods.csproj", "{470731B3-A09D-4EA5-8319-A6E3C6F22B92}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9755886C-EC87-42FE-8C80-FA10072B2C9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddAllFuel", "ComfyAddAllFuel\AddAllFuel.csproj", "{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyBatchDeposit", "ComfyBatchDeposit\ComfyBatchDeposit.csproj", "{709E5AF0-05C2-4322-8D30-80819C68D4F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyQuickSlots", "ComfyQuickSlots\ComfyQuickSlots.csproj", "{08D30E30-98BA-4364-8410-F0D2534129BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpsterFire", "DumpsterFire\DumpsterFire.csproj", "{A7E8302F-84EB-4BBF-8430-9773C5B8997A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +19,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{470731B3-A09D-4EA5-8319-A6E3C6F22B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{470731B3-A09D-4EA5-8319-A6E3C6F22B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{470731B3-A09D-4EA5-8319-A6E3C6F22B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{470731B3-A09D-4EA5-8319-A6E3C6F22B92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{709E5AF0-05C2-4322-8D30-80819C68D4F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{709E5AF0-05C2-4322-8D30-80819C68D4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{709E5AF0-05C2-4322-8D30-80819C68D4F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{709E5AF0-05C2-4322-8D30-80819C68D4F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D30E30-98BA-4364-8410-F0D2534129BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D30E30-98BA-4364-8410-F0D2534129BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D30E30-98BA-4364-8410-F0D2534129BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D30E30-98BA-4364-8410-F0D2534129BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
