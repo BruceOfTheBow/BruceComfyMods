@@ -66,6 +66,10 @@
 
 ### Comfy Version Update
 
+### 1.7.1
+
+  * Removed unnecessary logging statements.
+
 ### 1.7.0
 
   * Added compatibility for mistlands by updating GetItem(string) to GetItem(string, int, bool)

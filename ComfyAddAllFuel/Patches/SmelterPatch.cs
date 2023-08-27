@@ -54,9 +54,9 @@ namespace AddAllFuel.Patches {
         queueSize = Math.Min(item.m_stack, queueSizeLeft);
 
 
-      log($"{item.m_shared.m_name}({item.m_stack})");
-      log($"{queueSizeNow} / {__instance.m_maxOre}");
-      log($"{queueSize}");
+      //log($"{item.m_shared.m_name}({item.m_stack})");
+      //log($"{queueSizeNow} / {__instance.m_maxOre}");
+      //log($"{queueSize}");
 
       user.GetInventory().RemoveItem(item, queueSize);
 
@@ -111,9 +111,9 @@ namespace AddAllFuel.Patches {
       if (!isAddOne)
         fuelSize = Math.Min(item.m_stack, fuelLeft);
 
-      log($"{item.m_shared.m_name}({item.m_stack})");
-      log($"{fuelNow} / {__instance.m_maxFuel}");
-      log($"{fuelSize}");
+      //log($"{item.m_shared.m_name}({item.m_stack})");
+      //log($"{fuelNow} / {__instance.m_maxFuel}");
+      //log($"{fuelSize}");
 
 
       user.GetInventory().RemoveItem(item, fuelSize);
