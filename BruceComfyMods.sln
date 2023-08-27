@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyQuickSlots", "ComfyQui
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpsterFire", "DumpsterFire\DumpsterFire.csproj", "{A7E8302F-84EB-4BBF-8430-9773C5B8997A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyLine", "AssemblyLine\AssemblyLine.csproj", "{36A1739A-1B97-41DD-A553-CB6423DF9A2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7E8302F-84EB-4BBF-8430-9773C5B8997A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36A1739A-1B97-41DD-A553-CB6423DF9A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36A1739A-1B97-41DD-A553-CB6423DF9A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36A1739A-1B97-41DD-A553-CB6423DF9A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36A1739A-1B97-41DD-A553-CB6423DF9A2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
