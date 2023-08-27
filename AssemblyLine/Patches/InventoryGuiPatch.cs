@@ -14,10 +14,13 @@ using static AssemblyLine.PluginConfig;
 namespace AssemblyLine.Patches {
   [HarmonyPatch(typeof(InventoryGui))]
   public class InventoryGuiPatch {
-    private static RectTransform _incrementButton;
-    private static RectTransform _decrementButton;
+    private static RectTransform _incrementButtonTransform;
+    private static RectTransform _decrementButtonTransform;
     private static RectTransform _countText;
+
     private static Button _craftButton;
+    private static Button _incrementButton;
+    private static Button _decrementButton;
 
     private static int _maxCraftAmount = 1;
 
@@ -30,7 +33,7 @@ namespace AssemblyLine.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.Show))]
     public static void ShowPostfix(InventoryGui __instance, Container container) {
-      if (_incrementButton != null || _decrementButton != null || _craftButton != null) {
+      if (_incrementButtonTransform != null || _decrementButtonTransform != null || _craftButton != null) {
         return;
       }
       _craftButton = __instance.m_craftButton;
@@ -41,14 +44,30 @@ namespace AssemblyLine.Patches {
 
       ScaleCraftButton();      
 
-      _incrementButton = CreateButton(__instance, "incrementButton", "+");
-      _decrementButton = CreateButton(__instance, "decrementButton", "-");
+      _incrementButtonTransform = CreateButton(__instance, "incrementButton", "+");
+      _decrementButtonTransform = CreateButton(__instance, "decrementButton", "-");
 
-      _incrementButton.pivot = new Vector2(1f, 0.75f);
-      _decrementButton.pivot = new Vector2(1f, 0f);
+      _incrementButton = _incrementButtonTransform.GetComponent<Button>();
+      _decrementButton = _decrementButtonTransform.GetComponent<Button>();
+
+      _incrementButtonTransform.pivot = new Vector2(1f, 0.75f);
+      _decrementButtonTransform.pivot = new Vector2(1f, 0f);
       
-      _incrementButton.GetComponent<Button>().onClick.AddListener(new UnityAction(OnIncrementPressed));
-      _decrementButton.GetComponent<Button>().onClick.AddListener(new UnityAction(OnDecrementPressed));
+      _incrementButtonTransform.GetComponent<Button>().onClick.AddListener(new UnityAction(OnIncrementPressed));
+      _decrementButtonTransform.GetComponent<Button>().onClick.AddListener(new UnityAction(OnDecrementPressed));
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(InventoryGui.OnTabCraftPressed))]
+    public static void OnTabCraftPressed(InventoryGui __instance) {
+      SetButtonInteractable(true);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(InventoryGui.OnTabUpgradePressed))]
+    public static void OnTabUpgradePressed(InventoryGui __instance) {
+      SetButtonInteractable(false);
+      SetCraftAmountToMin();
     }
 
     [HarmonyPostfix]
@@ -93,10 +112,11 @@ namespace AssemblyLine.Patches {
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.SetRecipe))]
-    public static void OnSetRecipeePostfix(InventoryGui __instance, int index, bool center) {
+    public static void OnSetRecipePostfix(InventoryGui __instance, int index, bool center) {
       if (IsCraftingMultiple()) {
         return;
       }
+
       _requirementAmountByName.Clear();
       _maxAmountByName.Clear();
       _requirementTransformByName.Clear();
@@ -110,9 +130,9 @@ namespace AssemblyLine.Patches {
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.SetupRequirement))]
-    public static void OnSetupRequirementPostfix(InventoryGui __instance, Transform elementRoot, Piece.Requirement req, Player player, bool craft, int quality) {
+    public static void SetupRequirementPostfix(InventoryGui __instance, Transform elementRoot, Piece.Requirement req, Player player, bool craft, int quality) {
       if (!_requirementAmountByName.Keys.Contains(req.m_resItem.m_itemData.m_shared.m_name)) {
-        _requirementAmountByName.Add(req.m_resItem.m_itemData.m_shared.m_name, int.Parse(elementRoot.transform.Find("res_amount").GetComponent<Text>().text));
+        _requirementAmountByName.Add(req.m_resItem.m_itemData.m_shared.m_name, req.GetAmount(quality));
         _maxAmountByName.Add(req.m_resItem.m_itemData.m_shared.m_name, Player.m_localPlayer.GetInventory().CountItems(req.m_resItem.m_itemData.m_shared.m_name));
         _requirementTransformByName.Add(req.m_resItem.m_itemData.m_shared.m_name, elementRoot);
       }
@@ -220,6 +240,16 @@ namespace AssemblyLine.Patches {
       _countText.GetComponent<Text>().text = newCount.ToString();
     }
 
+    private static void SetButtonInteractable(bool interactable) {
+      if (_incrementButton != null) {
+        _incrementButton.interactable = interactable;
+      }
+
+      if (_decrementButton != null) {
+        _decrementButton.interactable = interactable;
+      }
+    }
+
     private static void SetCraftAmountToMax() {
       _countText.GetComponent<Text>().text = _maxCraftAmount.ToString();
     }
@@ -274,6 +304,7 @@ namespace AssemblyLine.Patches {
       if (_maxCraftAmount >= newCount) {
         return true;
       }
+
       return false;
     }
   }
