@@ -8,9 +8,13 @@ namespace AssemblyLine.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Inventory.Changed))]
     public static void OnInventoryChangedPostfix(Inventory __instance) {
-      if (!InventoryGui.IsVisible() && Player.m_localPlayer == null) {
+      if (Player.m_localPlayer == null 
+          || Player.m_localPlayer.GetInventory() != __instance 
+          || !InventoryGui.IsVisible()) {
+
         return;
       }
+
       SetRequirementText();
     }
   }

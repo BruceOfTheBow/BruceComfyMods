@@ -73,7 +73,7 @@ namespace AssemblyLine.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.OnCraftPressed))]
     public static void OnCraftPressedPrefix(InventoryGui __instance) {
-      _craftsRemaining =  int.Parse(_countText.GetComponent<Text>().text) - 1;      
+      _craftsRemaining = int.Parse(_countText.GetComponent<Text>().text) - 1;
     }
 
     [HarmonyPostfix]
@@ -84,26 +84,34 @@ namespace AssemblyLine.Patches {
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.UpdateRecipe))]
-    public static void OnUpdateRecipepostfix(InventoryGui __instance, Player player, float dt) {
-      if (__instance == null || player == null) {
+    public static void OnUpdateRecipePostfix(InventoryGui __instance, Player player, float dt) {
+      if (__instance == null
+          || Player.m_localPlayer == null
+          || Player.m_localPlayer != player
+          || Player.m_localPlayer.GetInventory() == null
+          || __instance.m_selectedRecipe.Key == null) { 
+
         return;
       }
 
-      if (!player.GetInventory().CanAddItem(__instance.m_selectedRecipe.Value, __instance.m_selectedRecipe.Key.m_amount)) {
+      if (!player.GetInventory().CanAddItem(__instance.m_selectedRecipe.Key.m_item.m_itemData, __instance.m_selectedRecipe.Key.m_amount)) {
+        DecrementCraftAmount(1);
         _craftsRemaining = 0;
         return;
       }
 
-      if (__instance.m_craftTimer < 0 && _craftsRemaining > 0) {
-        UpdateMaxAmount();
-
+      if (__instance.m_craftTimer <0 && _craftsRemaining > 0) {
         _craftsRemaining--;
         __instance.m_craftTimer = 0;
 
         DecrementCraftAmount(1);
+        UpdateMaxAmount();
         SetRequirementText();
 
-        player.GetCurrentCraftingStation().m_craftItemEffects.Create(player.transform.position, Quaternion.identity, null, 1f, -1);
+        if (Player.m_localPlayer.GetCurrentCraftingStation() != null) {
+          player.GetCurrentCraftingStation().m_craftItemEffects.Create(player.transform.position, Quaternion.identity, null, 1f, -1);
+        }
+
         __instance.m_craftItemEffects.Create(player.transform.position, Quaternion.identity, null, 1f, -1);
         __instance.m_craftRecipe = __instance.m_selectedRecipe.Key;
       }
@@ -131,6 +139,10 @@ namespace AssemblyLine.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.SetupRequirement))]
     public static void SetupRequirementPostfix(InventoryGui __instance, Transform elementRoot, Piece.Requirement req, Player player, bool craft, int quality) {
+      if (!InventoryGui.IsVisible()) {
+        return;
+      }
+
       if (!_requirementAmountByName.Keys.Contains(req.m_resItem.m_itemData.m_shared.m_name)) {
         _requirementAmountByName.Add(req.m_resItem.m_itemData.m_shared.m_name, req.GetAmount(quality));
         _maxAmountByName.Add(req.m_resItem.m_itemData.m_shared.m_name, Player.m_localPlayer.GetInventory().CountItems(req.m_resItem.m_itemData.m_shared.m_name));
