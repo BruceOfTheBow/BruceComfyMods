@@ -4,6 +4,11 @@
 
 ## Instructions
 
+  * Comfy replacement for MultiCraft by mjdegue.
+  * Adds UI elements for selecting a crafting amount to be made while only clicking craft once.
+  * Adds toggle to config to allow first shift + click increment to go from 1 to 10 rather than 1 to 11 
+  so that perfect stack sizes are made with fewer clicks.
+
 ### Manual
 
   * Un-zip `AssemblyLine.dll` to your `/Valheim/BepInEx/plugins/` folder.
