@@ -1,0 +1,8 @@
+{
+  "name": "VerticallyChallenged",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Assistance for those who live in two dimensions.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/VerticallyChallenged",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2105" ]
+}

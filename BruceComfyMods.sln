@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurality", "Aurality\Aurali
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LensCap", "LensCap\LensCap.csproj", "{D007E381-1B64-452F-A77C-3B00E047D2BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerticallyChallenged", "VerticallyChallenged\VerticallyChallenged.csproj", "{C5CCF48B-12BA-4067-9900-6242682D9D28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{D007E381-1B64-452F-A77C-3B00E047D2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D007E381-1B64-452F-A77C-3B00E047D2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D007E381-1B64-452F-A77C-3B00E047D2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
