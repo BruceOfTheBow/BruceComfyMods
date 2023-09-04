@@ -4,6 +4,11 @@
 
 ## Instructions
 
+  * Removes lens dirt from bloom effects.  
+  * Mod enabled by default.
+  * Only necessary if bloom is enabled in graphics settings, otherwise lens dirt, a property of bloom, will be disabled.
+  * Can enable and disable live through configuration manager.
+
 ### Manual
 
   * Un-zip `LensCap.dll` to your `/Valheim/BepInEx/plugins/` folder.

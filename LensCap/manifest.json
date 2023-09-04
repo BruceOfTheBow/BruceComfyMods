@@ -3,6 +3,6 @@
   "version_number": "1.0.0",
   "author": "ComfyMods",
   "description": "Keeps your camera lens squeaky clean.",
-  "website_url": "Mod website.",
-  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.1900" ]
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/LensCap",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2105" ]
 }
