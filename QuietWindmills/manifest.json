@@ -1,0 +1,8 @@
+{
+  "name": "QuietWindmills",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Process barley in peace.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/QuietWindmills",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2105" ]
+}

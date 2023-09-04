@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LensCap", "LensCap\LensCap.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerticallyChallenged", "VerticallyChallenged\VerticallyChallenged.csproj", "{C5CCF48B-12BA-4067-9900-6242682D9D28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuietWindmills", "QuietWindmills\QuietWindmills.csproj", "{49B13487-567F-43E7-BF7D-75E840AF59CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5CCF48B-12BA-4067-9900-6242682D9D28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B13487-567F-43E7-BF7D-75E840AF59CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B13487-567F-43E7-BF7D-75E840AF59CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B13487-567F-43E7-BF7D-75E840AF59CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B13487-567F-43E7-BF7D-75E840AF59CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
