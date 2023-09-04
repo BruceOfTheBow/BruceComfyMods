@@ -1,0 +1,8 @@
+{
+  "name": "Aurality",
+  "version_number": "1.0.1",
+  "author": "ComfyMods",
+  "description": "Removing sfx for a calmer aural experience.",
+  "website_url": "https://github.com/redseiko/ComfyMods/tree/main/Aurality",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2100" ]
+}
