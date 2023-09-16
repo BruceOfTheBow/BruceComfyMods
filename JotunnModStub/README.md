@@ -1,4 +1,11 @@
-﻿## ODINPLUS Mod Team Presents: PlantIt
+﻿# PlantThings 
+* Modified version of PlantIt by Plugma and the ODINPLUS Mod Team
+
+## PlantThings changes from PlantIt
+
+* Removes all comfort from prefabs added by PlantIt
+
+## ODINPLUS Mod Team Presents: PlantIt
 ** Produced by: plumga
 # Questions or Comments about this mod: https://discord.gg/mbkPcvu9ax
 

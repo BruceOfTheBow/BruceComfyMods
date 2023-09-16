@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\JotunnLib.2.12.7\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.12.7\build\JotunnLib.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DEAF4438-8089-40ED-8175-398E1261D45B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PlantIt</RootNamespace>
+    <AssemblyName>PlantThings</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="($(OS) == 'Unix' OR $(OS) == 'OSX') AND $(GamePath) == ''">
+      <PropertyGroup>
+        <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/.steam/steam/steamapps/common/Valheim</GamePath>
+        <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/Library/Application Support/Steam/steamapps/common/Valheim/Contents/MacOS</GamePath>
+      </PropertyGroup>
+    </When>
+    <When Condition="($(OS) == 'Windows_NT') AND $(GamePath) == ''">
+      <PropertyGroup>
+        <GamePath Condition="!Exists('$(GamePath)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 892970', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GamePath>
+        <_SteamLibraryPath>$([MSBuild]::GetRegistryValueFromView('HKEY_CURRENT_USER\SOFTWARE\Valve\Steam', 'SteamPath', null, RegistryView.Registry32))</_SteamLibraryPath>
+        <GamePath Condition="!Exists('$(GamePath)') AND '$(_SteamLibraryPath)' != ''">$(_SteamLibraryPath)\steamapps\common\Valheim</GamePath>
+        <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files\Steam\steamapps\common\Valheim</GamePath>
+        <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\Valheim</GamePath>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <PropertyGroup>
+    <PluginOutputPath Condition=" '$(PluginOutputPath)' == ''">$(GamePath)\BepInEx\plugins</PluginOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(GamePath)\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_guiutils_publicized">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_guiutils_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_utils_publicized">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_utils_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_valheim_publicized">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_valheim_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>$(GamePath)\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Jotunn, Version=2.12.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JotunnLib.2.12.7\lib\net462\Jotunn.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Backports, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.Backports.1.0.1\lib\net452\MonoMod.Backports.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoMod.Core, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.Core.1.0.1\lib\net452\MonoMod.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoMod.Iced, Version=1.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.Core.1.0.1\lib\net452\MonoMod.Iced.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoMod.ILHelpers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.ILHelpers.1.0.0\lib\net452\MonoMod.ILHelpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MMHOOK_assembly_valheim">
+      <HintPath>$(GamePath)\BepInEx\plugins\MMHOOK\MMHOOK_assembly_valheim.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro_publicized">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\Unity.TextMeshPro_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="ui_lib">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\ui_lib_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Category.cs" />
+    <Compile Include="Core\Requirements.cs" />
+    <Compile Include="Patches\PiecePatch.cs" />
+    <Compile Include="Properties\IgnoreAccessModifiers.cs" />
+    <Compile Include="PlantThings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="README.md" />
+    <None Include="manifest.json" />
+    <None Include="icon.png" />
+    <EmbeddedResource Include="Embed\custompiece_plantset2" />
+    <EmbeddedResource Include="Embed\custompiece_plantsetfixedcolliders" />
+    <EmbeddedResource Include="Embed\plantset3" />
+    <EmbeddedResource Include="Embed\shovel" />
+    <EmbeddedResource Include="Embed\stumpsandlogs" />
+    <EmbeddedResource Include="Embed\misc" />
+    <EmbeddedResource Include="Embed\pottedsucculents" />
+    <EmbeddedResource Include="Embed\plantset4" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureEnvironmentPropsImport" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project needs a Environment.props file with the path to your Valheim installation. See https://github.com/Valheim-Modding/JotunnModStub. {0} is missing.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)Environment.props')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)Environment.props'))" />
+  </Target>
+  <Target Name="CopyAssembly" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFolder="$(PluginOutputPath)" />
+  </Target>
+  <Target Name="GetAssemblyVersion" AfterTargets="Build">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <AssemblyVersions Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+    <PropertyGroup>
+      <AssemblyVersion>%(AssemblyVersions.Identity)</AssemblyVersion>
+      <Major>$(AssemblyVersion.Split('.')[0])</Major>
+      <Minor>$(AssemblyVersion.Split('.')[1])</Minor>
+      <Patch>$(AssemblyVersion.Split('.')[2])</Patch>
+      <PackageName>$(AssemblyName)_v$(Major).$(Minor).$(Patch)</PackageName>
+      <PackageDir>$(OutDir)$(PackageName)</PackageDir>
+    </PropertyGroup>
+  </Target>
+  <Target Name="MakeThunderstorePackage" AfterTargets="GetAssemblyVersion">
+    <ItemGroup>
+      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; README.md; manifest.json; icon.png" />
+    </ItemGroup>
+    <MakeDir Directories="$(PackageDir)" />
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDir)" />
+    <ZipDirectory SourceDirectory="$(PackageDir)" DestinationFile="$(OutDir)$(PackageName).zip" Overwrite="true" />
+    <RemoveDir Directories="$(PackageDir)" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\JotunnLib.2.12.7\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.12.7\build\JotunnLib.props'))" />
+  </Target>
+</Project>
