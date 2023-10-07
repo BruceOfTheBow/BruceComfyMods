@@ -22,12 +22,21 @@ namespace ComfyQuickSlots {
         return true;
       }
 
+      if (__instance.m_elements == null
+          ) {
+
+        return false;
+      }
+
       foreach (var element in __instance.m_elements) {
         UnityEngine.GameObject.Destroy(element.m_go);
       }
       __instance.m_elements.Clear();
 
-      if (player == null || player.IsDead() || !EnableQuickslots.Value) {
+      if (player == null 
+          || player.IsDead() 
+          || !EnableQuickslots.Value
+          || __instance.m_items == null) {
         return false;
       }
 
@@ -35,9 +44,11 @@ namespace ComfyQuickSlots {
       __instance.m_items = new List<ItemDrop.ItemData>();
 
       for (int i = 5; i < ComfyQuickSlots.columns; i++) {
-        if (player.GetInventory().GetItemAt(i, 4) != null) {
-          __instance.m_items.Add(player.GetInventory().GetItemAt(i, 4));
+        if (player.GetInventory().GetItemAt(i, 4) == null) {
+          continue;
         }
+
+        __instance.m_items.Add(player.GetInventory().GetItemAt(i, 4));
       }
 
       for (var index = 0; index < ComfyQuickSlots.quickSlotsCount; ++index) {
@@ -45,14 +56,15 @@ namespace ComfyQuickSlots {
         elementData.m_go.transform.localPosition = new Vector3(index * __instance.m_elementSpace, 0.0f, 0.0f);
         elementData.m_icon = elementData.m_go.transform.transform.Find("icon").GetComponent<Image>();
         elementData.m_durability = elementData.m_go.transform.Find("durability").GetComponent<GuiBar>();
-        elementData.m_amount = elementData.m_go.transform.Find("amount").GetComponent<Text>();
+        elementData.m_amount = elementData.m_go.transform.Find("amount").GetComponent<TMPro.TMP_Text>();
         elementData.m_equiped = elementData.m_go.transform.Find("equiped").gameObject;
         elementData.m_queued = elementData.m_go.transform.Find("queued").gameObject;
         elementData.m_selection = elementData.m_go.transform.Find("selected").gameObject;
 
-        var bindingText = elementData.m_go.transform.Find("binding").GetComponent<Text>();
+        var bindingText = elementData.m_go.transform.Find("binding").GetComponent<TMPro.TMP_Text>();
         bindingText.enabled = true;
-        bindingText.horizontalOverflow = HorizontalWrapMode.Overflow;
+        //bindingText.horizontalAlignment = TMPro.HorizontalAlignmentOptions.
+        //bindingText.horizontalOverflow = HorizontalWrapMode.Overflow;
         bindingText.text = hotkeyTexts[index];
 
         __instance.m_elements.Add(elementData);

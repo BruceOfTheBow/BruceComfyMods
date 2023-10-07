@@ -12,7 +12,7 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.4.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.5.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Features
@@ -44,6 +44,12 @@
   * Check out our community driven listing site at: [valheimlist.org](https://valheimlist.org/)
 
 ## Changelog
+
+### 1.5.0
+
+  * Updates for patch 0.217.22. Added refernce to TMP for ElementData.m_amount
+  * Updated text and font details for TMPro elements.
+  * Updated repo link in manifest to BruceComfyMods repo.
 
 ### 1.4.0
 

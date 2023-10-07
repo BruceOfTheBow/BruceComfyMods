@@ -15,7 +15,7 @@
 
 ### Thunderstore (manual)
 
-  2. Go to Settings > Import local mod > Select `AssemblyLine_v1.0.0.zip`.
+  2. Go to Settings > Import local mod > Select `AssemblyLine_v1.1.0.zip`.
   3. Click "OK/Import local mod" on the pop-up for information.
 
 ## Attributions
@@ -23,6 +23,13 @@
   * Icon sourced from: [Assembly line icons created by Muhammad Waqas Khan - Flaticon](https://www.flaticon.com/free-icons/assembly-line)
 
 ## Changelog
+
+### 1.1.0
+
+  * Updated for patch 0.217.22. Updated to TMP Text fields
+  * Fixed bug where setting max craft amount set count to 0. Count will always be a positive integer.
+  * Fixed bug where increment and decrement buttons non-interactable after closing InventoryGUI on upgrade tab and reopening.
+  * Fixed bug where crafting continued when InventoryGUI opened after closing without cancelling crafting.
 
 ### 1.0.0
 

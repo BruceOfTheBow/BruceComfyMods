@@ -11,7 +11,7 @@ namespace VerticallyChallenged {
   public class VerticallyChallenged : BaseUnityPlugin {
     public const string PluginGuid = "bruce.valheim.comfymods.verticallychalleneged";
     public const string PluginName = "VerticallyChallenged";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginVersion = "1.1.0";
 
     Harmony _harmony;
 

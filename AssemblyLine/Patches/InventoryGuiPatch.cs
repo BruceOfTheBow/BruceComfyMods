@@ -73,7 +73,7 @@ namespace AssemblyLine.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.OnCraftPressed))]
     public static void OnCraftPressedPrefix(InventoryGui __instance) {
-      _craftsRemaining = int.Parse(_countText.GetComponent<Text>().text) - 1;
+      _craftsRemaining = int.Parse(_countText.GetComponent<TMPro.TMP_Text>().text) - 1;
     }
 
     [HarmonyPostfix]
@@ -92,6 +92,18 @@ namespace AssemblyLine.Patches {
           || __instance.m_selectedRecipe.Key == null) { 
 
         return;
+      }
+
+      if (!InventoryGui.IsVisible()) {
+        SetCraftAmountToMin();
+      }
+
+      if (__instance.InCraftTab()
+          && _incrementButton != null
+          && _decrementButton != null) {
+
+        _incrementButton.interactable = true;
+        _decrementButton.interactable = true;
       }
 
       if (!player.GetInventory().CanAddItem(__instance.m_selectedRecipe.Key.m_item.m_itemData, __instance.m_selectedRecipe.Key.m_amount)) {
@@ -165,9 +177,9 @@ namespace AssemblyLine.Patches {
       textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 40f);
       textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30f);
 
-      var component = textTransform.GetComponent<Text>();
+      TMPro.TMP_Text component = textTransform.GetComponent<TMPro.TMP_Text>();
       component.text = text;
-      component.resizeTextForBestFit = true;
+      component.enableAutoSizing = true;
       return targetTransform;
     }
 
@@ -177,7 +189,7 @@ namespace AssemblyLine.Patches {
       _countText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 50f);
       _countText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100f);
       _countText.pivot = new Vector2(0.975f, 0f);
-      _countText.GetComponent<Text>().text = "1";
+      _countText.GetComponent<TMPro.TMP_Text>().text = "1";
     }
 
     private static void ScaleCraftButton() {
@@ -188,7 +200,7 @@ namespace AssemblyLine.Patches {
     public static void SetRequirementText() {
       foreach (KeyValuePair<string, Transform> kvp in _requirementTransformByName) {
         _maxAmountByName[kvp.Key] = Player.m_localPlayer.GetInventory().CountItems(kvp.Key);
-        kvp.Value.transform.Find("res_amount").GetComponent<Text>().text = (_requirementAmountByName[kvp.Key] * int.Parse(_countText.GetComponent<Text>().text)).ToString() + "/" + _maxAmountByName[kvp.Key].ToString();
+        kvp.Value.transform.Find("res_amount").GetComponent<TMPro.TMP_Text>().text = (_requirementAmountByName[kvp.Key] * int.Parse(_countText.GetComponent<TMPro.TMP_Text>().text)).ToString() + "/" + _maxAmountByName[kvp.Key].ToString();
       }
     }
 
@@ -227,21 +239,21 @@ namespace AssemblyLine.Patches {
     }
 
     private static void IncrementCraftAmount(int amount) {
-      int currentCount = int.Parse(_countText.GetComponent<Text>().text);
+      int currentCount = int.Parse(_countText.GetComponent<TMPro.TMP_Text>().text);
       int newCount = currentCount + amount; 
 
       if (RoundToStackSize.Value && HaveCraftRequirements(10) && currentCount == 1 && amount == 10) {
-        _countText.GetComponent<Text>().text = 10.ToString();
+        _countText.GetComponent<TMPro.TMP_Text>().text = 10.ToString();
         return;
       }
 
       if (HaveCraftRequirements(newCount) && amount != -1) {
-        _countText.GetComponent<Text>().text = newCount.ToString();
+        _countText.GetComponent<TMPro.TMP_Text>().text = newCount.ToString();
       }
     }
 
     private static void DecrementCraftAmount(int amount) {
-      int currentCount = int.Parse(_countText.GetComponent<Text>().text);
+      int currentCount = int.Parse(_countText.GetComponent<TMPro.TMP_Text>().text);
       int newCount = currentCount - amount;
 
       if (newCount < 1) {
@@ -249,7 +261,7 @@ namespace AssemblyLine.Patches {
         return;
       }
       
-      _countText.GetComponent<Text>().text = newCount.ToString();
+      _countText.GetComponent<TMPro.TMP_Text>().text = newCount.ToString();
     }
 
     private static void SetButtonInteractable(bool interactable) {
@@ -263,15 +275,14 @@ namespace AssemblyLine.Patches {
     }
 
     private static void SetCraftAmountToMax() {
-      _countText.GetComponent<Text>().text = _maxCraftAmount.ToString();
+      _countText.GetComponent<TMPro.TMP_Text>().text = _maxCraftAmount.ToString();
     }
 
     private static void SetCraftAmountToMin() {
-      _countText.GetComponent<Text>().text = 1.ToString();
+      _countText.GetComponent<TMPro.TMP_Text>().text = 1.ToString();
     }
 
     private static void SetMaxCraftAmount(InventoryGui inventoryGui) {
-      ZLog.Log("Setting max craft amount.");
       _maxCraftAmount = GetMaxCraftAmount(inventoryGui);
     }
 
@@ -290,7 +301,6 @@ namespace AssemblyLine.Patches {
 
     private static int GetMaxCraftAmount(InventoryGui inventoryGui) {
       if (Player.m_localPlayer == null || inventoryGui.m_selectedRecipe.Key == null) {
-        ZLog.Log("Local player or selected recipe key is null.");
         return 1;
       }
 
@@ -305,11 +315,10 @@ namespace AssemblyLine.Patches {
           int totalAmount = Player.m_localPlayer.GetInventory().CountItems(requirement.m_resItem.m_itemData.m_shared.m_name);
           int craftableAmount = totalAmount / requirement.m_amount; // Integer division rounds down by default
           craftableAmounts.Add(craftableAmount);
-          ZLog.Log($"{requirement.m_resItem.m_itemData.m_shared.m_name} requires {totalAmount} with {craftableAmount} per item.");
         }
       }
-      ZLog.Log($"Max amount {craftableAmounts.Min()}");
-      return craftableAmounts.Min();
+
+      return craftableAmounts.Min() == 0 ? 1 : craftableAmounts.Min();
     }
 
     private static bool HaveCraftRequirements(int newCount) {

@@ -17,7 +17,7 @@ namespace ComfyQuickSlots {
   public class ComfyQuickSlots : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfyquickslots";
     public const string PluginName = "ComfyQuickSlots";
-    public const string PluginVersion = "1.4.0";
+    public const string PluginVersion = "1.5.0";
 
     public const string playerDataKey = "ComfyQuickSlotsInventory";
     private static ConfigFile configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "ComfyQuickSlots.cfg"), true);

@@ -17,6 +17,10 @@
 
 ## Changelog
 
+### 1.1.0
+
+  * Added check for player character when adding in vertical attacks
+
 ### 1.0.0
 
   * Initial release.
