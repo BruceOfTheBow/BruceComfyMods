@@ -15,7 +15,7 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.2.1.zip`.
+  * Go to Settings > Import local mod > Select `ComfyBatchDeposit_v1.3.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Attributions
@@ -25,6 +25,11 @@
   * Icon provided by Lyka on Comfy AKA @Jenniely on twitter.
 
 ## Changelog
+
+### 1.3.0
+
+  * Update for TMP changes in patch 0.217.22
+  * Updated manifest reference to BruceComfyMods repo and bepniex dependency to 5.4.2200
 
 ### 1.2.1
 

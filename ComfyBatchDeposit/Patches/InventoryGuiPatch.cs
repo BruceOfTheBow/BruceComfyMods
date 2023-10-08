@@ -66,9 +66,9 @@ namespace ComfyBatchDeposit.Patches {
       textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 45f);
       textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30f);
 
-      var component = textTransform.GetComponent<Text>();
+      TMPro.TMP_Text component = textTransform.GetComponent<TMPro.TMP_Text>();
       component.text = text;
-      component.resizeTextForBestFit = true;
+      component.m_enableAutoSizing = true;
       return targetTransform;
     }
 
