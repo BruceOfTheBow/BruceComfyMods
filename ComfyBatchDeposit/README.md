@@ -26,6 +26,10 @@
 
 ## Changelog
 
+### 1.3.1
+  
+  * Removed logging statements
+
 ### 1.3.0
 
   * Update for TMP changes in patch 0.217.22

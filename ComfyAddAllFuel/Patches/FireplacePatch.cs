@@ -30,7 +30,6 @@ namespace AddAllFuel.Patches {
         __instance.m_nview.ClaimOwnership();
 
       string fuelName = __instance.m_fuelItem.m_itemData.m_shared.m_name;
-      ZLog.Log($"Found fuel {fuelName}");
       float fuelNow = (float)Mathf.CeilToInt(__instance.m_nview.GetZDO().GetFloat("fuel", 0f));
       if (fuelNow > __instance.m_maxFuel - 1) {
         user.Message(MessageHud.MessageType.Center, Localization.instance.Localize("$msg_cantaddmore", new string[]
@@ -38,7 +37,6 @@ namespace AddAllFuel.Patches {
         return false;
       }
 
-      ZLog.Log($"Checking Inventory for fuel {fuelName}");
       ItemDrop.ItemData item = user.GetInventory()?.GetItem(fuelName, -1, false);
       if (item == null) {
         if (isAddOne) {
@@ -75,7 +73,6 @@ namespace AddAllFuel.Patches {
       m_nview.GetZDO().Set("fuel", size);
       instance.m_fuelAddedEffects.Create(
           instance.transform.position, instance.transform.rotation, null, 1f);
-      ZLog.Log($"Added fuel * {count}");
 
       Traverse.Create(instance).Method("UpdateState").GetValue();
     }

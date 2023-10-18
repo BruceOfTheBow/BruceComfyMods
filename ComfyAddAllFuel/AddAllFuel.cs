@@ -18,7 +18,7 @@ namespace AddAllFuel {
   public class AddAllFuel : BaseUnityPlugin {
     public const string PluginGuid = "bruceofthebow.valheim.AddAllFuel";
     public const string PluginName = "ComfyAddAllFuel";
-    public const string PluginVersion = "1.7.1";
+    public const string PluginVersion = "1.7.2";
 
     private static readonly bool _debug = true;
     private static List<string> ExcludeNames = new List<string>() { "$item_finewood" };

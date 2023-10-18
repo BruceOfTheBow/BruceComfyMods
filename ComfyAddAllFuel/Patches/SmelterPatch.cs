@@ -139,7 +139,6 @@ namespace AddAllFuel.Patches {
       m_nview.GetZDO().Set("queued", start + count);
 
       instance.m_oreAddedEffects.Create(instance.transform.position, instance.transform.rotation, null, 1f);
-      ZLog.Log($"Added ore {name} * {count}");
     }
 
     public static void RPC_AddFuel(Smelter instance, ZNetView m_nview, float count) {
@@ -150,7 +149,6 @@ namespace AddAllFuel.Patches {
       m_nview.GetZDO().Set("fuel", now + count);
       instance.m_fuelAddedEffects.Create(
           instance.transform.position, instance.transform.rotation, instance.transform, 1f);
-      ZLog.Log($"Added fuel * {count}");
     }
   }
  }

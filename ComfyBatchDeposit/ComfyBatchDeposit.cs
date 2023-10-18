@@ -14,7 +14,7 @@ namespace ComfyBatchDeposit {
   public class ComfyBatchDeposit : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfybatchdeposit";
     public const string PluginName = "ComfyBatchDeposit";
-    public const string PluginVersion = "1.3.0";
+    public const string PluginVersion = "1.3.1";
 
     static ManualLogSource _logger;
 
@@ -48,7 +48,6 @@ namespace ComfyBatchDeposit {
             .FindAll(data => !data.m_shared.m_questItem && !player.IsItemEquiped(data) && !(isPlayerInventory && data.m_gridPos.y == 0));
 
         foreach (ItemDrop.ItemData item in targetItems) {
-          ZLog.Log($"{itemData.m_shared.m_name} of quality {itemData.m_quality} will be stacked.");
           inventory.RemoveItem(item);
         }
 
