@@ -1,0 +1,8 @@
+{
+  "name": "Abacus",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Stack splitting made easy",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Abacus",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2200" ]
+}
