@@ -8,7 +8,7 @@
   * Adds a minus and plus which will decrement and increment the slider bar by the specified value
   * Each amount has it's own configuration value tied to stack size.
 
-  ![Imgur Image](https://imgur.com/a/JTB1PIn.jpeg)
+  ![Imgur Image](https://imgur.com/a/JTB1PIn)
   
 ### Manual
 
