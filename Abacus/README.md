@@ -7,8 +7,6 @@
   * Adds a button to the split stack dialog with a small and large amount to select with one click for each stack size (10, 20, 30, 50, 100, 999)
   * Adds a minus and plus which will decrement and increment the slider bar by the specified value
   * Each amount has it's own configuration value tied to stack size.
-
-  ![Imgur Image](https://imgur.com/a/JTB1PIn.jpg)
   
 ### Manual
 
