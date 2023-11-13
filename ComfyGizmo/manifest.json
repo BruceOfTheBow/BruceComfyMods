@@ -1,0 +1,10 @@
+{
+  "name": "ComfyGizmo",
+  "version_number": "1.9.0",
+  "author": "ComfyMods",
+  "website_url": "https://github.com/redseiko/ValheimMods/tree/main/Gizmo/Gizmo",
+  "description": "Comfy version of Gizmo.",
+  "dependencies": [ 
+	  "denikson-BepInExPack_Valheim-5.4.2202"
+  ]
+}

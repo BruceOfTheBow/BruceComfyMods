@@ -17,9 +17,9 @@ using static Gizmo.PluginConfig;
 namespace Gizmo {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
   public class ComfyGizmo : BaseUnityPlugin {
-    public const string PluginGUID = "com.rolopogo.gizmo.comfy";
+    public const string PluginGUID = "bruce.valheim.comfymods.gizmo";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.8.0";
+    public const string PluginVersion = "1.9.0";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
