@@ -19,7 +19,7 @@ namespace Gizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "com.rolopogo.gizmo.comfy";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.7.4";
+    public const string PluginVersion = "1.8.0";
 
     public static GameObject GizmoPrefab = null;
     public static Transform GizmoRoot;
@@ -313,7 +313,17 @@ namespace Gizmo {
     }
 
     public static BaseUnityPlugin GetSearsCatalogPlugin() {
-      Dictionary<string, BaseUnityPlugin> plugins = GetLoadedPlugins().Where(plugin => plugin.Info.Metadata.GUID == _searsCatalogGUID).ToDictionary(plugin => plugin.Info.Metadata.GUID);
+      IEnumerable<BaseUnityPlugin> loadedPlugins = GetLoadedPlugins();
+
+      if (loadedPlugins == null) {
+        return null;
+      }
+
+      Dictionary<string, BaseUnityPlugin> plugins 
+          = loadedPlugins
+              .Where(plugin => plugin.Info.Metadata.GUID == _searsCatalogGUID)
+              .ToDictionary(plugin => plugin.Info.Metadata.GUID);
+
       if (plugins.TryGetValue(_searsCatalogGUID, out BaseUnityPlugin plugin)) {
         return plugin;
       }
@@ -338,7 +348,7 @@ namespace Gizmo {
     }
 
     public static int GetBuildPanelColumns() {
-      if(SearsCatalog.Config.TryGetEntry(new ConfigDefinition("BuildHud.Panel", "buildHudPanelColumns"), out ConfigEntry<int> columns)) {
+      if (SearsCatalog.Config.TryGetEntry(new ConfigDefinition("BuildHud.Panel", "buildHudPanelColumns"), out ConfigEntry<int> columns)) {
         SearsCatalogColumns = columns;
         return columns.Value;
       }

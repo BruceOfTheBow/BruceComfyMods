@@ -46,7 +46,7 @@ namespace Gizmo.Patches {
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(Player.SetSelectedPiece))]
+    [HarmonyPatch(nameof(Player.SetSelectedPiece), typeof(Vector2Int))]
     static void SetSelectedPiecePostfix(ref Player __instance, Vector2Int p) {
       if (Hud.instance.m_pieceSelectionWindow.activeSelf || _targetSelection) {
         CurrentPieceIndex = -1;
