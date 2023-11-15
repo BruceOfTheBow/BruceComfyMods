@@ -10,10 +10,10 @@ using HarmonyLib;
 
 using UnityEngine;
 
-using static Gizmo.ComfyGizmo;
-using static Gizmo.PluginConfig;
+using static ComfyGizmo.ComfyGizmo;
+using static ComfyGizmo.PluginConfig;
 
-namespace Gizmo.Patches {
+namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Player))]
   internal class PlayerPatch {
     static bool _targetSelection = false;

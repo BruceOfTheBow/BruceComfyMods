@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(Gizmo.ComfyGizmo.PluginVersion)]
-[assembly: AssemblyFileVersion(Gizmo.ComfyGizmo.PluginVersion)]
+[assembly: AssemblyVersion(ComfyGizmo.ComfyGizmo.PluginVersion)]
+[assembly: AssemblyFileVersion(ComfyGizmo.ComfyGizmo.PluginVersion)]

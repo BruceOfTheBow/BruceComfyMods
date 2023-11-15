@@ -1,9 +1,9 @@
 ﻿
 using HarmonyLib;
 
-using static Gizmo.ComfyGizmo;
+using static ComfyGizmo.ComfyGizmo;
 
-namespace Gizmo.Patches {
+namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Game))]
   static class GamePatch {
     [HarmonyPostfix]

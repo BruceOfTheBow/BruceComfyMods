@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Gizmo {
+namespace ComfyGizmo {
   public static class PluginConfig {
     public static ConfigEntry<int> SnapDivisions { get; private set; }
     public static ConfigEntry<KeyboardShortcut> XRotationKey;

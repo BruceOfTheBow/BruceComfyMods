@@ -12,9 +12,9 @@ using HarmonyLib;
 
 using UnityEngine;
 
-using static Gizmo.PluginConfig;
+using static ComfyGizmo.PluginConfig;
 
-namespace Gizmo {
+namespace ComfyGizmo {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "bruce.valheim.comfymods.gizmo";
