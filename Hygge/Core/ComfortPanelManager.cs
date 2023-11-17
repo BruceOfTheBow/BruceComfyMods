@@ -1,22 +1,15 @@
-﻿using System.Security.Policy;
-using UnityEngine;
-using UnityEngine.UI;
-
-using static HomeFurnishings.HomeFurnishings;
-
-namespace HomeFurnishings {
+﻿namespace Hygge {
   public static class ComfortPanelManager {
     public static ComfortPanel ComfortPanel { get; private set; }
     private static Piece lastPiece = null;
     public static void ToggleOn(Piece piece) {
       if (!ComfortPanel?.Panel) {
-        if (!InstantiateComfortPanel()) {
+        if (!InstantiateComfortPanel(piece)) {
           ZLog.LogWarning("Failed to instantiate comfort panel.");
           return;
         }
       }
       
-      ComfortPanel.Update(piece);
       ComfortPanel.Panel.SetActive(true);
     }
 
@@ -28,12 +21,18 @@ namespace HomeFurnishings {
       ComfortPanel.Panel.SetActive(false);
     }
 
-    private static bool InstantiateComfortPanel() {
+    public static void Update(Piece piece) {
+      ComfortPanel.Update(piece);
+    }
+
+    private static bool InstantiateComfortPanel(Piece piece) {
       ComfortPanel = ComfortPanel.CreateComfortPanel();
 
       if (ComfortPanel == null) {
         return false;
       }
+
+      ComfortPanel.Update(piece);
      
       return true;
     }

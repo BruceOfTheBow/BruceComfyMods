@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abacus", "Abacus\Abacus.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyGizmo", "ComfyGizmo\ComfyGizmo.csproj", "{83D75858-7663-4C9B-ABEF-75FFD7E692E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeFurnishings", "HomeFurnishings\HomeFurnishings.csproj", "{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hygge", "Hygge\Hygge.csproj", "{E57E6CF6-5849-4472-8848-85950388F318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +79,10 @@ Global
 		{83D75858-7663-4C9B-ABEF-75FFD7E692E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83D75858-7663-4C9B-ABEF-75FFD7E692E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83D75858-7663-4C9B-ABEF-75FFD7E692E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E57E6CF6-5849-4472-8848-85950388F318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E57E6CF6-5849-4472-8848-85950388F318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E57E6CF6-5849-4472-8848-85950388F318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E57E6CF6-5849-4472-8848-85950388F318}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

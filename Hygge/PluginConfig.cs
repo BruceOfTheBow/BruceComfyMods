@@ -1,6 +1,6 @@
 ﻿using BepInEx.Configuration;
 
-namespace HomeFurnishings {
+namespace Hygge {
   public class PluginConfig {
     public static ConfigEntry<bool> IsModEnabled { get; private set; }
 

@@ -3,9 +3,11 @@
 using TMPro;
 using UnityEngine;
 
-namespace HomeFurnishings {
+namespace Hygge {
   public class ComfortPanel {
     public GameObject Panel { get; private set; }
+
+    private Piece _currentPiece;
 
     private RectTransform _titleLabel;
     private RectTransform _groupLabel;
@@ -22,9 +24,31 @@ namespace HomeFurnishings {
 
     private static int _labelSize = 28;
     private static int _titleSize = 48;
+
     private static int _maxComfortSearchRadius = 10;
 
-    readonly List<TMP_Text> Labels = new();
+    private static readonly int _comfortMin = 1;
+    private static readonly float _alpha = 0.7f;
+
+    private static readonly Dictionary<Piece.ComfortGroup, Color> _groupColors = new() {
+      { Piece.ComfortGroup.Fire, new UnityEngine.Color(139/255f, 0, 0, _alpha)}, // Dark Red
+      { Piece.ComfortGroup.Carpet, Color.blue},
+      { Piece.ComfortGroup.Banner, new UnityEngine.Color(128/255f,0,128/255f, _alpha)}, // Purple
+      { Piece.ComfortGroup.Table, Color.yellow},
+      { Piece.ComfortGroup.Bed, new UnityEngine.Color(218/255f,165/255f,32/255f, _alpha)}, // Goldenrod
+      { Piece.ComfortGroup.Chair, new UnityEngine.Color(169/255f,169/255f,169/255f, _alpha)}, // Dark Grey
+      { Piece.ComfortGroup.None, Color.cyan}
+    };
+
+    private static readonly Dictionary<Piece.ComfortGroup, int> _groupMaxValue = new() {
+      { Piece.ComfortGroup.Fire, 2},
+      { Piece.ComfortGroup.Carpet, 1},
+      { Piece.ComfortGroup.Banner, 1},
+      { Piece.ComfortGroup.Table, 2},
+      { Piece.ComfortGroup.Bed, 2},
+      { Piece.ComfortGroup.Chair, 3},
+      { Piece.ComfortGroup.None, 6 }
+    };
 
     public static ComfortPanel CreateComfortPanel() {
       Transform selectedInfo = FindSelectedInfo();
@@ -69,6 +93,8 @@ namespace HomeFurnishings {
       _groupValueText.text = piece.m_comfortGroup.ToString();
       _valueValueText.text = piece.m_comfort.ToString();
       _nearestValueText.text = FindNearestSimilarText(piece);
+
+      UpdateColor(piece);
     }
 
     private string FindNearestSimilarText(Piece piece) {
@@ -76,8 +102,7 @@ namespace HomeFurnishings {
       float shortestDistance = _maxComfortSearchRadius;
 
       foreach (Piece checkPiece in Piece.s_allComfortPieces) {
-        if (piece.gameObject.layer == Piece.s_ghostLayer
-              || piece.m_comfortGroup != checkPiece.m_comfortGroup
+        if (piece.m_comfortGroup != checkPiece.m_comfortGroup
               || ReferenceEquals(checkPiece.gameObject, Player.m_localPlayer.m_placementGhost)) {
 
           continue;
@@ -99,6 +124,11 @@ namespace HomeFurnishings {
 
     private void ResizePanel() {
       RectTransform bkg2 = FindBkg();
+
+      if (bkg2 == null) {
+        ZLog.LogWarning("Unable to resize Hygge comfort panel. bkg2 UI element not found.");
+        return;
+      }
 
       Panel.RectTransform()
         .SetAnchorMin(new(0f, 0f))
@@ -174,6 +204,41 @@ namespace HomeFurnishings {
 
       _nearestValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width / 2);
       _nearestValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height / 6);
+    }
+
+    private void UpdateColor(Piece piece) {
+      _groupValueText.color = GetColorByGroup(piece.m_comfortGroup);
+      _valueValueText.color = GetColorByPercentMax(piece);
+    }
+
+    private Color GetColorByGroup(Piece.ComfortGroup comfortGroup) {
+      if (_groupColors.TryGetValue(comfortGroup, out Color color)) {
+        return color;
+      }
+
+      return Color.white;
+    }
+
+    private Color GetColorByPercentMax(Piece piece) {
+      if (!_groupMaxValue.TryGetValue(piece.m_comfortGroup, out int max)) {
+        return Color.white;
+      }
+
+      if (piece.m_comfortGroup == Piece.ComfortGroup.None) {
+        return Color.white;
+      }
+
+      if (piece.m_comfort == max) {
+        return Color.green;
+      }
+
+      if (piece.m_comfort == _comfortMin) {
+        return Color.red;
+      }
+      
+      // Orange
+      return new Color(255, 140, 0, _alpha);
+
     }
 
     private void CreateTitleLabel() {

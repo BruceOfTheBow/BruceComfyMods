@@ -1,17 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("HomeFurnishings")]
+[assembly: AssemblyTitle("Hygge")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HomeFurnishings")]
+[assembly: AssemblyProduct("Hygge")]
 [assembly: AssemblyCopyright("Copyright © 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
-[assembly: Guid("da15011a-9fdc-4aa8-8e0e-5376b7cd9488")]
+[assembly: Guid("e57e6cf6-5849-4472-8848-85950388f318")]
 
-[assembly: AssemblyVersion(HomeFurnishings.HomeFurnishings.PluginVersion)]
-[assembly: AssemblyFileVersion(HomeFurnishings.HomeFurnishings.PluginVersion)]
+[assembly: AssemblyVersion(Hygge.Hygge.PluginVersion)]
+[assembly: AssemblyFileVersion(Hygge.Hygge.PluginVersion)]

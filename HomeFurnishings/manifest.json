@@ -1,8 +1,0 @@
-{
-  "name": "HomeFurnishings",
-  "version_number": "1.0.0",
-  "author": "ComfyMods",
-  "description": "Adds comfort descriptions to your home furnishing catalog (build menu).",
-  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/HomeFurnishings",
-  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
-}

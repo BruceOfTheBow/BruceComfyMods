@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DA15011A-9FDC-4AA8-8E0E-5376B7CD9488}</ProjectGuid>
+    <ProjectGuid>{E57E6CF6-5849-4472-8848-85950388F318}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HomeFurnishings</RootNamespace>
-    <AssemblyName>HomeFurnishings</AssemblyName>
+    <RootNamespace>Hygge</RootNamespace>
+    <AssemblyName>Hygge</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>9</LangVersion>
@@ -104,7 +104,7 @@
   <ItemGroup>
     <Compile Include="Core\ComfortPanelManager.cs" />
     <Compile Include="Extensions\UIExtensions.cs" />
-    <Compile Include="HomeFurnishings.cs" />
+    <Compile Include="Hygge.cs" />
     <Compile Include="Patches\HudPatch.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

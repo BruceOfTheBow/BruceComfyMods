@@ -1,0 +1,8 @@
+{
+  "name": "Hygge",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Adds comfort groups and values of hovered or selected pieces to your build menu hud.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Hygge",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
