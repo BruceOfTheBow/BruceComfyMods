@@ -24,6 +24,12 @@
   3. Go to Settings > Import local mod > select `ComfyGizmo_v1.9.0.zip`.
   4. Click "OK/Import local mod" on the pop-up for information.
   
+## Notes
+
+  * See source at: [GitHub](https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/ComfyGizmo).
+  * Looking for a chill Valheim server? [Comfy Valheim Discord](https://discord.gg/ameHJz5PFk)
+  * ComfyGizmo icon created by [@jenniely](https://twitter.com/jenniely) (jenniely.com)
+
 ## Changelog
 
 ### 1.9.0
