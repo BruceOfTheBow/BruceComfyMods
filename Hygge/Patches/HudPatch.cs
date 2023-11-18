@@ -39,37 +39,14 @@ namespace Hygge.Patches {
       ComfortPanelManager.ToggleOff();
     }
 
-    //[HarmonyPostfix]
-    //[HarmonyPatch(nameof(Hud.OnClosePieceSelection))]
-    //static void OnClosePieceSelectionPostfix(ref Hud __instance, UIInputHandler ih) {
-    //  if (!IsModEnabled.Value
-    //       || ComfortPanelManager.ComfortPanel == null
-    //       || !Player.m_localPlayer
-    //       || !Player.m_localPlayer.m_placementGhost
-    //       || !Player.m_localPlayer.m_placementGhost.TryGetComponent(out Piece piece)
-    //       || piece.m_comfort == 0) {
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Hud.OnDestroy))]
+    static void OnDestroyPostfix(ref Hud __instance) {
+      if (!IsModEnabled.Value || !ComfortPanelManager.ComfortPanel?.Panel) {
+        return;
+      }
 
-    //    return;
-    //  }
-
-    //  ComfortPanelManager.ToggleOn(piece);
-    //}
-
-    //  [HarmonyPostfix]
-    //  [HarmonyPatch(nameof(Hud.UpdateBuild))]
-    //  static void UpdateBuildPostfix(ref Hud __instance, bool forceUpdateAllBuildStatuses) {
-    //    if (!IsModEnabled.Value
-    //      || !ComfortPanelManager.ComfortPanel?.Panel
-    //      || !Player.m_localPlayer
-    //      || !Player.m_localPlayer.m_placementGhost
-    //      || !Player.m_localPlayer.m_placementGhost.TryGetComponent(out Piece piece)
-    //      || piece.m_comfort == 0) {
-
-    //      return;
-    //    }
-
-    //    ComfortPanelManager.ToggleOn(piece);
-    //    ComfortPanelManager.Update(piece);
-    //  }
+      ComfortPanelManager.DestroyPanel();
+    }
   }
 }

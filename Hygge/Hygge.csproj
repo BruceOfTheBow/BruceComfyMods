@@ -106,6 +106,7 @@
     <Compile Include="Extensions\UIExtensions.cs" />
     <Compile Include="Hygge.cs" />
     <Compile Include="Patches\HudPatch.cs" />
+    <Compile Include="Patches\SettingsPatch.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ComfortPanel.cs" />

@@ -24,6 +24,10 @@
 
 ## Changelog
 
+### 1.1.0
+
+  * Fixed text scaling issue.
+
 ### 1.0.0
 
   * Initial release.

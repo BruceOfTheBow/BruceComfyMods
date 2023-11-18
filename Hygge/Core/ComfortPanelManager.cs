@@ -25,6 +25,16 @@
       ComfortPanel.Update(piece);
     }
 
+    public static void DestroyPanel() {
+      if (!ComfortPanel?.Panel) {
+        return;
+      }
+
+      ComfortPanel.Panel.SetActive(false);
+      UnityEngine.Object.Destroy(ComfortPanel.Panel);
+      ComfortPanel = null;
+    }
+
     private static bool InstantiateComfortPanel(Piece piece) {
       ComfortPanel = ComfortPanel.CreateComfortPanel();
 
@@ -36,7 +46,5 @@
      
       return true;
     }
-
-
   }
 }

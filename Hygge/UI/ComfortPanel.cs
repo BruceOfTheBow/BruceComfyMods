@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -22,8 +22,9 @@ namespace Hygge {
     private TMP_Text _valueValueText;
     private TMP_Text _nearestValueText;
 
-    private static int _labelSize = 28;
-    private static int _titleSize = 48;
+    private static float _fontSize = 0f;
+    private static float _labelSize = 24f;
+    private static float _titleSize = 48f;
 
     private static int _maxComfortSearchRadius = 10;
 
@@ -69,6 +70,8 @@ namespace Hygge {
     void CreateChildPanel(Transform parentTransform) {
       Panel = new("ComfortPanel", typeof(RectTransform));
       Panel.transform.SetParent(parentTransform, false);
+
+      FindFontSize();
 
       ResizePanel();
 
@@ -146,32 +149,32 @@ namespace Hygge {
     private void ResizeLabels() {
       RectTransform parent = Panel.RectTransform();
 
-      _titleLabel.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _titleLabel.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(0, parent.rect.height / 2 + parent.anchoredPosition.y - parent.rect.height / 6));
 
       _titleLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width);
       _titleLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height/3);
 
-      _groupLabel.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _groupLabel.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(-1 * parent.rect.width / 4, parent.rect.height / 2 + parent.anchoredPosition.y - parent.rect.height / 2));
 
       _groupLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width / 2);
       _groupLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height / 6);
 
-      _valueLabel.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _valueLabel.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(-1 * parent.rect.width / 4, parent.rect.height / 2 + parent.anchoredPosition.y - parent.rect.height * 4 / 6));
 
       _valueLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width/2);
       _valueLabel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height / 6);
 
-      _nearestLabel.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _nearestLabel.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(-1 * parent.rect.width / 4, parent.rect.height / 2 - parent.rect.height * 5 / 6));
 
@@ -181,24 +184,24 @@ namespace Hygge {
 
     private void ResizeValues() {
       RectTransform parent = Panel.RectTransform();
-      _groupValue.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _groupValue.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(parent.rect.width / 4, parent.rect.height / 2 + parent.anchoredPosition.y - parent.rect.height / 2));
 
       _groupValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width / 2);
       _groupValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height / 6);
 
-      _valueValue.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _valueValue.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(parent.rect.width / 4, parent.rect.height / 2 + parent.anchoredPosition.y - parent.rect.height * 4 / 6));
 
       _valueValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, parent.rect.width / 2);
       _valueValue.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parent.rect.height / 6);
 
-      _nearestValue.SetAnchorMin(new(0f, 0f))
-          .SetAnchorMax(new(1, 1f))
+      _nearestValue.SetAnchorMin(new(0.5f, 0.5f))
+          .SetAnchorMax(new(0.5f, 0.5f))
           .SetPivot(new(0.5f, 0.5f))
           .SetPosition(new(parent.rect.width / 4, parent.rect.height / 2 - parent.rect.height * 5 / 6));
 
@@ -242,37 +245,37 @@ namespace Hygge {
     }
 
     private void CreateTitleLabel() {
-      _titleLabel = CreateLabel("comfortTitle", "Comfort Info", _titleSize, TextAlignmentOptions.Center);
+      _titleLabel = CreateLabel("comfortTitle", "Comfort Info", GetTitleFontSize(), TextAlignmentOptions.Center);
     }
 
     private void CreateGroupLabel() {
-      _groupLabel = CreateLabel("comfortGroup", "Comfort Group: ", _labelSize, TextAlignmentOptions.Left);
+      _groupLabel = CreateLabel("comfortGroup", "Comfort Group: ", GetLabelFontSize(), TextAlignmentOptions.Left);
     }
 
     private void CreateValueLabel() {
-      _valueLabel = CreateLabel("comfortValue", "Comfort Value: ", _labelSize, TextAlignmentOptions.Left);
+      _valueLabel = CreateLabel("comfortValue", "Comfort Value: ", GetLabelFontSize(), TextAlignmentOptions.Left);
     }
 
     private void CreateNearestLabel() {
-      _nearestLabel = CreateLabel("nearestSimilar", "Nearest similar: ", _labelSize, TextAlignmentOptions.Left);
+      _nearestLabel = CreateLabel("nearestSimilar", "Nearest similar: ", GetLabelFontSize(), TextAlignmentOptions.Left);
     }
 
     private void CreateGroupValue() {
-      _groupValue = CreateLabel("groupValue", "", _labelSize, TextAlignmentOptions.Left);
+      _groupValue = CreateLabel("groupValue", "", GetLabelFontSize(), TextAlignmentOptions.Left);
       _groupValueText = _groupValue.GetComponent<TMP_Text>();
     }
 
     private void CreateValueValue() {
-      _valueValue = CreateLabel("valueValue", "", _labelSize, TextAlignmentOptions.Left);
+      _valueValue = CreateLabel("valueValue", "", GetLabelFontSize(), TextAlignmentOptions.Left);
       _valueValueText = _valueValue.GetComponent<TMP_Text>();
     }
 
     private void CreateNearestValue() {
-      _nearestValue = CreateLabel("nearestValue", "", _labelSize, TextAlignmentOptions.Left);
+      _nearestValue = CreateLabel("nearestValue", "", GetLabelFontSize(), TextAlignmentOptions.Left);
       _nearestValueText = _nearestValue.GetComponent<TMP_Text>();
     }
 
-    private RectTransform CreateLabel(string objName, string text, int fontSize, TextAlignmentOptions alignment) {
+    private RectTransform CreateLabel(string objName, string text, float fontSize, TextAlignmentOptions alignment) {
       GameObject gameObj = new(objName, typeof(RectTransform));
       gameObj.transform.SetParent(Panel.transform);
      
@@ -286,6 +289,19 @@ namespace Hygge {
 
     private static Transform FindSelectedInfo() {
       return Hud.instance.m_buildHud.transform.Find("SelectedInfo");
+    }
+
+    private static void FindFontSize() {
+      _titleSize = 0.0124f * Screen.currentResolution.width;
+      _labelSize = 0.0062f * Screen.currentResolution.width;
+    }
+
+    private static float GetLabelFontSize() {
+      return _labelSize;
+    }
+
+    private static float GetTitleFontSize() {
+      return _titleSize;
     }
 
     private static RectTransform FindBkg() {
