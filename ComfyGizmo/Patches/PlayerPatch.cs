@@ -57,9 +57,11 @@ namespace ComfyGizmo.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Player.SetPlaceMode))]
     static void AwakePostfix(ref Player __instance, ref PieceTable buildPieces) {
-      if (buildPieces == null) {
+      if (!IsRoofModeEnabled.Value) {
         return;
       }
+
+      SetBaselineRoofModeRotation();
     }
 
     [HarmonyTranspiler]

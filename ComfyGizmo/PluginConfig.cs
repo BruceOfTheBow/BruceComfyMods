@@ -28,6 +28,8 @@ namespace ComfyGizmo {
     public static ConfigEntry<float> YEmissionColorFactor { get; private set; }
     public static ConfigEntry<float> ZEmissionColorFactor { get; private set; }
 
+    public static ConfigEntry<bool> IsRoofModeEnabled { get; private set; }
+
     public static int MaxSnapDivisions = 256;
     public static int MinSnapDivisions = 2;
 
@@ -157,6 +159,8 @@ namespace ComfyGizmo {
 
       ResetRotationOnSnapDivisionChange = config.Bind("Reset", "resetOnSnapDivisionChange", true, "Resets the piece's rotation on snap division change.");
       ResetRotationOnModeChange = config.Bind("Reset", "resetOnModeChange", true, "Resets the piece's rotation on mode switch.");
+
+      IsRoofModeEnabled = config.Bind("Roof Mode", "isRoofModeEnabled", false, "Enables roof mode which allows corner roof piece rotation 45 deg compared to normal rotation.");
 
       NewGizmoRotation = config.Bind("Rotation Mode", "newGizmoRotation", false, "Enables post Gizmo v1.2.0 rotation scheme. Restart required for changes to take effect.");
     }

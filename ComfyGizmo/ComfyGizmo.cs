@@ -56,6 +56,20 @@ namespace ComfyGizmo {
     public static BaseUnityPlugin SearsCatalog;
     public static ConfigEntry<int> SearsCatalogColumns;
 
+    public static Quaternion GizmoRootOffset = Quaternion.identity;
+
+    private static readonly List<int> _roofCornerPieceHashCodes = new() {
+      "wood_roof_ocorner".GetStableHashCode(),
+      "wood_roof_ocorner_45".GetStableHashCode(),
+      "wood_roof_icorner".GetStableHashCode(),
+      "wood_roof_icorner_45".GetStableHashCode(),
+
+      "darkwood_roof_ocorner".GetStableHashCode(),
+      "darkwood_roof_ocorner_45".GetStableHashCode(),
+      "darkwood_roof_icorner".GetStableHashCode(),
+      "darkwood_roof_icorner_45".GetStableHashCode()
+    };
+
     Harmony _harmony;
 
     public void Awake() {
@@ -96,6 +110,19 @@ namespace ComfyGizmo {
           SetZGizmoColor();
         };
 
+      IsRoofModeEnabled.SettingChanged +=
+        (sender, eventArgs) => {
+          if (!IsRoofModeEnabled.Value) {
+            ResetRoofMode();
+
+            GizmoRootOffset = Quaternion.identity;
+            GizmoRoot.rotation *= GizmoRootOffset;
+          }
+
+          ResetRotations();
+          SetBaselineRoofModeRotation();
+        };
+
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
     }
 
@@ -106,7 +133,15 @@ namespace ComfyGizmo {
     public static void Rotate() {
       if (Input.GetKey(ResetAllRotationKey.Value.MainKey)) {
         ResetRotations();
-      } else if (Input.GetKey(XRotationKey.Value.MainKey)) {
+        return;
+      }
+        if (IsRoofModeEnabled.Value && IsCornerRoofPieceSelected() && IsRotationScroll()) {
+        RotateRoofPiece();
+        return;
+      }
+
+      
+      if (Input.GetKey(XRotationKey.Value.MainKey)) {
         HandleAxisInput(ref EulerAngles.x, XGizmo);
       } else if (Input.GetKey(ZRotationKey.Value.MainKey)) {
         HandleAxisInput(ref EulerAngles.z, ZGizmo);
@@ -115,7 +150,7 @@ namespace ComfyGizmo {
       }
 
       ComfyGizmoObj.transform.localRotation = Quaternion.Euler(EulerAngles);
-      RotateGizmoComponents(EulerAngles);
+      RotateGizmoComponents(EulerAngles);      
     }
 
     public static void RotateLocalFrame() {
@@ -180,6 +215,18 @@ namespace ComfyGizmo {
       EulerAngles = Vector3.zero;
       ComfyGizmoObj.transform.localRotation = Quaternion.Euler(Vector3.zero);
       RotateGizmoComponents(Vector3.zero);
+
+      ResetRoofMode();
+    }
+
+    public static void ResetRoofMode() {
+      ComfyGizmoObj.transform.rotation = Quaternion.Euler(Vector3.zero);
+
+      if (!IsRoofModeEnabled.Value) {
+        return;
+      }
+
+      GizmoRoot.rotation = Quaternion.Euler(Vector3.zero);
     }
 
     public static void ResetGizmoComponents() {
@@ -212,7 +259,7 @@ namespace ComfyGizmo {
 
     static GameObject LoadGizmoPrefab() {
       AssetBundle bundle = AssetBundle.LoadFromMemory(
-          GetResource(Assembly.GetExecutingAssembly(), "Gizmo.Resources.gizmos"));
+          GetResource(Assembly.GetExecutingAssembly(), "ComfyGizmo.Resources.gizmos"));
 
       GameObject prefab = bundle.LoadAsset<GameObject>("GizmoRoot");
       bundle.Unload(unloadAllLoadedObjects: false);
@@ -358,6 +405,51 @@ namespace ComfyGizmo {
 
     public static string GetPieceIdentifier(Piece piece) {
       return piece.m_name + piece.m_description;
+    }
+
+    public static bool IsCornerRoofPieceSelected() {
+      if (Player.m_localPlayer == null || Player.m_localPlayer.m_placementGhost == null) {
+        return false;
+      }
+
+      if (!_roofCornerPieceHashCodes.Contains(Player.m_localPlayer.m_placementGhost.name.Replace("(Clone)","").GetStableHashCode())) {
+        return false;
+      }
+
+      return true;
+    }
+
+    public static bool IsRotationScroll() {
+      return Input.GetAxis("Mouse ScrollWheel") != 0f;
+    }
+
+    public static void RotateRoofPiece() {
+      Vector3 rotAxis = GetRoofRotationAxis();
+      float rotAngle = GetRoofRotationAngle();
+
+      ZLog.Log($"Rotating {rotAngle} around {rotAxis}");
+
+      ComfyGizmoObj.transform.localRotation *= Quaternion.AngleAxis(rotAngle, rotAxis);
+      GizmoRoot.rotation *= Quaternion.AngleAxis(rotAngle, rotAxis);
+    }
+
+    public static void SetBaselineRoofModeRotation() {
+      GizmoRootOffset = Quaternion.AngleAxis(45f, Vector3.up);
+      GizmoRoot.rotation *= GizmoRootOffset;
+    }
+
+    public static float GetRoofRotationAngle() {
+      return Math.Sign(Input.GetAxis("Mouse ScrollWheel")) * _snapAngle;
+    }
+
+    public static Vector3 GetRoofRotationAxis() {
+      if (Input.GetKey(XRotationKey.Value.MainKey)) {
+        return Vector3.Normalize(new Vector3(1, 0, 1));
+      } else if (Input.GetKey(ZRotationKey.Value.MainKey)) {
+        return Vector3.Normalize(new Vector3(1, 0, -1));
+      } else {
+        return Vector3.Normalize(new Vector3(0, 1, 0));
+      }
     }
   }
 }

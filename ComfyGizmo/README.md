@@ -34,6 +34,8 @@
 
 ### 1.9.0
 
+  * Added Roof Mode to rotation corner roof pieces in sync with other roof pieces.
+    * Rotations occur with the x-z plane rotated +45 degrees.
   * Icon, plugin GUID,  and dependencies update.
 
 ### 1.8.0

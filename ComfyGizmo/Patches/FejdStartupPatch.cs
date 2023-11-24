@@ -9,13 +9,17 @@ namespace ComfyGizmo.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(FejdStartup.Awake))]
     static void AwakePostfix() {
-      if (IsSearsCatalogEnabled()) {
-        int searsCatalogColumnCount = GetBuildPanelColumns();
-
-        if (searsCatalogColumnCount != -1) {
-          ColumnCount = searsCatalogColumnCount;
-        }
+      if (!IsSearsCatalogEnabled()) {
+        return;
       }
+
+      int searsCatalogColumnCount = GetBuildPanelColumns();
+
+      if (searsCatalogColumnCount == -1) {
+        return;
+      }
+
+      ColumnCount = searsCatalogColumnCount;
     }
   }
 }

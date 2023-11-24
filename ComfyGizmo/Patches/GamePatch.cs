@@ -2,6 +2,7 @@
 using HarmonyLib;
 
 using static ComfyGizmo.ComfyGizmo;
+using static ComfyGizmo.PluginConfig;
 
 namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Game))]
