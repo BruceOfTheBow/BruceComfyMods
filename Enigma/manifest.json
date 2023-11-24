@@ -3,6 +3,6 @@
   "version_number": "1.1.0",
   "author": "bruce",
   "description": "Decoding enemy names.",
-  "website_url": "",
-  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.1900" ]
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Enigma",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
 }

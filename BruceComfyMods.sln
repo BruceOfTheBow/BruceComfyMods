@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyGizmo", "ComfyGizmo\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hygge", "Hygge\Hygge.csproj", "{E57E6CF6-5849-4472-8848-85950388F318}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enigma", "Enigma\Enigma.csproj", "{D299B19D-F0AB-4EA3-8663-4F43581F35AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{E57E6CF6-5849-4472-8848-85950388F318}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E57E6CF6-5849-4472-8848-85950388F318}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E57E6CF6-5849-4472-8848-85950388F318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D299B19D-F0AB-4EA3-8663-4F43581F35AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D299B19D-F0AB-4EA3-8663-4F43581F35AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D299B19D-F0AB-4EA3-8663-4F43581F35AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D299B19D-F0AB-4EA3-8663-4F43581F35AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
