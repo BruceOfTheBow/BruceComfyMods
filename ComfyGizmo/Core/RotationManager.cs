@@ -8,6 +8,7 @@ namespace ComfyGizmo {
   public class RotationManager {
     private static bool _localFrame = false;
     private static Vector3 _eulerAngles = Vector3.zero;
+    private static Quaternion _roofRotation = Quaternion.identity;
 
     public static void MatchPieceRotation(Piece target) {
       if (!_localFrame) {
@@ -50,22 +51,33 @@ namespace ComfyGizmo {
     }
 
     public static void RotateRoofMode(Vector3 rotationAxis) {
-      ConvertAxisRoofMode(ref rotationAxis);
+      Vector3 tiltedAxis = ConvertAxisRoofMode(rotationAxis);
 
-      InternalRotator.ApplyLocalRotation(Quaternion.AngleAxis(GetAngle(), rotationAxis));
+      InternalRotator.ApplyLocalRotation(Quaternion.AngleAxis(GetAngle(), tiltedAxis));
       Gizmos.ApplyLocalRotation(Quaternion.AngleAxis(GetAngle(), rotationAxis));
+      _roofRotation *= Quaternion.AngleAxis(GetAngle(), tiltedAxis);
     }
 
-    private static void ConvertAxisRoofMode(ref Vector3 rotationAxis) {
-      rotationAxis = Quaternion.Euler(0, 45f, 0) * rotationAxis;
+    public static void Offset() {
+      _roofRotation = Quaternion.AngleAxis(-45f, Vector3.up);
+    }
+
+    private static Vector3 ConvertAxisRoofMode(Vector3 rotationAxis) {
+      return Quaternion.Euler(0, 45f, 0) * rotationAxis;
     }
 
     public static void ResetRotations() {
       if (_localFrame) {
         ResetRotationsLocalFrame();
+        return;
       }
 
       ResetDefaultRotations();
+
+      if (IsRoofModeEnabled.Value) {
+        _roofRotation = Quaternion.identity;
+        Offset();
+      }
     }
 
     public static void ResetRotationsLocalFrame() {
@@ -105,6 +117,10 @@ namespace ComfyGizmo {
     }
 
     public static Quaternion GetTranspilerRotation() {
+      if (IsRoofModeEnabled.Value) {
+        return _roofRotation;
+      }
+
       if (!NewGizmoRotation.Value) {
         return Gizmos.GetXGizmoRoot().rotation;
       }

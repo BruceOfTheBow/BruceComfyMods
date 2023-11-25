@@ -70,13 +70,11 @@ namespace ComfyGizmo {
           RotationManager.ResetRotations();
 
           if (IsRoofModeEnabled.Value) {
-            Gizmos.ApplyRotation(Quaternion.AngleAxis(45f, Vector3.up));
+            RotationManager.Offset();
             return;
           }
 
-          Gizmos.ResetRotations();
-          
-          
+          Gizmos.ResetRotations();          
         };
 
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
@@ -85,7 +83,6 @@ namespace ComfyGizmo {
     public void OnDestroy() {
       _harmony?.UnpatchSelf();
     }
-
   
     public static bool IsCornerRoofPieceSelected() {
       if (Player.m_localPlayer == null || Player.m_localPlayer.m_placementGhost == null) {
