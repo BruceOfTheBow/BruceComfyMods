@@ -1,8 +1,6 @@
 ﻿
 using HarmonyLib;
-
-using static ComfyGizmo.ComfyGizmo;
-using static ComfyGizmo.PluginConfig;
+using UnityEngine;
 
 namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Game))]
@@ -10,13 +8,13 @@ namespace ComfyGizmo.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Game.Start))]
     static void StartPostfix() {
-      UnityEngine.GameObject.Destroy(GizmoRoot);
-      GizmoRoot = CreateGizmoRoot();
+      Gizmos.Destroy();
+      Gizmos.Initialize();
+      Gizmos.SetComponentLocalRotations(Vector3.zero);
+      Gizmos.SetRotation(Quaternion.identity);
 
-      UnityEngine.GameObject.Destroy(ComfyGizmoObj);
-      ComfyGizmoObj = new("ComfyGizmo");
-      _comfyGizmoRoot = ComfyGizmoObj.transform;
-      LocalFrame = false;
+      InternalRotator.Destroy();
+      InternalRotator.Initialize();
     }
   }
 }

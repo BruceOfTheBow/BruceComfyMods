@@ -16,72 +16,87 @@ using static ComfyGizmo.PluginConfig;
 namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Player))]
   internal class PlayerPatch {
-    static bool _targetSelection = false;
 
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
     static void UpdatePlacementGhostPrefix(ref Player __instance, bool flashGuardStone) {
-      if (Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)) {
-        if (!__instance || !__instance.m_buildPieces || __instance.m_buildPieces.m_availablePieces == null) {
-          return;
-        }
+      if (!Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)
+            || !__instance 
+            || !__instance.m_buildPieces 
+            || __instance.m_buildPieces.m_availablePieces == null
+            || !__instance.GetHoveringPiece()) {
 
-        if (SearsCatalogColumns != null && SearsCatalogColumns.Value != -1 && SearsCatalogColumns.Value != ColumnCount) {
-          ColumnCount = SearsCatalogColumns.Value;
-          CacheHammerTable(__instance);
-        }
-
-        if (IsHammerTableChanged(__instance)) {
-          CacheHammerTable(__instance);
-        }
-
-        if (!__instance.GetHoveringPiece() || !PieceLocations.ContainsKey(GetPieceIdentifier(__instance.GetHoveringPiece()))) {
-          return;
-        }
-
-        _targetSelection = true;
-        CurrentPieceIndex = -1;
-        SetSelectedPiece(__instance, __instance.GetHoveringPiece());
-      }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Player.SetSelectedPiece), typeof(Vector2Int))]
-    static void SetSelectedPiecePostfix(ref Player __instance, Vector2Int p) {
-      if (Hud.instance.m_pieceSelectionWindow.activeSelf || _targetSelection) {
-        CurrentPieceIndex = -1;
-        _targetSelection = false;
-      }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Player.SetPlaceMode))]
-    static void AwakePostfix(ref Player __instance, ref PieceTable buildPieces) {
-      if (!IsRoofModeEnabled.Value) {
         return;
       }
 
-      SetBaselineRoofModeRotation();
+      HammerTableManager.SelectTargetPiece(__instance);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Player.UpdatePlacement))]
+    static void UpdatePlacementPostfix(ref Player __instance, ref bool takeInput) {
+      Gizmos.Show(__instance);
+
+      if (!__instance.m_buildPieces || !takeInput) {
+        return;
+      }
+
+      if (Input.GetKeyDown(SnapDivisionIncrementKey.Value.MainKey)) {
+        RotationManager.IncreaseSnapDivisions();
+      }
+
+      if (Input.GetKeyDown(SnapDivisionDecrementKey.Value.MainKey)) {
+        RotationManager.DecreaseSnapDivisions();
+      }
+
+      if (Input.GetKey(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
+        RotationManager.MatchPieceRotation(__instance.m_hoveringPiece);
+      }
+
+      if (Input.GetKeyDown(ChangeRotationModeKey.Value.MainKey)) {
+        RotationManager.ChangeRotationMode();
+      }
+
+      Gizmos.ResetScale();
+
+      if (Input.GetKey(ResetAllRotationKey.Value.MainKey)) {
+        RotationManager.ResetRotations();
+        return;
+      }
+
+      Vector3 rotationAxis = GetRotationAxis();
+
+      if (Input.GetKey(ResetRotationKey.Value.MainKey)) {
+        RotationManager.ResetAxis(rotationAxis);
+      }
+
+      rotationAxis *= GetSign();
+      RotationManager.Rotate(rotationAxis);
+    }
+    
+    private static int GetSign() {
+      return Math.Sign(Input.GetAxis("Mouse ScrollWheel"));
+    }
+
+    private static Vector3 GetRotationAxis() {
+      if (Input.GetKey(XRotationKey.Value.MainKey)) {
+        Gizmos.SetXScale(1.5f);
+        return new Vector3(1, 0, 0);
+      }
+
+      if (Input.GetKey(ZRotationKey.Value.MainKey)) {
+        Gizmos.SetZScale(1.5f);
+        return new Vector3(0, 0, 1);
+      }
+
+      Gizmos.SetYScale(1.5f);
+      return new Vector3(0, 1, 0);
     }
 
     [HarmonyTranspiler]
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
     static IEnumerable<CodeInstruction> UpdatePlacementGhostTranspiler(IEnumerable<CodeInstruction> instructions) {
-      if (NewGizmoRotation.Value) {
-        return new CodeMatcher(instructions)
-          .MatchForward(
-              useEnd: false,
-              new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Player), nameof(Player.m_placeRotation))),
-              new CodeMatch(OpCodes.Conv_R4),
-              new CodeMatch(OpCodes.Mul),
-              new CodeMatch(OpCodes.Ldc_R4),
-              new CodeMatch(OpCodes.Call),
-              new CodeMatch(OpCodes.Stloc_S))
-          .Advance(offset: 5)
-          .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => _comfyGizmoRoot.rotation))
-          .InstructionEnumeration();
-      } else {
-        return new CodeMatcher(instructions)
+      return new CodeMatcher(instructions)
         .MatchForward(
             useEnd: false,
             new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Player), nameof(Player.m_placeRotation))),
@@ -91,94 +106,8 @@ namespace ComfyGizmo.Patches {
             new CodeMatch(OpCodes.Call),
             new CodeMatch(OpCodes.Stloc_S))
         .Advance(offset: 5)
-        .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => XGizmoRoot.rotation))
+        .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => RotationManager.GetTranspilerRotation()))
         .InstructionEnumeration();
-      }
-
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Player.UpdatePlacement))]
-    static void UpdatePlacementPostfix(ref Player __instance, ref bool takeInput) {
-      if (__instance.m_placementMarkerInstance) {
-        GizmoRoot.gameObject.SetActive(ShowGizmoPrefab.Value && __instance.m_placementMarkerInstance.activeSelf);
-        GizmoRoot.position = __instance.m_placementMarkerInstance.transform.position + (Vector3.up * 0.5f);
-      }
-
-      if (!__instance.m_buildPieces || !takeInput) {
-        return;
-      }
-
-      if (Input.GetKeyDown(SnapDivisionIncrementKey.Value.MainKey)) {
-        if (SnapDivisions.Value * 2 <= MaxSnapDivisions) {
-          MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions increased to {SnapDivisions.Value * 2}");
-          SnapDivisions.Value = SnapDivisions.Value * 2;
-          if (ResetRotationOnSnapDivisionChange.Value) {
-            if (LocalFrame) {
-              ResetRotationsLocalFrame();
-            } else {
-              ResetRotations();
-            }
-            return;
-          }
-        }
-      }
-
-      if (Input.GetKeyDown(SnapDivisionDecrementKey.Value.MainKey)) {
-        if (Math.Floor(SnapDivisions.Value / 2f) == SnapDivisions.Value / 2f && SnapDivisions.Value / 2 >= MinSnapDivisions) {
-          MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions decreased to {SnapDivisions.Value / 2}");
-          SnapDivisions.Value = SnapDivisions.Value / 2;
-          if (ResetRotationOnSnapDivisionChange.Value) {
-            if (LocalFrame) {
-              ResetRotationsLocalFrame();
-            } else {
-              ResetRotations();
-            }
-            return;
-          }
-        }
-      }
-
-      if (Input.GetKey(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
-        MatchPieceRotation(__instance.m_hoveringPiece);
-      }
-
-      // Change Rotation Frames
-      if (Input.GetKeyDown(ChangeRotationModeKey.Value.MainKey)) {
-        if (LocalFrame) {
-          MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Default rotation mode enabled");
-          if (ResetRotationOnModeChange.Value) {
-            ResetRotationsLocalFrame();
-          } else {
-            EulerAngles = ComfyGizmoObj.transform.eulerAngles;
-            ResetGizmoRoot();
-            RotateGizmoComponents(EulerAngles);
-          }
-
-        } else {
-          MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Local frame rotation mode enabled");
-          if (ResetRotationOnModeChange.Value) {
-            ResetRotations();
-          } else {
-            Quaternion currentRotation = _comfyGizmoRoot.rotation;
-            ResetGizmoComponents();
-            GizmoRoot.rotation = currentRotation;
-          }
-        }
-
-        LocalFrame = !LocalFrame;
-        return;
-      }
-
-      XGizmo.localScale = Vector3.one;
-      YGizmo.localScale = Vector3.one;
-      ZGizmo.localScale = Vector3.one;
-
-      if (!LocalFrame) {
-        Rotate();
-      } else {
-        RotateLocalFrame();
-      }
     }
   }
 }
