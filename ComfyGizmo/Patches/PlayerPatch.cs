@@ -10,11 +10,10 @@ using static ComfyGizmo.PluginConfig;
 
 namespace ComfyGizmo.Patches {
   [HarmonyPatch(typeof(Player))]
-  internal class PlayerPatch {
-
+  static class PlayerPatch {
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
-    static void UpdatePlacementGhostPrefix(ref Player __instance, bool flashGuardStone) {
+    static void UpdatePlacementGhostPrefix(ref Player __instance) {
       if (!Input.GetKeyDown(SelectTargetPieceKey.Value.MainKey)
             || !__instance 
             || !__instance.m_buildPieces 
