@@ -5,20 +5,22 @@ using UnityEngine;
 namespace ComfyGizmo {
   public static class PluginConfig {
     public static ConfigEntry<int> SnapDivisions { get; private set; }
-    public static ConfigEntry<KeyboardShortcut> XRotationKey;
-    public static ConfigEntry<KeyboardShortcut> ZRotationKey;
-    public static ConfigEntry<KeyboardShortcut> ResetRotationKey;
-    public static ConfigEntry<KeyboardShortcut> ResetAllRotationKey;
-    public static ConfigEntry<KeyboardShortcut> ChangeRotationModeKey;
-    public static ConfigEntry<KeyboardShortcut> CopyPieceRotationKey;
-    public static ConfigEntry<KeyboardShortcut> SelectTargetPieceKey;
-    public static ConfigEntry<KeyboardShortcut> SnapDivisionIncrementKey;
-    public static ConfigEntry<KeyboardShortcut> SnapDivisionDecrementKey;
+    public static ConfigEntry<KeyboardShortcut> XRotationKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> ZRotationKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> ResetRotationKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> ResetAllRotationKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> ChangeRotationModeKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> CopyPieceRotationKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> SelectTargetPieceKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> SnapDivisionIncrementKey { get; private set; }
+    public static ConfigEntry<KeyboardShortcut> SnapDivisionDecrementKey { get; private set; }
 
-    public static ConfigEntry<bool> ShowGizmoPrefab;
-    public static ConfigEntry<bool> ResetRotationOnModeChange;
-    public static ConfigEntry<bool> ResetRotationOnSnapDivisionChange;
-    public static ConfigEntry<bool> NewGizmoRotation;
+    public static ConfigEntry<bool> ShowGizmoPrefab { get; private set; }
+    public static ConfigEntry<bool> ResetRotationOnModeChange { get; private set; }
+    public static ConfigEntry<bool> ResetRotationOnSnapDivisionChange { get; private set; }
+    public static ConfigEntry<bool> IsLocalFrameEnabled { get; private set; }
+    public static ConfigEntry<bool> IsOldRotationEnabled { get; private set; }
+    public static ConfigEntry<bool> IsRoofModeEnabled { get; private set; }
 
     public static ConfigEntry<Color> XGizmoColor { get; private set; }
     public static ConfigEntry<Color> YGizmoColor { get; private set; }
@@ -27,8 +29,6 @@ namespace ComfyGizmo {
     public static ConfigEntry<float> XEmissionColorFactor { get; private set; }
     public static ConfigEntry<float> YEmissionColorFactor { get; private set; }
     public static ConfigEntry<float> ZEmissionColorFactor { get; private set; }
-
-    public static ConfigEntry<bool> IsRoofModeEnabled { get; private set; }
 
     public static int MaxSnapDivisions = 256;
     public static int MinSnapDivisions = 2;
@@ -160,9 +160,9 @@ namespace ComfyGizmo {
       ResetRotationOnSnapDivisionChange = config.Bind("Reset", "resetOnSnapDivisionChange", true, "Resets the piece's rotation on snap division change.");
       ResetRotationOnModeChange = config.Bind("Reset", "resetOnModeChange", true, "Resets the piece's rotation on mode switch.");
 
-      IsRoofModeEnabled = config.Bind("Roof Mode", "isRoofModeEnabled", false, "Enables roof mode which allows corner roof piece rotation 45 deg compared to normal rotation.");
-
-      NewGizmoRotation = config.Bind("Rotation Mode", "newGizmoRotation", false, "Enables post Gizmo v1.2.0 rotation scheme. Restart required for changes to take effect.");
+      IsRoofModeEnabled = config.Bind("Modes", "isRoofModeEnabled", false, "Enables roof mode which allows corner roof piece rotation 45 deg compared to normal rotation.");
+      IsOldRotationEnabled = config.Bind("Modes", "isOldRotationModeEnabled", false, "Enables pre Gizmo-v1.4.0 rotation scheme.");
+      IsLocalFrameEnabled = config.Bind("Modes", "isLocalFrameModeEnabled", false, "Enables localFrame rotation mode. Allows rotation around the piece's Y-axis rather than world-Y.");
     }
   }
 }

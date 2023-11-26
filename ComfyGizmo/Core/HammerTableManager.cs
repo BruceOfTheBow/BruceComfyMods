@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.Linq;
 using UnityEngine;
-using static ComfyGizmo.ComfyGizmo;
+using static ComfyGizmo.GhostGizmo;
 
 namespace ComfyGizmo {
   public class HammerTableManager {

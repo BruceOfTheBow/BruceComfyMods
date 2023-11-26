@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Reflection.Emit;
 
-using BepInEx;
-using BepInEx.Logging;
 using HarmonyLib;
 
 using UnityEngine;
 
-using static ComfyGizmo.ComfyGizmo;
 using static ComfyGizmo.PluginConfig;
 
 namespace ComfyGizmo.Patches {
@@ -35,7 +30,8 @@ namespace ComfyGizmo.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Player.UpdatePlacement))]
     static void UpdatePlacementPostfix(ref Player __instance, ref bool takeInput) {
-      Gizmos.Show(__instance);
+      RotationManager.HideGizmos();
+      RotationManager.ShowGizmos(__instance);
 
       if (!__instance.m_buildPieces || !takeInput) {
         return;
@@ -49,18 +45,18 @@ namespace ComfyGizmo.Patches {
         RotationManager.DecreaseSnapDivisions();
       }
 
-      if (Input.GetKey(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
+      if (Input.GetKeyDown(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
         RotationManager.MatchPieceRotation(__instance.m_hoveringPiece);
       }
 
       if (Input.GetKeyDown(ChangeRotationModeKey.Value.MainKey)) {
-        RotationManager.ChangeRotationMode();
+        IsLocalFrameEnabled.Value = !IsLocalFrameEnabled.Value;
       }
 
-      Gizmos.ResetScale();
+      RotationManager.ResetScales();
 
       if (Input.GetKey(ResetAllRotationKey.Value.MainKey)) {
-        RotationManager.ResetRotations();
+        RotationManager.ResetRotation();
         return;
       }
 
@@ -80,17 +76,17 @@ namespace ComfyGizmo.Patches {
 
     private static Vector3 GetRotationAxis() {
       if (Input.GetKey(XRotationKey.Value.MainKey)) {
-        Gizmos.SetXScale(1.5f);
-        return new Vector3(1, 0, 0);
+        RotationManager.SetActiveXScale(1.5f);
+        return Vector3.right;
       }
 
       if (Input.GetKey(ZRotationKey.Value.MainKey)) {
-        Gizmos.SetZScale(1.5f);
-        return new Vector3(0, 0, 1);
+        RotationManager.SetActiveZScale(1.5f);
+        return Vector3.forward;
       }
 
-      Gizmos.SetYScale(1.5f);
-      return new Vector3(0, 1, 0);
+      RotationManager.SetActiveYScale(1.5f);
+      return Vector3.up;
     }
 
     [HarmonyTranspiler]
@@ -106,7 +102,7 @@ namespace ComfyGizmo.Patches {
             new CodeMatch(OpCodes.Call),
             new CodeMatch(OpCodes.Stloc_S))
         .Advance(offset: 5)
-        .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => RotationManager.GetTranspilerRotation()))
+        .InsertAndAdvance(Transpilers.EmitDelegate<Func<Quaternion, Quaternion>>(_ => RotationManager.GetRotation()))
         .InstructionEnumeration();
     }
   }

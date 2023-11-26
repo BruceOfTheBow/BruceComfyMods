@@ -95,10 +95,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComfyGizmo.cs" />
+    <Compile Include="Core\Rotators\AbstractRotator.cs" />
+    <Compile Include="Core\Rotators\DefaultRotator.cs" />
     <Compile Include="Core\Gizmos.cs" />
     <Compile Include="Core\HammerTableManager.cs" />
-    <Compile Include="Core\InternalRotator.cs" />
+    <Compile Include="Core\GhostGizmo.cs" />
     <Compile Include="Core\RotationManager.cs" />
+    <Compile Include="Core\Rotators\InternalRotator.cs" />
+    <Compile Include="Core\Rotators\LocalFrameRotator.cs" />
+    <Compile Include="Core\Rotators\RoofRotator.cs" />
     <Compile Include="Patches\FejdStartupPatch.cs" />
     <Compile Include="Patches\GamePatch.cs" />
     <Compile Include="Patches\PlayerPatch.cs" />

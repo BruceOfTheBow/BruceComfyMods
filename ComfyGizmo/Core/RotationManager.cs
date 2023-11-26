@@ -1,164 +1,131 @@
-﻿using System;
+﻿using ComfyGizmo.Core.Rotators;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-using static ComfyGizmo.ComfyGizmo;
 using static ComfyGizmo.PluginConfig;
 
 namespace ComfyGizmo {
   public class RotationManager {
-    private static bool _localFrame = false;
-    private static Vector3 _eulerAngles = Vector3.zero;
-    private static Quaternion _roofRotation = Quaternion.identity;
+    static DefaultRotator _defaultRotator;
+    static InternalRotator _internalRotator;
+    static LocalFrameRotator _localFrameRotator;
+    static RoofRotator _roofRotator;
 
-    public static void MatchPieceRotation(Piece target) {
-      if (!_localFrame) {
-        _eulerAngles = target.GetComponent<Transform>().eulerAngles;
-        ResetRotations();
-        Rotate(_eulerAngles);
-        return;
-      }
-
-      InternalRotator.SetRotation(target.GetComponent<Transform>().localRotation);
-      Gizmos.SetRotation(target.GetComponent<Transform>().localRotation);
+    public static void Initialize() {
+      _defaultRotator = new DefaultRotator();
+      _internalRotator = new InternalRotator();
+      _localFrameRotator = new LocalFrameRotator();
+      _roofRotator = new RoofRotator();
     }
 
     public static void Rotate(Vector3 rotationAxis) {
-      if (_localFrame) {
-        RotateLocalFrame(rotationAxis);
-        return;
-      }
-
-      if (IsRoofModeEnabled.Value && IsCornerRoofPieceSelected()) {
-        RotateRoofMode(rotationAxis);
-        return;
-      }
-
-      RotateDefault(rotationAxis);
+      _defaultRotator.Rotate(rotationAxis);
+      _internalRotator.Rotate(rotationAxis);
+      _localFrameRotator.Rotate(rotationAxis);
+      _roofRotator.Rotate(rotationAxis);
     }
 
-    public static void RotateDefault(Vector3 rotationAxis) {
-      _eulerAngles += rotationAxis * GetAngle();
-
-      InternalRotator.SetLocalRotation(Quaternion.Euler(_eulerAngles));
-      Gizmos.SetComponentLocalRotations(_eulerAngles);
-    }
-
-    public static void RotateLocalFrame(Vector3 rotationAxis) {
-      Quaternion rotation = Quaternion.AngleAxis(GetAngle(), rotationAxis);
-
-      InternalRotator.ApplyRotation(rotation);
-      Gizmos.ApplyRotation(rotation);
-    }
-
-    public static void RotateRoofMode(Vector3 rotationAxis) {
-      Vector3 tiltedAxis = ConvertAxisRoofMode(rotationAxis);
-
-      InternalRotator.ApplyLocalRotation(Quaternion.AngleAxis(GetAngle(), tiltedAxis));
-      Gizmos.ApplyLocalRotation(Quaternion.AngleAxis(GetAngle(), rotationAxis));
-      _roofRotation *= Quaternion.AngleAxis(GetAngle(), tiltedAxis);
-    }
-
-    public static void Offset() {
-      _roofRotation = Quaternion.AngleAxis(-45f, Vector3.up);
-    }
-
-    private static Vector3 ConvertAxisRoofMode(Vector3 rotationAxis) {
-      return Quaternion.Euler(0, 45f, 0) * rotationAxis;
-    }
-
-    public static void ResetRotations() {
-      if (_localFrame) {
-        ResetRotationsLocalFrame();
-        return;
-      }
-
-      ResetDefaultRotations();
-
-      if (IsRoofModeEnabled.Value) {
-        _roofRotation = Quaternion.identity;
-        Offset();
-      }
-    }
-
-    public static void ResetRotationsLocalFrame() {
-      InternalRotator.SetRotation(Quaternion.identity);
-      Gizmos.SetRotation(Quaternion.identity);
-    }
-
-    public static void ResetDefaultRotations() {
-      _eulerAngles = Vector3.zero;
-      InternalRotator.SetLocalRotation(Quaternion.Euler(_eulerAngles));
-      Gizmos.SetComponentLocalRotations(_eulerAngles);
+    public static void ResetRotation() {
+      _defaultRotator.ResetRotation();
+      _internalRotator.ResetRotation();
+      _localFrameRotator.ResetRotation();
+      _roofRotator.ResetRotation();
     }
 
     public static void ResetAxis(Vector3 axis) {
-      if (_localFrame) {
-        InternalRotator.SetAxisRotation(0f, axis);
-        Gizmos.SetAxisRotation(0f, axis);
-      }
-
-      InternalRotator.SetLocalAxisRotation(0f, axis);
-      Gizmos.SetLocalAxisRotation(0f, axis);
+      _defaultRotator.ResetAxis(axis);
+      _internalRotator.ResetAxis(axis);
+      _localFrameRotator.ResetAxis(axis);
+      _roofRotator.ResetAxis(axis);
     }
 
-    public static void ChangeRotationMode() {
-      if (_localFrame) {
-        ChangeToDefault();
-        ToggleLocalFrame();
-        return;
-      }
-
-      ChangeToLocalFrame();
-      ToggleLocalFrame();
+    public static void MatchPieceRotation(Piece target) {
+      _defaultRotator.MatchPieceRotation(target);
+      _internalRotator.MatchPieceRotation(target);
+      _localFrameRotator.MatchPieceRotation(target);
+      _roofRotator.MatchPieceRotation(target);
     }
 
-    public static bool IsLocalFrameEnabled() {
-      return _localFrame;
+    public static Quaternion GetRotation() {
+      return GetActiveRotator().GetRotation();
     }
 
-    public static Quaternion GetTranspilerRotation() {
-      if (IsRoofModeEnabled.Value) {
-        return _roofRotation;
-      }
-
-      if (!NewGizmoRotation.Value) {
-        return Gizmos.GetXGizmoRoot().rotation;
-      }
-
-      return InternalRotator.GetInternalRotatorRoot().rotation;
+    public static void ShowGizmos(Player player) {
+      GetActiveRotator().ShowGizmos(player);
     }
 
-    private static void ChangeToDefault() {
-      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Default rotation mode enabled");
+    public static void HideGizmos() {
+      _defaultRotator.HideGizmos();
+      _internalRotator.HideGizmos();
+      _localFrameRotator.HideGizmos();
+      _roofRotator.HideGizmos();
+    }
 
+    public static void ResetScales() {
+      _defaultRotator.ResetScales();
+      _internalRotator.ResetScales();
+      _localFrameRotator.ResetScales();
+      _roofRotator.ResetScales();
+    }
+
+    public static void SetActiveXScale(float scale) {
+      GetActiveRotator().SetXScale(scale);
+    }
+
+    public static void SetActiveYScale(float scale) {
+      GetActiveRotator().SetYScale(scale);
+    }
+
+    public static void SetActiveZScale(float scale) {
+      GetActiveRotator().SetZScale(scale);
+    }
+
+    public static void OnModeChange(Player player) {
       if (ResetRotationOnModeChange.Value) {
-        ResetRotationsLocalFrame();
-        return;
+        ResetRotation();
       }
 
-      _eulerAngles = InternalRotator.GetEulerAngles();
-      Gizmos.SetComponentLocalRotations(_eulerAngles);
+      HideGizmos();
+      GetActiveRotator().ShowGizmos(player);
+    }
+    
+    private static AbstractRotator GetActiveRotator() {
+      if (IsRoofModeEnabled.Value && RoofRotator.IsCornerRoofPieceSelected()) {
+        return _roofRotator;
+      }
+
+      if (IsLocalFrameEnabled.Value) {
+        return _localFrameRotator;
+      }
+
+      if (IsOldRotationEnabled.Value) {
+        return _internalRotator;
+      }
+
+      return _defaultRotator;
     }
 
-    private static void ChangeToLocalFrame() {
-      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "Local frame rotation mode enabled");
+    public static void DestroyRotators() {
+      if (_defaultRotator != null) {
+        _defaultRotator.Destroy();
+        _defaultRotator = null;
+      }
 
-      if (ResetRotationOnModeChange.Value) {
-        ResetDefaultRotations();
-        return;
-      } 
+      if (_internalRotator != null) {
+        _internalRotator.Destroy();
+        _internalRotator = null;
+      }
 
-      Quaternion currentRotation = Gizmos.GetRotation();
-      Gizmos.SetComponentLocalRotations(Vector3.zero);
-      Gizmos.SetRotation(currentRotation);
-    }
+      if (_localFrameRotator != null) {
+        _localFrameRotator.Destroy();
+        _localFrameRotator = null;
+      }
 
-    private static void ToggleLocalFrame() {
-      _localFrame = !_localFrame;
-    }
-
-    private static float GetAngle() {
-      return 180f / SnapDivisions.Value;
+      if (_roofRotator != null) {
+        _roofRotator.Destroy();
+        _roofRotator = null;
+      }
     }
 
     public static void IncreaseSnapDivisions() {
@@ -173,11 +140,7 @@ namespace ComfyGizmo {
         return;
       }
 
-      if (!_localFrame) {
-        ResetDefaultRotations();
-      }
-
-      ResetRotationsLocalFrame();
+      ResetRotation();
     }
 
     public static void DecreaseSnapDivisions() {
@@ -192,11 +155,7 @@ namespace ComfyGizmo {
         return;
       }
 
-      if (!_localFrame) {
-        ResetDefaultRotations();
-      }
-
-      ResetRotationsLocalFrame();
+      ResetRotation();
     }
   }
 }

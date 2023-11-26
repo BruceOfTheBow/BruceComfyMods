@@ -1,14 +1,17 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+
 using UnityEngine;
 
 using static ComfyGizmo.PluginConfig;
 
 namespace ComfyGizmo {
   public class Gizmos {
-    static Gizmos _instance; 
+    static GameObject _prefab;
+    readonly static List<Gizmos> _gizmoInstances = new();
 
-    GameObject _gizmo;
+    readonly GameObject _gizmo;
     Transform _gizmoRoot;
 
     Transform _xGizmo;
@@ -23,131 +26,111 @@ namespace ComfyGizmo {
     Material _yMaterial;
     Material _zMaterial;
 
-    public static void Initialize() {
-      _instance = new Gizmos();
+    public static Gizmos CreateGizmos() {
+      Gizmos gizmos = new();
+      _gizmoInstances.Add(gizmos);
+
+      return gizmos;
+    }
+    public static void ResetAllScales() {
+      foreach (Gizmos gizmos in _gizmoInstances) {
+        gizmos.ResetScale();
+      }
+    }
+
+    public static void SetAllXColors() {
+      foreach (Gizmos gizmos in _gizmoInstances) {
+        gizmos.SetXGizmoColor();
+      }
+    }
+
+    public static void SetAllYColors() {
+      foreach (Gizmos gizmos in _gizmoInstances) {
+        gizmos.SetYGizmoColor();
+      }
+    }
+
+    public static void SetAllZColors() {
+      foreach (Gizmos gizmos in _gizmoInstances) {
+        gizmos.SetZGizmoColor();
+      }
     }
 
     public Gizmos() {
-      CreateGizmos();
+      _gizmo = GameObject.Instantiate(_prefab);
+      SetupComponentsAndRoots();
     }
 
-    private void CreateGizmos() {
-      _gizmo = LoadGizmoPrefab();
-      _gizmoRoot = UnityEngine.GameObject.Instantiate(_gizmo).transform;
-
-      _xGizmo = _gizmoRoot.Find("YRoot/ZRoot/XRoot/X");
-      _yGizmo = _gizmoRoot.Find("YRoot/Y");
-      _zGizmo = _gizmoRoot.Find("YRoot/ZRoot/Z");
-
-      _xMaterial = _xGizmo.gameObject.GetComponent<Renderer>().material;
-      _yMaterial = _yGizmo.gameObject.GetComponent<Renderer>().material;
-      _zMaterial = _zGizmo.gameObject.GetComponent<Renderer>().material;
-
-      SetXGizmoColor();
-      SetYGizmoColor();
-      SetZGizmoColor();
-
-      _xGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot/XRoot");
-      _yGizmoRoot = _gizmoRoot.Find("YRoot");
-      _zGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot");
-    }
-
-    public static void Destroy() {
-      if (_instance == null) {
-        return;
-      }
-
-      UnityEngine.GameObject.Destroy(_instance._gizmoRoot);
-      UnityEngine.GameObject.Destroy(_instance._gizmo);
-      _instance = null;
-    }
-
-    public static void Show(Player player) {
+    public void Show(Player player) {
       if (!player.m_placementMarkerInstance) {
         return;
       }
 
-      _instance.SetActive(player);
-      _instance.SetPosition(player.m_placementMarkerInstance.transform.position + (Vector3.up * 0.5f));
+      SetActive(player);
+      SetPosition(player.m_placementMarkerInstance.transform.position + (Vector3.up * 0.5f));
     }
 
-    public static Quaternion GetRotation() {
-      return _instance._gizmoRoot.transform.rotation;
+    public void Hide() {
+      _gizmoRoot.gameObject.SetActive(false);
     }
 
-    public static Transform GetXGizmoRoot() {
-      return _instance._xGizmoRoot;
+    public Transform GetXGizmoRoot() {
+      return _xGizmoRoot;
     }
 
-    public static void HideGizmos() {
-
+    public void ApplyRotation(Quaternion rotation) {
+      _gizmoRoot.rotation *= rotation;
     }
 
-    public static void ApplyRotation(Quaternion rotation) {
-      _instance._gizmoRoot.rotation *= rotation;
+    public void SetLocalRotation(Vector3 eulerAngles) {
+      _xGizmoRoot.localRotation = Quaternion.Euler(eulerAngles.x, 0f, 0f);
+      _yGizmoRoot.localRotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
+      _zGizmoRoot.localRotation = Quaternion.Euler(0f, 0f, eulerAngles.z);
     }
 
-    public static void ApplyLocalRotation(Quaternion rotation) {
-      _instance._gizmoRoot.localRotation *= rotation;
+    public void SetAxisRotation(float angle, Vector3 axis) {
+      _gizmoRoot.rotation = Quaternion.AngleAxis(angle, axis);
     }
 
-    public static void SetComponentLocalRotations(Vector3 eulerAngles) {
-      _instance._xGizmoRoot.localRotation = Quaternion.Euler(eulerAngles.x, 0f, 0f);
-      _instance._yGizmoRoot.localRotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
-      _instance._zGizmoRoot.localRotation = Quaternion.Euler(0f, 0f, eulerAngles.z);
+    public void SetLocalAxisRotation(float angle, Vector3 axis) {
+      _gizmoRoot.localRotation = Quaternion.AngleAxis(angle, axis);
     }
 
-    public static void ResetRotations() {
-      _instance._gizmoRoot.rotation = Quaternion.identity;
-    }
-
-    public static void SetRotation(Quaternion rotation) {
-      _instance.SetRootRotation(rotation);
-    }
-
-    public static void SetAxisRotation(float angle, Vector3 axis) {
-      _instance._gizmoRoot.rotation = Quaternion.AngleAxis(angle, axis);
-    }
-
-    public static void SetLocalAxisRotation(float angle, Vector3 axis) {
-      _instance._gizmoRoot.localRotation = Quaternion.AngleAxis(angle, axis);
-    }
-
-    public static void ResetScale() {
+    public void ResetScale() {
       SetLocalScale(1f);
     }
 
-    public static void SetLocalScale(float scale) {
+    public void SetLocalScale(float scale) {
       SetXScale(scale);
       SetYScale(scale);
       SetZScale(scale);
     }
 
-    public static void SetXScale(float scale) {
-      _instance._xGizmo.localScale = Vector3.one * scale;
+    public void SetXScale(float scale) {
+      _xGizmo.localScale = Vector3.one * scale;
     }
 
-    public static void SetYScale(float scale) {
-      _instance._yGizmo.localScale = Vector3.one * scale;
+    public  void SetYScale(float scale) {
+      _yGizmo.localScale = Vector3.one * scale;
     }
 
-    public static void SetZScale(float scale) {
-      _instance._zGizmo.localScale = Vector3.one * scale;
+    public  void SetZScale(float scale) {
+      _zGizmo.localScale = Vector3.one * scale;
     }
 
-    public static void SetXColor() {
-      _instance.SetXGizmoColor();
+    public void SetXColor() {
+      SetXGizmoColor();
     }
 
-    public static void SetYColor() {
-      _instance.SetYGizmoColor();
+    public void SetYColor() {
+      SetYGizmoColor();
     }
 
-    public static void SetZColor() {
-      _instance.SetZGizmoColor();
+    public void SetZColor() {
+      SetZGizmoColor();
     }
 
-    public void SetRootRotation(Quaternion rotation) {
+    public void SetRotation(Quaternion rotation) {
       _gizmoRoot.rotation = rotation;
     }
 
@@ -171,14 +154,38 @@ namespace ComfyGizmo {
       _zMaterial.SetColor("_Color", ZGizmoColor.Value * ZEmissionColorFactor.Value);
     }
 
-    static GameObject LoadGizmoPrefab() {
+    public void Destroy() {
+      UnityEngine.GameObject.Destroy(_gizmo);
+    }
+
+    private void SetupComponentsAndRoots() {
+      _gizmoRoot = _gizmo.transform;
+
+      _xGizmo = _gizmoRoot.Find("YRoot/ZRoot/XRoot/X");
+      _yGizmo = _gizmoRoot.Find("YRoot/Y");
+      _zGizmo = _gizmoRoot.Find("YRoot/ZRoot/Z");
+
+      _xMaterial = _xGizmo.gameObject.GetComponent<Renderer>().material;
+      _yMaterial = _yGizmo.gameObject.GetComponent<Renderer>().material;
+      _zMaterial = _zGizmo.gameObject.GetComponent<Renderer>().material;
+
+      SetXGizmoColor();
+      SetYGizmoColor();
+      SetZGizmoColor();
+
+      _xGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot/XRoot");
+      _yGizmoRoot = _gizmoRoot.Find("YRoot");
+      _zGizmoRoot = _gizmoRoot.Find("YRoot/ZRoot");
+    }
+
+    public static GameObject LoadGizmoPrefab() {
       AssetBundle bundle = AssetBundle.LoadFromMemory(
           GetResource(Assembly.GetExecutingAssembly(), "ComfyGizmo.Resources.gizmos"));
 
-      GameObject prefab = bundle.LoadAsset<GameObject>("GizmoRoot");
+      _prefab = bundle.LoadAsset<GameObject>("GizmoRoot");
       bundle.Unload(unloadAllLoadedObjects: false);
 
-      return prefab;
+      return _prefab;
     }
 
     static byte[] GetResource(Assembly assembly, string resourceName) {

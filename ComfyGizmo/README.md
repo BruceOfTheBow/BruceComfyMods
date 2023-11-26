@@ -11,18 +11,33 @@
   * Can set the snap angles per 180 degrees from 2 - 256.
   * Original Euler-style rotation.
  
+## Rotation Modes
+
+### Local Frame Mode
+
+  * Allows rotation around the piece's local Y axis rather than the world Y axis.
+
+### Old Rotation Mode
+
+  * Uses rotation scheme from ComfyGizmo v1.2.0-v1.4.0. Differs from default by behavior when rotating around multiple axes.
+
+### Roof Mode
+
+  * Allows rotations for the 8 corner-roof pieces with the x-z axes shifted 45 degrees about Y.
+  * Rotations align with the beam of the roof to sync with inclined flat roof pieces.
+  * Will be disabled on enabling Local Frame mode.
+
 ## Installation
 
 ### Manual
 
-  1. Unzip `Gizmo.dll` to your `/valheim/BepInEx/plugins/` folder
+  1. Unzip `ComfyGizmo.dll` to your `/valheim/BepInEx/plugins/` folder
 
 ### Thunderstore (manual)
 
-  1. **Disable or uninstall** any other `Gizmo` mods.
-  2. **Disable or uninstall** any manually installed `ComfyGizmo_v1.3.0` or earlier.
-  3. Go to Settings > Import local mod > select `ComfyGizmo_v1.9.0.zip`.
-  4. Click "OK/Import local mod" on the pop-up for information.
+  1. **Disable or uninstall** any installed `ComfyGizmo_v1.8.0` or earlier.
+  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.9.0.zip`.
+  3. Click "OK/Import local mod" on the pop-up for information.
   
 ## Notes
 
