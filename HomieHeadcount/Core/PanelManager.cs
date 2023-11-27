@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HomieHeadcount.Core {
+  public static  class PanelManager {
+    public static HomieCountPanel HomieCountPanel { get; set; }
+
+    public static void ToggleHomieCountPanel() {
+      if(!HomieCountPanel?.Panel) {
+        HomieCountPanel = new(Hud.m_instance.transform);
+
+        HomieCountPanel.SetInitialPosition();
+        HomieCountPanel.Panel.SetActive(true);
+      }
+
+      Update();
+      HomieCountPanel.Panel.SetActive(!HomieCountPanel.Panel.activeSelf);
+    }
+
+    public static bool IsHomiePanelActive() {
+      return HomieCountPanel?.Panel && HomieCountPanel.Panel.activeSelf;
+    }
+
+    public static void Update() {
+      if (!HomieCountPanel?.Panel) {
+        return;
+      }
+
+      HomieCountPanel.Update();
+    }
+
+    public static void AddHomie(Tameable tameable) {
+      if (!HomieCountPanel?.Panel) {
+        return;
+      }
+       
+      HomieCountPanel.AddHomie(tameable);
+    }
+  }
+}

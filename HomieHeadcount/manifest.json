@@ -1,0 +1,8 @@
+{
+  "name": "HomieHeadcount",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Friends you can count... on.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/HomieHeadcount",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
