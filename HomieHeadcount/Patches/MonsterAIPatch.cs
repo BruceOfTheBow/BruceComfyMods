@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 
-using static HomieHeadcount.PluginConfig;
 using static HomieHeadcount.HomieHeadcount;
-using HomieHeadcount.Core;
 
 namespace HomieHeadcount.Patches {
   [HarmonyPatch(typeof(MonsterAI))]
@@ -10,8 +8,7 @@ namespace HomieHeadcount.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(MonsterAI.SetFollowTarget))]
     public static void SetFollowTargetPostfix(MonsterAI __instance) {
-      if (!IsModEnabled.Value
-          || !__instance
+      if (!__instance
           || __instance.name.GetStableHashCode() != SkeletonAiNameHashCode
           || !__instance.m_follow
           || !__instance.m_follow.TryGetComponent(out Player player)

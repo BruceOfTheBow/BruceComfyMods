@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using HomieHeadcount.Core;
-using UnityEngine;
 
 using static HomieHeadcount.PluginConfig;
 
@@ -10,15 +8,23 @@ namespace HomieHeadcount.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Player.Update))]
     public static void UpdatePostifx() {
-      if (PanelManager.IsHomiePanelActive()) {
-        PanelManager.Update();
-      }
-
-      if (!IsModEnabled.Value || !Input.GetKeyDown(ToggleHomiePanel.Value.MainKey)) {
+      if (!IsModEnabled.Value) {
         return;
       }
 
-      PanelManager.ToggleHomieCountPanel();
+      if (PanelManager.IsHomiePanelActive() && HomieCounter.Count() == 0) {
+        PanelManager.Toggle();
+        return;
+      }
+
+      if (!PanelManager.IsHomiePanelActive() && HomieCounter.Count() > 0) {
+        PanelManager.Toggle();
+        return;
+      }
+
+      if (PanelManager.IsHomiePanelActive()) {
+        PanelManager.Update();
+      }
     }
   }
 }

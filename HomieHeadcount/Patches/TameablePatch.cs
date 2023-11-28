@@ -1,11 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BepInEx.Configuration;
-using HarmonyLib;
-using HomieHeadcount.Core;
-using UnityEngine;
-
-using static HomieHeadcount.PluginConfig;
+﻿using HarmonyLib;
 
 namespace HomieHeadcount {
   [HarmonyPatch(typeof(Tameable))]
@@ -13,8 +6,7 @@ namespace HomieHeadcount {
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Tameable.UnSummon))]
     public static void UnsummonPrefix(Tameable __instance) {
-      if (!IsModEnabled.Value
-          || !__instance.gameObject
+      if (!__instance.gameObject
           || !HomieCounter.Contains(__instance)) {
 
         return;
@@ -26,8 +18,7 @@ namespace HomieHeadcount {
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Tameable.OnDeath))]
     public static void OnDeathPrefix(Tameable __instance) {
-      if (!IsModEnabled.Value
-          || !__instance.gameObject
+      if (!__instance.gameObject
           || !HomieCounter.Contains(__instance)) {
 
         return;

@@ -5,9 +5,14 @@
 ## Instructions
 
   * Adds a panel displaying information on your summoned homies.
-  * Keybind to toggle panel is *unbound by default*.
+  * Panel toggles on and off automatically based on if summoned skeletons are present.
 
 ## Changelog
+
+### 1.1.0
+
+  * Info panel now toggles on when summoning skeletons. Toggles off when none are left.
+  * Disabling the mod destroys the panel and it will not toggle on until the mod is re-enabled.
 
 ### 1.0.0
 

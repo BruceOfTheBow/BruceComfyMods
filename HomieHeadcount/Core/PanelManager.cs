@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomieHeadcount.Core {
+namespace HomieHeadcount {
   public static  class PanelManager {
     public static HomieCountPanel HomieCountPanel { get; set; }
 
-    public static void ToggleHomieCountPanel() {
+    public static void Toggle() {
       if(!HomieCountPanel?.Panel) {
         HomieCountPanel = new(Hud.m_instance.transform);
 
@@ -18,6 +18,23 @@ namespace HomieHeadcount.Core {
 
       Update();
       HomieCountPanel.Panel.SetActive(!HomieCountPanel.Panel.activeSelf);
+    }
+
+    public static void Hide() {
+      if (!HomieCountPanel?.Panel) {
+        return;
+      }
+
+      HomieCountPanel.Panel.SetActive(false);
+    }
+
+    public static void Destroy() {
+      if (!HomieCountPanel?.Panel) {
+        return;
+      }
+
+      UnityEngine.GameObject.Destroy(HomieCountPanel.Panel);
+      HomieCountPanel = null;
     }
 
     public static bool IsHomiePanelActive() {
