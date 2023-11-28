@@ -64,6 +64,10 @@ namespace ComfyGizmo.Core.Rotators {
       _roofRotation = Quaternion.Euler(target.GetComponent<Transform>().eulerAngles);
     }
 
+    protected override string GetModeName() {
+      return "roof rotation";
+    }
+
     protected override Gizmos GetGizmos() {
       return _gizmos;
     }

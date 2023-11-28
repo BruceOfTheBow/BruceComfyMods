@@ -33,6 +33,10 @@ namespace ComfyGizmo {
       _gizmos.SetRotation(target.GetComponent<Transform>().localRotation);
     }
 
+    protected override string GetModeName() {
+      return "local frame rotation";
+    }
+
     protected override Gizmos GetGizmos() {
       return _gizmos;
     }

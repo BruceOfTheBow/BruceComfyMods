@@ -16,6 +16,7 @@
 ### Local Frame Mode
 
   * Allows rotation around the piece's local Y axis rather than the world Y axis.
+  * If roof mode was enabled, it is disabled when local frame mode is enabled.
 
 ### Old Rotation Mode
 
@@ -26,6 +27,8 @@
   * Allows rotations for the 8 corner-roof pieces with the x-z axes shifted 45 degrees about Y.
   * Rotations align with the beam of the roof to sync with inclined flat roof pieces.
   * Will be disabled on enabling Local Frame mode.
+  * Is only active when one of the 8 corner-roof pieces are selected.
+    * Can remain enabled unless a player wishes to rotate a corner roof piece along its tradtional x or z axes.
 
 ## Installation
 

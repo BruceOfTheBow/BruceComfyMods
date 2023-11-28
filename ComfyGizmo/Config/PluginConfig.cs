@@ -61,7 +61,7 @@ namespace ComfyGizmo {
               "Enables roof mode which allows corner roof piece rotation 45 deg compared to normal rotation.");
 
       IsRoofModeEnabled.OnSettingChanged(
-          () => {
+          () => {           
             RotationManager.ResetRotation();
             RotationManager.OnModeChange(Player.m_localPlayer);
           });
@@ -85,10 +85,7 @@ namespace ComfyGizmo {
       IsLocalFrameEnabled.OnSettingChanged(
           () => {
             RotationManager.OnModeChange(Player.m_localPlayer);
-
-            if (IsLocalFrameEnabled.Value) {
-              IsRoofModeEnabled.Value = false;
-            }
+            RotationManager.DisableLocalFrameMode();
           });
     }
 

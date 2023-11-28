@@ -49,6 +49,10 @@ namespace ComfyGizmo.Core.Rotators {
       Rotate(Vector3.zero);
     }
 
+    protected override string GetModeName() {
+      return "old rotation";
+    }
+
     protected override Gizmos GetGizmos() {
       return _gizmos;
     }

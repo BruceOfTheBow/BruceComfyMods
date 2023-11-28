@@ -19,6 +19,13 @@ namespace ComfyGizmo {
 
     public abstract Quaternion GetRotation();
 
+    public void DisplayModeChangeHudeMessage() {
+      if (!MessageHud.instance) {
+        return;
+      }
+
+      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Switchted to {GetModeName()} mode.");
+    }
 
     public void Destroy() {
       DestroyGizmos();
@@ -66,6 +73,8 @@ namespace ComfyGizmo {
     public void SetZScale(float scale) {
       GetGizmos().SetZScale(scale);
     }
+
+    protected abstract string GetModeName();
 
     protected float GetAngle() {
       return 180f / SnapDivisions.Value;

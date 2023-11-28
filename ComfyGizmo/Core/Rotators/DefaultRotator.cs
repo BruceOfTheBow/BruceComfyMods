@@ -45,6 +45,9 @@ namespace ComfyGizmo {
       Rotate(Vector3.zero);
     }
 
+    protected override string GetModeName() {
+      return "default rotation";
+    }
 
     protected override Gizmos GetGizmos() {
       return _gizmos;

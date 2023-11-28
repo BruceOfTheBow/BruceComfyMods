@@ -87,6 +87,7 @@ namespace ComfyGizmo {
       }
 
       HideGizmos();
+      GetActiveRotator().DisplayModeChangeHudeMessage();
       GetActiveRotator().ShowGizmos(player);
     }
     
@@ -125,6 +126,18 @@ namespace ComfyGizmo {
       if (_roofRotator != null) {
         _roofRotator.Destroy();
         _roofRotator = null;
+      }
+    }
+
+    public static void DisableLocalFrameMode() {
+      if (IsLocalFrameEnabled.Value) {
+        IsRoofModeEnabled.Value = false;
+
+        if (!MessageHud.instance) {
+          return;
+        }
+
+        MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Disabled roof mode.");
       }
     }
 

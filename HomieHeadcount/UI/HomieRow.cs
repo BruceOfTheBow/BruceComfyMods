@@ -111,7 +111,7 @@ namespace HomieHeadcount {
     }
 
     float GetPositionWidth(RectTransform parentTransform) {
-      return parentTransform.rect.width * 0.2f;
+      return parentTransform.rect.width * 0.25f;
     }
   }
 }
