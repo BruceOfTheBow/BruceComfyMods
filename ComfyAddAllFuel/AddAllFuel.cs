@@ -18,12 +18,13 @@ namespace AddAllFuel {
   public class AddAllFuel : BaseUnityPlugin {
     public const string PluginGuid = "bruceofthebow.valheim.AddAllFuel";
     public const string PluginName = "ComfyAddAllFuel";
-    public const string PluginVersion = "1.7.2";
+    public const string PluginVersion = "1.8.0";
 
     private static readonly bool _debug = true;
-    private static List<string> ExcludeNames = new List<string>() { "$item_finewood" };
+    private static readonly List<string> ExcludeNames = new List<string>() { "$item_finewood" };
 
     static ManualLogSource _logger;
+
     Harmony _harmony;
 
     private void Awake() {
@@ -34,7 +35,11 @@ namespace AddAllFuel {
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
     }
 
-    public static ItemDrop.ItemData FindCookableItem(Smelter __instance, Inventory inventory, bool isAddOne) {
+    void OnDestroy() {
+      _harmony?.UnpatchSelf();
+    }
+
+    public static ItemDrop.ItemData FindCookableItem(Smelter __instance, Inventory inventory) {
       IEnumerable<string> names = null;
       if (ExcludeFinewood.Value) {
         names = __instance.m_conversion.
@@ -44,22 +49,20 @@ namespace AddAllFuel {
         names = __instance.m_conversion.Select(n => n.m_from.m_itemData.m_shared.m_name);
       }
 
-
-      if (names == null)
+      if (names == null) {
         return null;
+      } 
+       
 
       foreach (string name in names) {
         ItemDrop.ItemData item = inventory?.GetItem(name, -1, false);
-        if (item != null)
+
+        if (item != null) {
           return item;
+        }
+          
       }
       return null;
-    }
-    
-    public static void log(string message) {
-      if(_debug) {
-        _logger.LogMessage(message);
-      }
     }
   }
 }

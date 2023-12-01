@@ -12,12 +12,12 @@ namespace AddAllFuel {
   public class PluginConfig {
     public static ConfigEntry<bool> IsModEnabled { get; private set; }
     public static ConfigEntry<bool> ExcludeFinewood { get; private set; }
-    public static ConfigEntry<KeyCode> ModifierKey { get; private set; }
+    public static ConfigEntry<KeyCode> AddAllModifier { get; private set; }
     public static void BindConfig(ConfigFile config) {
       IsModEnabled = config.Bind("Global", "isModEnabled", true, "Globally enable or disable this mod.");
       ExcludeFinewood = config.Bind("ExcludeFinewood", "excludeFinewood", true, "Filter finewood out of items to add to kilns");
 
-      ModifierKey = 
+      AddAllModifier = 
         config.Bind(
           "ModifierKey", 
           "ModifierKey", 

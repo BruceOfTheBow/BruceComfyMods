@@ -7,8 +7,8 @@
     <ProjectGuid>{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AddAllFuel</RootNamespace>
-    <AssemblyName>AddAllFuel</AssemblyName>
+    <RootNamespace>ComfyAddAllFuel</RootNamespace>
+    <AssemblyName>ComfyAddAllFuel</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -75,20 +75,23 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
-      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.dll</HintPath>
+      <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>$(GamePath)\unstripped_corlib\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddAllFuel.cs" />
+    <Compile Include="Extensions\CookingStationExtensions.cs" />
+    <Compile Include="Extensions\SmelterExtensions.cs" />
+    <Compile Include="Patches\CookingStationPatch.cs" />
     <Compile Include="Patches\FireplacePatch.cs" />
     <Compile Include="Patches\SmelterPatch.cs" />
     <Compile Include="PluginConfig.cs" />

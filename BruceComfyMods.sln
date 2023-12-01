@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddAllFuel", "ComfyAddAllFuel\AddAllFuel.csproj", "{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyAddAllFuel", "ComfyAddAllFuel\ComfyAddAllFuel.csproj", "{52BE6D2B-DAF1-446A-88A5-1C2E02280B51}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyBatchDeposit", "ComfyBatchDeposit\ComfyBatchDeposit.csproj", "{709E5AF0-05C2-4322-8D30-80819C68D4F6}"
 EndProject
