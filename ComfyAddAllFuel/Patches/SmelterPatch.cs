@@ -61,11 +61,6 @@ namespace AddAllFuel.Patches {
 
       __result = false;
 
-      if (item == null || item.m_shared.m_name != __instance.GetFuelName()) {
-        user.Message(MessageHud.MessageType.Center, "$msg_wrongitem", 0, null);
-        return false;
-      }
-
       if (__instance.GetFuel() > __instance.m_maxFuel - 1) {
         user.Message(MessageHud.MessageType.Center, "$msg_itsfull", 0, null);
         return false;

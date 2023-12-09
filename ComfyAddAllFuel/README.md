@@ -13,7 +13,7 @@
   * If you do it again, 20 of them will be consumed.
   * If the fuel limit is less than the stack, only that amount will be consumed.
 
-## Setting
+## Settings
 
 1. Enabled
    * true: MOD enabled
@@ -47,6 +47,7 @@
     * Ovens: fuel and food
     * Cooking station: food
     * Iron cooking station: food
+  * Remove all items from cooking station by holding modifier key (provided all slots are full)
   * Updated references to valheim_data\Managed from unstripped_corlib
   * Refactored
   * Updated readme

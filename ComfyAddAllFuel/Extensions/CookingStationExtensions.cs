@@ -27,5 +27,20 @@ namespace AddAllFuel.Extensions {
 
       return freeSlots;
     }
+
+    public static int GetDoneItemCount(this CookingStation cookingStation) {
+      int doneItemCount = 0;
+
+      for (int i = 0; i < cookingStation.m_slots.Length; i++) {
+        cookingStation.GetSlot(i, out string text, out float num, out CookingStation.Status status);
+        if (!cookingStation.IsItemDone(text)) {
+          continue;
+        }
+
+        doneItemCount++;
+      }
+
+      return doneItemCount;
+    }
   }
 }

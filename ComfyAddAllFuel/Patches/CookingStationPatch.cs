@@ -19,12 +19,12 @@ namespace AddAllFuel.Patches {
 
       __result = false;
 
-      item = user.GetInventory().GetItem(__instance.GetFuelName(), -1, false);
-
       if (__instance.GetFuel() > __instance.m_maxFuel - 1) {
         user.Message(MessageHud.MessageType.Center, "$msg_itsfull", 0, null);
         return false;
       }
+
+      item = user.GetInventory().GetItem(__instance.GetFuelName(), -1, false);
 
       if (item == null) {
         user.Message(MessageHud.MessageType.Center, $"$msg_donthaveany {__instance.GetFuelName()}", 0, null);
@@ -80,6 +80,29 @@ namespace AddAllFuel.Patches {
 
       __result = true;
       return true;
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(nameof(CookingStation.OnInteract))]
+    public static bool OnInteractPrefix(CookingStation __instance, Humanoid user) {
+      if (!__instance 
+           || !user 
+           || __instance.GetFreeSlots() > 0) {
+
+        return true;
+      }
+
+      int doneItemCount = __instance.GetDoneItemCount();
+      
+      if (doneItemCount == 0) {
+        return true;
+      }
+
+      for (int i =0; i < doneItemCount; i++) {
+        __instance.m_nview.InvokeRPC("RemoveDoneItem", new object[] { user.transform.position });
+      }
+
+      return false;
     }
   }
 }

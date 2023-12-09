@@ -1,8 +1,8 @@
 {
   "name": "ComfyAddAllFuel",
-  "version_number": "1.7.2",
+  "version_number": "1.8.0",
   "author": "ComfyMods",
   "description": "Ability to batch add fuel and ore to appropriate places.",
   "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/ComfyAddAllFuel",
-  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.1901" ]
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
 }
