@@ -108,6 +108,7 @@
     <Compile Include="Core\PanelManager.cs" />
     <Compile Include="Extensions\TameableExtensions.cs" />
     <Compile Include="HomieHeadcount.cs" />
+    <Compile Include="Patches\MenuPatch.cs" />
     <Compile Include="Patches\MonsterAIPatch.cs" />
     <Compile Include="Patches\PlayerPatch.cs" />
     <Compile Include="Patches\TameablePatch.cs" />

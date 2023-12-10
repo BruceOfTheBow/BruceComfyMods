@@ -25,6 +25,11 @@ namespace HomieHeadcount {
       return _activeHomies.Contains(skeleton);
     }
 
+    public static void Clear() {
+      _activeHomies.Clear();
+      _activeHomies = new();
+    }
+
     public static int Count () {
       return _activeHomies.Count;
     }

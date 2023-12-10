@@ -9,6 +9,10 @@
 
 ## Changelog
 
+### 1.1.1
+
+  * Fixed bug where tracked ZDOs not cleared properly when logging out.
+
 ### 1.1.0
 
   * Info panel now toggles on when summoning skeletons. Toggles off when none are left.
