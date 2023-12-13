@@ -41,6 +41,10 @@
 
 ### Comfy Version Update
 
+### 1.8.1
+
+  * Fixed bug where incorrect number of items removed from inventory.
+
 ### 1.8.0
 
   * Added support for cooking stations

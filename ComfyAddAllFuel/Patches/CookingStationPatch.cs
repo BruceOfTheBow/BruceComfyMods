@@ -70,16 +70,20 @@ namespace AddAllFuel.Patches {
         return false;
       }
 
-      int freeSlots = __instance.GetFreeSlots();
+      int amountToAdd = __instance.GetFreeSlots();
 
-      user.GetInventory().RemoveItem(item, freeSlots);
+      if (item.m_stack < amountToAdd) {
+        amountToAdd = item.m_stack; 
+      }
 
-      for (int i = 0; i < freeSlots; i++) {
+      user.GetInventory().RemoveItem(item, amountToAdd);
+
+      for (int i = 0; i < amountToAdd; i++) {
         __instance.m_nview.InvokeRPC("AddItem", new object[] { item.m_dropPrefab.name });
       }
 
       __result = true;
-      return true;
+      return false;
     }
 
     [HarmonyPrefix]
