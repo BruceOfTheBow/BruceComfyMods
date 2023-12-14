@@ -1,13 +1,14 @@
-﻿using HarmonyLib;
+﻿using Fishlabs.Valheim;
+using HarmonyLib;
 
 using static Hygge.PluginConfig;
 
 namespace Hygge.Patches {
-  [HarmonyPatch(typeof(Settings))]
+  [HarmonyPatch(typeof(GraphicsSettings))]
   static class SettingsPatch {
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(Settings.ApplyMode))]
-    public static void ApplyModePostfix(ref Settings __instance) {
+    [HarmonyPatch(nameof(GraphicsSettings.ApplyResolution))]
+    public static void ApplyResolutionPostfix(ref GraphicsSettings __instance) {
       if (!IsModEnabled.Value || !ComfortPanelManager.ComfortPanel?.Panel) {
         return;
       }

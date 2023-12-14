@@ -24,6 +24,10 @@
 
 ## Changelog
 
+### 1.2.0
+
+  * Fixed Settings references to FishlabsValheim.GraphicsSettings for updates in patch 0.217.38
+
 ### 1.1.0
 
   * Fixed text scaling issue.
