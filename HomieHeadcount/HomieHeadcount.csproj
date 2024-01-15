@@ -118,6 +118,7 @@
     <Compile Include="UI\HomieRow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CHANGELOG.md" />
     <None Include="manifest.json" />
     <None Include="README.md" />
     <None Include="icon.png" />
@@ -143,13 +144,13 @@
       <PackageDir>$(OutDir)$(PackageName)</PackageDir>
     </PropertyGroup>
   </Target>
-  <Target Name="MakeThunderstorePackage" AfterTargets="GetAssemblyVersion">
-    <ItemGroup>
-      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; README.md; manifest.json; icon.png" />
-    </ItemGroup>
-    <MakeDir Directories="$(PackageDir)" />
-    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDir)" />
-    <ZipDirectory SourceDirectory="$(PackageDir)" DestinationFile="$(OutDir)$(PackageName).zip" Overwrite="true" />
-    <RemoveDir Directories="$(PackageDir)" />
-  </Target>
+	<Target Name="MakeThunderstorePackage" AfterTargets="GetAssemblyVersion">
+		<ItemGroup>
+			<PackageFiles Include="$(TargetDir)$(AssemblyName).dll; CHANGELOG.md; README.md; manifest.json; icon.png" />
+		</ItemGroup>
+		<MakeDir Directories="$(PackageDir)" />
+		<Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDir)" />
+		<ZipDirectory SourceDirectory="$(PackageDir)" DestinationFile="$(OutDir)$(PackageName).zip" Overwrite="true" />
+		<RemoveDir Directories="$(PackageDir)" />
+	</Target>
 </Project>

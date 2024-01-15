@@ -9,7 +9,7 @@ namespace HomieHeadcount {
   public class HomieHeadcount : BaseUnityPlugin {
     public const string PluginGuid = "bruce.valheim.comfymods.homieheadcount";
     public const string PluginName = "HomieHeadcount";
-    public const string PluginVersion = "1.1.1";
+    public const string PluginVersion = "1.1.2";
 
     Harmony _harmony;
 

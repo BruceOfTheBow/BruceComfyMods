@@ -106,6 +106,7 @@
     <Compile Include="Core\PlayerFilterPanelManager.cs" />
     <Compile Include="Core\ForeignPinManager.cs" />
     <Compile Include="Extensions\ConfigSettingExtensions.cs" />
+    <Compile Include="Patches\MenuPatch.cs" />
     <Compile Include="Patches\MinimapPatch.cs" />
     <Compile Include="Pintervention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

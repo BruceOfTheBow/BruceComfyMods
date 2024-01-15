@@ -8,7 +8,7 @@ namespace HomieHeadcount.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Player.Update))]
     public static void UpdatePostifx() {
-      if (!IsModEnabled.Value) {
+      if (!IsModEnabled.Value || !Hud.instance) {
         return;
       }
 

@@ -10,7 +10,7 @@ namespace HomieHeadcount {
 
     public static void Toggle() {
       if(!HomieCountPanel?.Panel) {
-        HomieCountPanel = new(Hud.m_instance.transform);
+        HomieCountPanel = new(Hud.instance.transform);
 
         HomieCountPanel.SetInitialPosition();
         HomieCountPanel.Panel.SetActive(true);
