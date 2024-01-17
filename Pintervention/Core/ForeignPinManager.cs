@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BepInEx;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Pintervention {
@@ -6,13 +7,43 @@ namespace Pintervention {
     static List<long> _foreignPinOwners = new();
     static List<long> _filteredPinOwners = new();
 
+    static Dictionary<long, string> _playerNamesById = new();
+
     public static bool Update() {
-      if (!Minimap.m_instance) {
+      if (!Minimap.instance) {
         return false;
       }
 
-      _foreignPinOwners = Minimap.instance.m_pins.Select(x => x.m_ownerID).Distinct().ToList();
+      UpdateLocalPlayerName();
+      UpdateForeignPinOwners();
+      
       return true;
+    }
+
+    static void UpdateLocalPlayerName() {
+      if (Player.m_localPlayer == null || _playerNamesById.ContainsKey(Player.m_localPlayer.GetPlayerID())) {
+        return;
+      }
+
+      _playerNamesById.Add(Player.m_localPlayer.GetPlayerID(), Player.m_localPlayer.GetPlayerName());
+    }
+
+    static void UpdateForeignPinOwners() {
+      _foreignPinOwners = Minimap.instance.m_pins.Select(x => x.m_ownerID).Distinct().ToList();
+
+      foreach (long foreignPinOwner in _foreignPinOwners) {
+        string name
+            = Minimap.instance.m_pins
+                .Where(x => x.m_ownerID == foreignPinOwner)
+                .Select(x => x.m_author)
+                .First();
+        
+        if (name.IsNullOrWhiteSpace() || _playerNamesById.ContainsKey(foreignPinOwner)) {
+          continue;
+        }
+
+        _playerNamesById.Add(foreignPinOwner, name);
+      }
     }
 
     public static void Clear() {
@@ -64,6 +95,10 @@ namespace Pintervention {
     }
 
     public static string GetPlayerNameById(long pid) {
+      if (_playerNamesById.ContainsKey(pid)) {
+        return _playerNamesById[pid];
+      }
+
       // Nope this searched by UID
       if (!ZNet.instance) {
         return pid.ToString();
@@ -79,6 +114,10 @@ namespace Pintervention {
     }
 
     public static void FilterPins() {
+      if (!_foreignPinOwners.Any()) {
+        Update();
+      }
+
       if (!_filteredPinOwners.Any()) { 
         return; 
       }
@@ -99,6 +138,14 @@ namespace Pintervention {
       }
 
       _filteredPinOwners.Add(pid);
+    }
+
+    public static void AddPlayerName(long pid, string name) {
+      if (_playerNamesById.ContainsKey(pid)) {
+        return;
+      }
+
+      _playerNamesById.Add(pid, name);
     }
   }
 }

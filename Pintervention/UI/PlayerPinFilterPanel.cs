@@ -63,6 +63,16 @@ namespace Pintervention {
               && pin.m_name.IndexOf(filter, 0, StringComparison.InvariantCultureIgnoreCase) >= 0);
     }
 
+    public void UpdatePinCounts() {
+      if (_rowCache == null) {
+        return;
+      }
+
+      foreach (PlayerListRow row in _rowCache) {
+        row.UpdateCount();
+      }
+    }
+
     public void SetForeignPins() {
       // Order by Pin owner Name?
       RefreshPinListRows();
@@ -111,6 +121,10 @@ namespace Pintervention {
 
 
       foreach (long pid in ForeignPinManager.GetForeignPinOwners()) {
+        if (ForeignPinManager.GetPinCountByOwner(pid) == 0) {
+          continue;
+        }
+
         row = new(Content.transform);
         row.SetRowContent(pid);
         _rowCache.Add(row);

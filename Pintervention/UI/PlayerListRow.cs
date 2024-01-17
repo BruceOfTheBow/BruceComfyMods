@@ -29,11 +29,19 @@ namespace Pintervention {
     public PlayerListRow SetRowContent(long pid) {
       _pid = pid;
       PinIcon.SetSprite(Minimap.m_instance.GetSprite(Minimap.PinType.Player));
-      PinName.SetText(ForeignPinManager.GetPlayerNameById(pid));
 
-      PinCount.SetText($"{ForeignPinManager.GetPinCountByOwner(pid)}");
+      UpdateName();
+      UpdateCount();
 
       return this;
+    }
+
+    public void UpdateName() {
+      PinName.SetText(ForeignPinManager.GetPlayerNameById(_pid));
+    }
+
+    public void UpdateCount() {
+      PinCount.SetText($"{ForeignPinManager.GetPinCountByOwner(_pid)}");
     }
 
     GameObject CreateChildRow(Transform parentTransform) {
@@ -87,6 +95,12 @@ namespace Pintervention {
     TMP_Text CreateChildPinName(Transform parentTransform) {
       TMP_Text name = UIBuilder.CreateTMPLabel(parentTransform);
       name.SetName("Pin.Name");
+
+      name.alignment = TextAlignmentOptions.Left;
+      name.text = "Blankname1234567891011121314";
+
+      name.gameObject.AddComponent<LayoutElement>()
+          .SetPreferred(width: name.GetPreferredValues().x);
 
       return name;
     }

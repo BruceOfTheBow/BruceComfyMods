@@ -105,7 +105,10 @@
     <Compile Include="Config\PluginConfig.cs" />
     <Compile Include="Core\PlayerFilterPanelManager.cs" />
     <Compile Include="Core\ForeignPinManager.cs" />
+    <Compile Include="Core\SharedMapDataManager.cs" />
     <Compile Include="Extensions\ConfigSettingExtensions.cs" />
+    <Compile Include="Extensions\PinDataExtensions.cs" />
+    <Compile Include="Patches\MapTablePatch.cs" />
     <Compile Include="Patches\MenuPatch.cs" />
     <Compile Include="Patches\MinimapPatch.cs" />
     <Compile Include="Pintervention.cs" />
@@ -123,6 +126,7 @@
     <Compile Include="UI\PlayerPinFilterPanel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CHANGELOG.md" />
     <None Include="manifest.json" />
     <None Include="README.md" />
     <None Include="icon.png" />
@@ -149,7 +153,7 @@
   </Target>
   <Target Name="MakeThunderstorePackage" AfterTargets="GetAssemblyVersion">
     <ItemGroup>
-      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; README.md; manifest.json; icon.png" />
+      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; CHANGELOG.md; README.md; manifest.json; icon.png" />
     </ItemGroup>
     <MakeDir Directories="$(PackageDir)" />
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDir)" />

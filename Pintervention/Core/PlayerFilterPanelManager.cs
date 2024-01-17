@@ -25,6 +25,7 @@ namespace Pintervention {
 
         _filterPanel.PanelDragger.OnPanelEndDrag += (_, position) => PlayerPinFilterPosition.Value = position;
         _filterPanel.PanelResizer.OnPanelEndResize += (_, sizeDelta) => PlayerPinFilterSizeDelta.Value = sizeDelta;
+        _filterPanel.Panel.SetActive(false);
       }
 
       bool toggleOn = !_filterPanel.Panel.activeSelf;
@@ -33,6 +34,14 @@ namespace Pintervention {
       if (toggleOn) {
         _filterPanel.SetForeignPins();
       }
+    }
+
+    public static void UpdatePinCounts() {
+      if (!_filterPanel?.Panel) {
+        return;
+      }
+
+      _filterPanel.UpdatePinCounts();
     }
   }
 }

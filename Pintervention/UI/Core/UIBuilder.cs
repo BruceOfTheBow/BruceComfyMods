@@ -27,7 +27,7 @@ namespace Pintervention {
       spacer.SetParent(parentTransform);
 
       spacer.AddComponent<LayoutElement>()
-          .SetFlexible(width: 1f);
+          .SetPreferred(width: 20f);
 
       return spacer;
     }
