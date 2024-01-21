@@ -35,6 +35,7 @@ namespace Pintervention {
         return;
       }
 
+      ForeignPinManager.Initialize();
       PlayerFilterPanelManager.ToggleFilterPanel();
     }
 
@@ -49,23 +50,23 @@ namespace Pintervention {
         return;
       }
 
-      ForeignPinManager.Update();
       ForeignPinManager.FilterPins();
       PlayerFilterPanelManager.UpdatePinCounts();
     }
 
-    //[HarmonyPostfix]
-    //[HarmonyPatch(nameof(Minimap.AddPin))]
-    //static void AddPinPostfix(Minimap __instance, Minimap.PinData __result) {
-    //  if (!IsModEnabled.Value
-    //        || !__instance
-    //        || !Player.m_localPlayer
-    //        || !IsGameGeneratedPin()) {
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Minimap.AddPin))]
+    static void AddPinPostfix(Minimap __instance, Minimap.PinData __result) {
+      if (!IsModEnabled.Value
+            || !__instance
+            || !Player.m_localPlayer
+            || !ForeignPinManager.IsLocationPin(__result)
+            || __result.m_ownerID != 0L) {
 
-    //    return;
-    //  }
+        return;
+      }
 
-    //  __result.m_ownerID = Player.m_localPlayer.GetPlayerID();
-    //}
+      __result.m_ownerID = Player.m_localPlayer.GetPlayerID();
+    }
   }
 }

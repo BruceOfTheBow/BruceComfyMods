@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pintervention {
   public class PluginConfig {
     public static ConfigEntry<bool> IsModEnabled { get; private set; }
-    public static ConfigEntry<bool> TakePinsOnRead { get; private set; }
-    public static ConfigEntry<bool> RevealMapOnRead { get; private set; }
+    public static ConfigEntry<bool> ReadPinsOnInteract { get; private set; }
+    public static ConfigEntry<bool> ReadRevealedMapOnInteract { get; private set; }
     public static ConfigEntry<KeyboardShortcut> DisplayFilterPanel { get; private set; }
     public static ConfigEntry<Vector2> PlayerPinFilterSizeDelta { get; private set; }
     public static ConfigEntry<Vector2> PlayerPinFilterPosition { get; private set; }
@@ -13,17 +13,17 @@ namespace Pintervention {
     public static void BindConfig(ConfigFile config) {
       IsModEnabled = config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod.");
 
-      TakePinsOnRead = 
+      ReadPinsOnInteract = 
           config.Bind(
               "CartographyTable", 
-              "takePinsOnRead", 
+              "readPinsOnInteract", 
               true, 
               "Allows not taking pins when reading from cartography table.");
 
-      RevealMapOnRead =
+      ReadRevealedMapOnInteract =
           config.Bind(
               "CartographyTable",
-              "revealMapOnRead",
+              "readRevealedMapOnInteract",
               true,
               "Allows not taking shared map data when reading from cartography table.");
 

@@ -19,7 +19,7 @@ namespace Pintervention.Core {
         return;
       }
 
-      if (!RevealMapOnRead.Value && !TakePinsOnRead.Value) {
+      if (!ReadRevealedMapOnInteract.Value && !ReadPinsOnInteract.Value) {
         MessageLocalPlayer("All cartography table data disabled on read.");
         return;
       }
@@ -28,13 +28,13 @@ namespace Pintervention.Core {
       ZPackage zPackage = new ZPackage(mapData);
       int version = zPackage.ReadInt();
 
-      if (TakePinsOnRead.Value) {
+      if (ReadPinsOnInteract.Value) {
         WritePinsToMap(zPackage, version);
         MessageLocalPlayer("Added pins from cartography table to map.");
         return;
       }
 
-      if (RevealMapOnRead.Value) {
+      if (ReadRevealedMapOnInteract.Value) {
         WriteExploredAreaToMap(zPackage, version);
         MessageLocalPlayer("Added revealed area from cartography table to map.");
         return;
@@ -109,7 +109,6 @@ namespace Pintervention.Core {
       List<bool> exploredPoints = Minimap.instance.ReadExploredArray(zPackage, version);
 
       if (exploredPoints == null) {
-        MessageLocalPlayer("No new explored area to copy to player map.");
         return false;
       }
 

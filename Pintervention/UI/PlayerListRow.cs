@@ -1,6 +1,7 @@
 ﻿using Pintervention;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace Pintervention {
     GameObject CreateChildRow(Transform parentTransform) {
       GameObject row = new("PinList.Row", typeof(RectTransform));
       row.SetParent(parentTransform);
-
+     
       row.AddComponent<HorizontalLayoutGroup>()
           .SetChildControl(width: true, height: true)
           .SetChildForceExpand(width: false, height: false)

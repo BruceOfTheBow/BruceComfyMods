@@ -1,6 +1,7 @@
-﻿using BepInEx;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
+using static Pintervention.Pintervention;
 
 namespace Pintervention {
   public class ForeignPinManager {
@@ -9,43 +10,73 @@ namespace Pintervention {
 
     static Dictionary<long, string> _playerNamesById = new();
 
-    public static bool Update() {
+    public static bool Initialize() {
       if (!Minimap.instance) {
         return false;
       }
 
-      UpdateLocalPlayerName();
-      UpdateForeignPinOwners();
+      SetForeignPinOwners();
+      SetLocalPlayerName();
+      SetForeignPlayerNames();
       
       return true;
     }
 
-    static void UpdateLocalPlayerName() {
-      if (Player.m_localPlayer == null || _playerNamesById.ContainsKey(Player.m_localPlayer.GetPlayerID())) {
+    static void SetLocalPlayerName() {
+      if (!Player.m_localPlayer || _playerNamesById.ContainsKey(Player.m_localPlayer.GetPlayerID())) {
         return;
       }
 
       _playerNamesById.Add(Player.m_localPlayer.GetPlayerID(), Player.m_localPlayer.GetPlayerName());
     }
 
-    static void UpdateForeignPinOwners() {
-      _foreignPinOwners = Minimap.instance.m_pins.Select(x => x.m_ownerID).Distinct().ToList();
+    static void SetForeignPinOwners() {
+      if (!Minimap.instance) {
+        return;
+      }
 
-      foreach (long foreignPinOwner in _foreignPinOwners) {
-        string name
-            = Minimap.instance.m_pins
-                .Where(x => x.m_ownerID == foreignPinOwner)
-                .Select(x => x.m_author)
-                .First();
-        
-        if (name.IsNullOrWhiteSpace() || _playerNamesById.ContainsKey(foreignPinOwner)) {
+      _foreignPinOwners = Minimap.instance.m_pins.Select(x => x.m_ownerID).Distinct().ToList();
+    }
+
+    public static bool IsLocationPin(Minimap.PinData pin) {
+      if (!Minimap.instance || !ZoneSystem.instance) {
+        return false;
+      }
+
+      List<ZoneSystem.LocationInstance> nearbyLocations 
+          = ZoneSystem.instance.m_locationInstances
+          .Where(x => Vector2i.Distance(x.Key, new Vector2i((int)pin.m_pos.x, (int)pin.m_pos.z)) < 1f)
+          .Select(x => x.Value)
+          .ToList();
+      
+      if (!nearbyLocations.Any()) {
+        return false;
+      }
+
+      Log($"{nearbyLocations.Count()} locations found for pin {pin.m_name}");
+      return true;
+    }
+
+    static void SetForeignPlayerNames() {
+      // Load data from saved file?
+
+      if (_foreignPinOwners == null || !_foreignPinOwners.Any()) {
+        return;
+      }
+
+      Dictionary<long, ZDO> zdosByPid = GetZDOsByPlayerId(_foreignPinOwners);
+
+      foreach (KeyValuePair<long, ZDO> zdoByPid in zdosByPid) {
+        string name = zdoByPid.Value.GetString(ZDOVars.s_playerName, string.Empty);
+
+        if (string.IsNullOrEmpty(name)) {
           continue;
         }
 
-        _playerNamesById.Add(foreignPinOwner, name);
+        _playerNamesById.Add(zdoByPid.Key, name);
       }
     }
-
+    
     public static void Clear() {
       if (_foreignPinOwners.Any()) {
         _foreignPinOwners.Clear();
@@ -59,39 +90,23 @@ namespace Pintervention {
     }
 
     public static long GetForeignPinOwnerAtIndex(int index) {
-      if (_foreignPinOwners == null) {
-        Update();
-      }
-
       return _foreignPinOwners[index];
     }
 
     public static List<long> GetForeignPinOwners() {
-      if (_foreignPinOwners == null) {
-        Update();
-      }
-
       return _foreignPinOwners;
     }
 
+    public static int GetForeignPinOwnersCount() {
+      return _foreignPinOwners.Count;
+    }
+
     public static int GetPinCountByOwner(long pid) {
-      if (Minimap.instance == null) {
+      if (!Minimap.instance) {
         return 0;
       }
 
-      if (_foreignPinOwners == null) {
-        Update();
-      }
-
       return Minimap.instance.m_pins.Where(x => x.m_ownerID == pid).Count();
-    }
-
-    public static List<Minimap.PinData> GetPinsByOwner(long pid) {
-      if (_foreignPinOwners == null) {
-        Update();
-      }
-
-      return Minimap.m_instance.m_pins.Where(x => x.m_ownerID == pid).ToList();
     }
 
     public static string GetPlayerNameById(long pid) {
@@ -99,23 +114,38 @@ namespace Pintervention {
         return _playerNamesById[pid];
       }
 
-      // Nope this searched by UID
-      if (!ZNet.instance) {
-        return pid.ToString();
+      // Get next Unknown Player count
+
+      return pid.ToString();
+    }
+
+    public static Dictionary<long, ZDO> GetZDOsByPlayerId(List<long> playerIds) {
+      Dictionary<ZDOID, ZDO> zdosById = ZDOMan.s_instance.m_objectsByID;
+      HashSet<long> ids = new(playerIds);
+      Dictionary<long, ZDO> zdosByPid = new();
+
+      foreach (ZNetPeer netPeer in ZNet.m_instance.m_peers) {
+        if (netPeer.m_characterID == ZDOID.None
+            || !zdosById.TryGetValue(netPeer.m_characterID, out ZDO zdo)
+            || !ZDOExtraData.GetLong(zdo.m_uid, ZDOVars.s_playerID, out long playerId)
+            || !ids.Contains(playerId)) {
+          continue;
+        }
+
+        zdosByPid.Add(playerId, zdo);
+        ids.Remove(playerId);
+
+        if (ids.Count <= 0) {
+          break;
+        }
       }
 
-      ZNetPeer peer = ZNet.instance.GetPeer(pid);
-
-      if (peer == null) {
-        return pid.ToString();
-      }
-
-      return peer.m_playerName;
+      return zdosByPid;
     }
 
     public static void FilterPins() {
-      if (!_foreignPinOwners.Any()) {
-        Update();
+      if (!IsInitialized()) {
+        Initialize();
       }
 
       if (!_filteredPinOwners.Any()) { 
@@ -138,6 +168,14 @@ namespace Pintervention {
       }
 
       _filteredPinOwners.Add(pid);
+    }
+
+    public static bool IsInitialized() {
+      if (_foreignPinOwners == null) {
+        return false;
+      }
+
+      return true;
     }
 
     public static void AddPlayerName(long pid, string name) {

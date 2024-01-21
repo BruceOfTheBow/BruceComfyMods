@@ -77,7 +77,7 @@ namespace Pintervention {
       // Order by Pin owner Name?
       RefreshPinListRows();
 
-      PinStats.Label.SetText($"{ForeignPinManager.GetForeignPinOwners().Count} players with pins.");
+      PinStats.Label.SetText($"{ForeignPinManager.GetForeignPinOwnersCount()} players with pins.");
     }
 
     readonly List<PlayerListRow> _rowCache = new();
@@ -117,7 +117,7 @@ namespace Pintervention {
       UnityEngine.Object.Destroy(row.Row);
 
       Content.RectTransform().SetSizeDelta(
-          new(Viewport.RectTransform().sizeDelta.x, _rowPreferredHeight * ForeignPinManager.GetForeignPinOwners().Count));
+          new(Viewport.RectTransform().sizeDelta.x, _rowPreferredHeight * ForeignPinManager.GetForeignPinOwnersCount()));
 
 
       foreach (long pid in ForeignPinManager.GetForeignPinOwners()) {
@@ -138,14 +138,14 @@ namespace Pintervention {
     }
 
     void OnVerticalScroll(Vector2 scroll) {
-      if (_isRefreshing || ForeignPinManager.GetForeignPinOwners().Count == 0 || _rowCache.Count == 0) {
+      if (_isRefreshing || ForeignPinManager.GetForeignPinOwnersCount() == 0 || _rowCache.Count == 0) {
         return;
       }
 
       float scrolledY = Content.RectTransform().anchoredPosition.y;
 
       int rowIndex =
-          Mathf.Clamp(Mathf.CeilToInt(scrolledY / _rowPreferredHeight), 0, ForeignPinManager.GetForeignPinOwners().Count - _rowCache.Count);
+          Mathf.Clamp(Mathf.CeilToInt(scrolledY / _rowPreferredHeight), 0, ForeignPinManager.GetForeignPinOwnersCount() - _rowCache.Count);
 
       if (rowIndex == _previousRowIndex) {
         return;
@@ -156,7 +156,7 @@ namespace Pintervention {
         _rowCache.RemoveAt(0);
         row.Row.RectTransform().SetAsLastSibling();
 
-        int index = Mathf.Clamp(rowIndex + _rowCache.Count, 0, ForeignPinManager.GetForeignPinOwners().Count - 1);
+        int index = Mathf.Clamp(rowIndex + _rowCache.Count, 0, ForeignPinManager.GetForeignPinOwnersCount() - 1);
         row.SetRowContent(ForeignPinManager.GetForeignPinOwnerAtIndex(index));
         _rowCache.Add(row);
       } else {
