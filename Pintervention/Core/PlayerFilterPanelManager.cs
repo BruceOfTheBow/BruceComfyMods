@@ -32,8 +32,16 @@ namespace Pintervention {
       _filterPanel.Panel.SetActive(!_filterPanel.Panel.activeSelf);
 
       if (toggleOn) {
-        _filterPanel.SetForeignPins();
+        _filterPanel.UpdatePanel();
       }
+    }
+
+    public static void UpdatePanel() {
+      if (!_filterPanel?.Panel) {
+        return;
+      }
+
+      _filterPanel.UpdatePanel();
     }
 
     public static void UpdatePinCounts() {

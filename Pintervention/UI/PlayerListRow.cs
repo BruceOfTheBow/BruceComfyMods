@@ -1,11 +1,11 @@
-﻿using Pintervention;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+
 using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
+
+using static Pintervention.Pintervention;
 
 namespace Pintervention {
   public class PlayerListRow {
@@ -13,8 +13,10 @@ namespace Pintervention {
     public Image PinIcon { get; private set; }
     public TMP_Text PinName { get; private set; }
     public TMP_Text PinCount { get; private set; }
+    public TMP_Text FilterStatus { get; private set; }
 
     long _pid;
+
     public PlayerListRow(Transform parentTransform) {
       Row = CreateChildRow(parentTransform);
 
@@ -25,6 +27,9 @@ namespace Pintervention {
 
       PinCount = CreatePinCountValue(Row.transform);
       PinCount.color = new(0.565f, 0.792f, 0.976f);
+
+      FilterStatus = CreatePinCountValue(Row.transform);
+      FilterStatus.fontSize = 14f;
     }
 
     public PlayerListRow SetRowContent(long pid) {
@@ -33,16 +38,26 @@ namespace Pintervention {
 
       UpdateName();
       UpdateCount();
+      UpdateFilterStatus();
 
       return this;
     }
 
     public void UpdateName() {
-      PinName.SetText(ForeignPinManager.GetPlayerNameById(_pid));
+      PinName.SetText(NameManager.GetPlayerNameById(_pid));
     }
 
     public void UpdateCount() {
-      PinCount.SetText($"{ForeignPinManager.GetPinCountByOwner(_pid)}");
+      PinCount.SetText($"{PinOwnerManager.GetPinsByPid(_pid).Count}");
+    }
+
+    public void UpdateFilterStatus() {
+      if (PinOwnerManager.IsFiltered(_pid)) {
+        FilterStatus.SetText("<color=red>X</color>");
+        return;
+      }
+
+      FilterStatus.SetText("<color=green><b>\u2713</b></color>");
     }
 
     GameObject CreateChildRow(Transform parentTransform) {
@@ -65,7 +80,7 @@ namespace Pintervention {
           .SetNavigationMode(Navigation.Mode.None)
           .SetTargetGraphic(row.Image())
           .SetColors(ButtonColorBlock.Value);
-          
+
 
       row.AddComponent<ContentSizeFitter>()
           .SetHorizontalFit(ContentSizeFitter.FitMode.Unconstrained)
@@ -77,7 +92,8 @@ namespace Pintervention {
     }
 
     public void ToggleFilter() {
-      ForeignPinManager.ToggleFilter(_pid);
+      PinOwnerManager.ToggleFilter(_pid);
+      UpdateFilterStatus();
     }
 
     GameObject CreateChildPinIcon(Transform parentTransform) {
@@ -111,10 +127,10 @@ namespace Pintervention {
       value.SetName("Pin.Count.Value");
 
       value.alignment = TextAlignmentOptions.Right;
-      value.text = "-12345";
+      value.text = "-12X\u2713";
 
       value.gameObject.AddComponent<LayoutElement>()
-          .SetPreferred(width: value.GetPreferredValues().x);
+          .SetPreferred(width: value.GetPreferredValues().x, height: value.GetPreferredValues().y);
 
       return value;
     }

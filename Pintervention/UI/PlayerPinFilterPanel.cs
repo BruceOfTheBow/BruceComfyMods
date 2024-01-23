@@ -21,8 +21,6 @@ namespace Pintervention {
     public PanelDragger PanelDragger { get; private set; }
     public PanelResizer PanelResizer { get; private set; }
 
-    Dictionary<long, List<Minimap.PinData>> _foreignPins = new();
-
     readonly PointerState _pointerState;
 
     public PlayerPinFilterPanel(Transform parentTransform) {
@@ -37,7 +35,6 @@ namespace Pintervention {
       PinNameFilter = new(Panel.transform);
       PinNameFilter.Cell.LayoutElement().SetFlexible(width: 1f).SetPreferred(height: 30f);
       //PinNameFilter.Cell.GetComponent<HorizontalLayoutGroup>().SetPadding(left: 8, right: 8, top: 5, bottom: 5);
-      ////PinNameFilter.InputField.onValueChanged.AddListener(FilterPlayerPins);
 
       Viewport = CreateChildViewport(Panel.transform);
       Content = CreateChildContent(Viewport.transform);
@@ -50,21 +47,15 @@ namespace Pintervention {
 
       _pointerState = Panel.AddComponent<PointerState>();
 
-      SetForeignPins();
+      UpdatePanel();
     }
 
     public bool HasFocus() {
       return Panel && Panel.activeInHierarchy && _pointerState.IsPointerHovered;
     }
 
-    static bool IsPinNameValid(Minimap.PinData pin, string filter) {
-      return filter.Length == 0
-          || (pin.m_name.Length > 0
-              && pin.m_name.IndexOf(filter, 0, StringComparison.InvariantCultureIgnoreCase) >= 0);
-    }
-
     public void UpdatePinCounts() {
-      if (_rowCache == null) {
+      if (Panel == null) {
         return;
       }
 
@@ -73,11 +64,9 @@ namespace Pintervention {
       }
     }
 
-    public void SetForeignPins() {
-      // Order by Pin owner Name?
+    public void UpdatePanel() {
       RefreshPinListRows();
-
-      PinStats.Label.SetText($"{ForeignPinManager.GetForeignPinOwnersCount()} players with pins.");
+      PinStats.Label.SetText($"{PinOwnerManager.ForeignPinOwners.Count} players with pins.");
     }
 
     readonly List<PlayerListRow> _rowCache = new();
@@ -87,8 +76,12 @@ namespace Pintervention {
     bool _isRefreshing = false;
     int _previousRowIndex = -1;
 
+    void BuildPinListRows() {
+
+    }
+
     void RefreshPinListRows() {
-      _isRefreshing = true;
+      //_isRefreshing = true;
 
       ScrollRect.onValueChanged.RemoveAllListeners();
       Content.RectTransform().SetPosition(Vector2.zero);
@@ -117,59 +110,54 @@ namespace Pintervention {
       UnityEngine.Object.Destroy(row.Row);
 
       Content.RectTransform().SetSizeDelta(
-          new(Viewport.RectTransform().sizeDelta.x, _rowPreferredHeight * ForeignPinManager.GetForeignPinOwnersCount()));
+          new(Viewport.RectTransform().sizeDelta.x, _rowPreferredHeight * PinOwnerManager.ForeignPinOwners.Count));
 
-
-      foreach (long pid in ForeignPinManager.GetForeignPinOwners()) {
-        if (ForeignPinManager.GetPinCountByOwner(pid) == 0) {
-          continue;
-        }
-
+      for (int i = 0; i < PinOwnerManager.ForeignPinOwners.Count; i++) {
         row = new(Content.transform);
-        row.SetRowContent(pid);
+        row.SetRowContent(PinOwnerManager.GetForeignPinOwnerAtIndex(i));
         _rowCache.Add(row);
       }
 
       _previousRowIndex = -1;
       ScrollRect.SetVerticalScrollPosition(1f);
 
-      ScrollRect.onValueChanged.AddListener(OnVerticalScroll);
-      _isRefreshing = false;
+      //ScrollRect.onValueChanged.AddListener(OnVerticalScroll);
+      //_isRefreshing = false;
     }
 
-    void OnVerticalScroll(Vector2 scroll) {
-      if (_isRefreshing || ForeignPinManager.GetForeignPinOwnersCount() == 0 || _rowCache.Count == 0) {
-        return;
-      }
+    //void OnVerticalScroll(Vector2 scroll) {
+    //  if (_isRefreshing || ForeignPinManager.ForeignPinOwners.Count == 0 || _rowCache.Count == 0) {
+    //    return;
+    //  }
 
-      float scrolledY = Content.RectTransform().anchoredPosition.y;
+    //  float scrolledY = Content.RectTransform().anchoredPosition.y;
 
-      int rowIndex =
-          Mathf.Clamp(Mathf.CeilToInt(scrolledY / _rowPreferredHeight), 0, ForeignPinManager.GetForeignPinOwnersCount() - _rowCache.Count);
+    //  int rowIndex =
+    //      Mathf.Clamp(Mathf.CeilToInt(scrolledY / _rowPreferredHeight), 0, ForeignPinManager.ForeignPinOwners.Count - _rowCache.Count);
 
-      if (rowIndex == _previousRowIndex) {
-        return;
-      }
+    //  if (rowIndex == _previousRowIndex) {
+    //    return;
+    //  }
 
-      if (rowIndex > _previousRowIndex) {
-        PlayerListRow row = _rowCache[0];
-        _rowCache.RemoveAt(0);
-        row.Row.RectTransform().SetAsLastSibling();
+    //  if (rowIndex > _previousRowIndex) {
+    //    PlayerListRow row = _rowCache[0];
+    //    _rowCache.RemoveAt(0);
+    //    row.Row.RectTransform().SetAsLastSibling();
 
-        int index = Mathf.Clamp(rowIndex + _rowCache.Count, 0, ForeignPinManager.GetForeignPinOwnersCount() - 1);
-        row.SetRowContent(ForeignPinManager.GetForeignPinOwnerAtIndex(index));
-        _rowCache.Add(row);
-      } else {
-        PlayerListRow row = _rowCache[_rowCache.Count - 1];
-        _rowCache.RemoveAt(_rowCache.Count - 1);
-        row.Row.RectTransform().SetSiblingIndex(1);
-        row.SetRowContent(ForeignPinManager.GetForeignPinOwnerAtIndex(rowIndex));
-        _rowCache.Insert(0, row);
-      }
+    //    int index = Mathf.Clamp(rowIndex + _rowCache.Count, 0, ForeignPinManager.ForeignPinOwners.Count - 1);
+    //    row.SetRowContent(ForeignPinManager.GetForeignPinOwnerAtIndex(index));
+    //    _rowCache.Add(row);
+    //  } else {
+    //    PlayerListRow row = _rowCache[_rowCache.Count - 1];
+    //    _rowCache.RemoveAt(_rowCache.Count - 1);
+    //    row.Row.RectTransform().SetSiblingIndex(1);
+    //    row.SetRowContent(ForeignPinManager.GetForeignPinOwnerAtIndex(rowIndex));
+    //    _rowCache.Insert(0, row);
+    //  }
 
-      _bufferBlock.SetPreferred(height: rowIndex * _rowPreferredHeight);
-      _previousRowIndex = rowIndex;
-    }
+    //  _bufferBlock.SetPreferred(height: rowIndex * _rowPreferredHeight);
+    //  _previousRowIndex = rowIndex;
+    //}
 
     GameObject CreateChildPanel(Transform parentTransform) {
       GameObject panel = new("PlayerPinList.Panel", typeof(RectTransform));

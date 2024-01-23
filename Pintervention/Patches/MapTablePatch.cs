@@ -32,7 +32,17 @@ namespace Pintervention.Patches {
       SharedMapDataManager.ReadMapData(__instance.m_nview.GetZDO());
       __result = false;
       return false;
-      
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(MapTable.OnRead))]
+    static void OnReadPostfix(MapTable __instance, ItemDrop.ItemData item) {
+      if (!ReadPinsOnInteract.Value) {
+        return;
+      }
+
+      PinOwnerManager.FindPinOwners();
+      NameManager.WriteNamesToFile();
     }
 
     [HarmonyPostfix]
@@ -104,7 +114,7 @@ namespace Pintervention.Patches {
           continue;
         }
 
-        ForeignPinManager.AddPlayerName(kvp.Key, kvp.Value);
+        NameManager.AddPlayerName(kvp.Key, kvp.Value);
       }
     }
 

@@ -6,7 +6,7 @@ namespace Pintervention.Patches {
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Menu.OnLogoutYes))]
     public static void OnLogoutYesPrefix() {
-      ForeignPinManager.Clear();
+      PinOwnerManager.Clear();
     }
   }
 }

@@ -2,27 +2,12 @@
 
 using System.Collections.Generic;
 
-using static Pintervention.Pintervention;
 using static Pintervention.PluginConfig;
 
 namespace Pintervention {
   [HarmonyPatch(typeof(Minimap))]
   static class MinimapPatch {
-    static HashSet<string> _generatedPinNames = new() {
-      "StartTemple",
-      "Vendor_BlackForest",
-      "Hildir_camp",
-      "$enemy_eikthyr",
-      "$enemy_gdking",
-      "$enemy_bonemass",
-      "$enemy_dragon",
-      "$enemy_goblinking",
-      "$enemy_queen",
-      "$hud_pin_hildir1",
-      "$hud_pin_hilder2",
-      "$hud_pin_hildir3"
-    };
-
+    static int _pinCount = 999999;
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Minimap.Update))]
     static void UpdatePostfix(Minimap __instance) {
@@ -35,7 +20,7 @@ namespace Pintervention {
         return;
       }
 
-      ForeignPinManager.Initialize();
+      PinOwnerManager.Initialize();
       PlayerFilterPanelManager.ToggleFilterPanel();
     }
 
@@ -50,23 +35,47 @@ namespace Pintervention {
         return;
       }
 
-      ForeignPinManager.FilterPins();
+      PinOwnerManager.FilterPins();
       PlayerFilterPanelManager.UpdatePinCounts();
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.AddPin))]
-    static void AddPinPostfix(Minimap __instance, Minimap.PinData __result) {
+    [HarmonyPatch(nameof(Minimap.UpdatePlayerPins))]
+    static void UpdatePlayerPinsPostfix(Minimap __instance) {
       if (!IsModEnabled.Value
             || !__instance
-            || !Player.m_localPlayer
-            || !ForeignPinManager.IsLocationPin(__result)
-            || __result.m_ownerID != 0L) {
+            || !Player.m_localPlayer) {
+      }
 
+      if (_pinCount <= __instance.m_pins.Count) {
         return;
       }
 
-      __result.m_ownerID = Player.m_localPlayer.GetPlayerID();
+      _pinCount = __instance.m_pins.Count;
+
+      PinOwnerManager.AddAllLocalPlayerPins();
+      PlayerFilterPanelManager.UpdatePanel();
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Minimap.RemovePin), typeof(Minimap.PinData))]
+    static void RemovePinPostfix(Minimap __instance, Minimap.PinData pin) {
+      long pid = pin.m_ownerID;
+
+      PinOwnerManager.RemoveLocalPlayerPin(pin);
+
+      if (PinOwnerManager.GetPinsByPid(pid).Count == 0) {
+        PinOwnerManager.RemoveForeignPinOwner(pid);
+      }
+
+      PlayerFilterPanelManager.UpdatePanel();
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Minimap.ResetSharedMapData))]
+    static void ResetSharedMapData(Minimap __instance) {
+      PinOwnerManager.ForeignPinOwners.RemoveAll(x => PinOwnerManager.GetPinsByPid(x).Count == 0);
+      PlayerFilterPanelManager.UpdatePanel();
     }
   }
 }
