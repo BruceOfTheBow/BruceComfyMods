@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using HarmonyLib;
 using Pintervention.Core;
 using static Pintervention.Pintervention;
@@ -60,18 +60,21 @@ namespace Pintervention.Patches {
         return;
       }
 
-      if (IsNameOnTable(__instance)) {
+      if (!__instance.m_nview.IsOwner()) {
         return;
       }
 
-      AddNameToTable(__instance);
+      AddNamesToTable(__instance);
+
+      SendTableZdoUpdate(__instance);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(MapTable.GetReadHoverText))]
     static void GetReadHoverTextPostfix(MapTable __instance, ref string __result) {
       __result = 
-            Localization.instance.Localize(__instance.m_name + "\n[<color=yellow><b>$KEY_Use</b></color>]") + " Interact"
+            Localization.instance.Localize(__instance.m_name + "\n[<color=yellow><b>$KEY_Use</b></color>]") 
+            + $" Interact"
             + $"\n[{GetBoolUnicodeCharacter(ReadPinsOnInteract.Value)}] Read pins"
             + $"\n[{GetBoolUnicodeCharacter(ReadRevealedMapOnInteract.Value)}] Read revealed map";
     }
@@ -84,12 +87,26 @@ namespace Pintervention.Patches {
       return "<color=red><b>X</b></color>";
     }
 
+    static void SendTableZdoUpdate(MapTable __instance) {
+      ZDOID tableZdoId = __instance.m_nview.GetZDO().m_uid;
+      List<ZNetPeer> zNetPeers 
+          = ZNet.instance.m_peers
+            .Where(x => Player.s_players.Select(x => x.m_nview.GetZDO().m_uid).Contains(x.m_characterID))
+            .ToList();
+
+      foreach (ZNetPeer zNetPeer in zNetPeers) {
+        ZDOMan.instance.ForceSendZDO(zNetPeer.m_uid, tableZdoId);
+      }
+    }
+
     static bool ClaimOwnership(MapTable table) {
       if (!table
           || !table.m_nview
           || !table.m_nview.IsValid()) {
         return false;
       }
+
+      Log("Claimed table ownership to write name data.");
 
       table.m_nview.ClaimOwnership();
       return true;
@@ -118,10 +135,6 @@ namespace Pintervention.Patches {
       }
     }
 
-    static string GetStoredValue() {
-      return $"{Player.m_localPlayer.GetPlayerID()}{_seperator}{Player.m_localPlayer.GetPlayerName()}";
-    }
-
     static KeyValuePair<long, string> ParsePidNamePair(string storedValue) {
       string[] values = storedValue.Split(_seperator);
 
@@ -132,9 +145,9 @@ namespace Pintervention.Patches {
       return new KeyValuePair<long, string>(pid, values[1]);
     }
     
-    static bool IsNameOnTable(MapTable table) {
+    static bool IsNameOnTable(MapTable table, long pid, string name) {
       ZDO zdo = table.m_nview.GetZDO();
-      string valueToStore = GetStoredValue();
+      string valueToStore = GetStoredValue(pid, name);
 
       int i = 0;
       string check = "not empty";
@@ -152,12 +165,28 @@ namespace Pintervention.Patches {
       return false;
     }
 
-    static void AddNameToTable(MapTable table) {
-      table.m_nview.ClaimOwnership();
-      table.m_nview.GetZDO().Set(GetNextEmptyHashCode(table.m_nview.GetZDO()), GetStoredValue());
-      Log($"Adding {GetStoredValue()} to table.");
+    static void AddNamesToTable(MapTable table) {
+      Dictionary<long, string> namesToWrite = NameManager.PlayerNamesById;
+
+      if (!namesToWrite.ContainsKey(Player.m_localPlayer.GetPlayerID())) {
+        namesToWrite.Add(Player.m_localPlayer.GetPlayerID(), Player.m_localPlayer.GetPlayerName());
+      }      
+
+      foreach (KeyValuePair<long, string> nameByPid in NameManager.PlayerNamesById) {
+        if (IsNameOnTable(table, nameByPid.Key, nameByPid.Value) 
+              || nameByPid.Value.StartsWith("Unknown")) {
+          continue;
+        }
+
+        table.m_nview.GetZDO().Set(GetNextEmptyHashCode(table.m_nview.GetZDO()),
+            GetStoredValue(nameByPid.Key, nameByPid.Value));       
+      }
     }
-    
+
+    static string GetStoredValue(long pid, string name) {
+      return $"{pid}{_seperator}{name}";
+    }
+
     static int GetNextEmptyHashCode(ZDO zdo) {
       int i = 0;
       string check = "not empty";

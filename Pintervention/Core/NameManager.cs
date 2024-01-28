@@ -71,9 +71,12 @@ namespace Pintervention {
       return $"{pid}".GetStableHashCode();
     }
 
+    public static string GetPath() {
+      return Path.Combine(Utils.GetSaveDataPath(FileHelpers.FileSource.Local), "characters", "pinNames");
+    }
+
     public static string GetFilename() {
-      return Path.Combine(Localization.instance.Localize(FileHelpers.GetSourceString(FileHelpers.FileSource.Cloud)), 
-          $"{ZNet.instance.GetWorldUID()}".GetStableHashCode().ToString() + ".csv");
+      return Path.Combine(GetPath(), $"{ZNet.instance.GetWorldUID()}".GetStableHashCode().ToString() + ".csv");
     }
 
     public static void WriteNamesToFile() {
@@ -82,12 +85,17 @@ namespace Pintervention {
         return;
       }
 
+      if (!Directory.Exists(GetPath())) {
+        Directory.CreateDirectory(GetPath());
+      }
+
       using StreamWriter writer = File.CreateText(GetFilename());
 
       writer.AutoFlush = true;
 
       foreach (KeyValuePair<long, string> nameByPid in PlayerNamesById) {
-        if (nameByPid.Key == Player.m_localPlayer.GetPlayerID()) {
+        if (nameByPid.Key == Player.m_localPlayer.GetPlayerID()
+            || nameByPid.Value.StartsWith("Unknown")) {
           continue;
         }
 

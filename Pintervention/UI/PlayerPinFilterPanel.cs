@@ -112,6 +112,8 @@ namespace Pintervention {
       Content.RectTransform().SetSizeDelta(
           new(Viewport.RectTransform().sizeDelta.x, _rowPreferredHeight * PinOwnerManager.ForeignPinOwners.Count));
 
+      List<long> sortedPinOwners = PinOwnerManager.ForeignPinOwners.OrderBy(x => NameManager.GetPlayerNameById(x)).ToList();
+
       for (int i = 0; i < PinOwnerManager.ForeignPinOwners.Count; i++) {
         row = new(Content.transform);
         row.SetRowContent(PinOwnerManager.GetForeignPinOwnerAtIndex(i));
