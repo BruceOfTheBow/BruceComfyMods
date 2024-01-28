@@ -129,6 +129,10 @@ namespace Pintervention {
       }
     }
 
+    public static void SortPinOwnersByName() {
+      ForeignPinOwners = ForeignPinOwners.OrderBy(x => NameManager.GetPlayerNameById(x)).ToList();
+    }
+
     public static List<Minimap.PinData> GetPinsByPid(long pid) {
       if (pid == 0L) {
         AddAllLocalPlayerPins();
