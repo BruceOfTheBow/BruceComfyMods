@@ -14,8 +14,8 @@
 
 ## Previews
 
-![Disable read pins](./Image/DisableReadPins.png)
-![Player filter panel](./Image/PlayerFilterPanel.png)
+![Disable read pins](./Image/PinterventionNoPins.png)
+![Player filter panel](./Image/PinterventionPlayerPinFilter.png)
 
 ## Notes
   * See source at: [GitHub](https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Pintervention).
