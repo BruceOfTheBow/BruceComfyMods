@@ -45,9 +45,9 @@ namespace Pintervention.Patches {
       NameManager.WriteNamesToFile();
     }
 
-    [HarmonyPostfix]
+    [HarmonyPrefix]
     [HarmonyPatch(nameof(MapTable.OnWrite))]
-    static void OnWritePostfix(MapTable __instance) {
+    static void OnWritePrefix(MapTable __instance) {
       if (!IsModEnabled.Value
           || !__instance
           || !__instance.m_nview

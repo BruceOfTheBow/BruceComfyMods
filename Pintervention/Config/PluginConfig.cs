@@ -6,6 +6,8 @@ namespace Pintervention {
     public static ConfigEntry<bool> IsModEnabled { get; private set; }
     public static ConfigEntry<bool> ReadPinsOnInteract { get; private set; }
     public static ConfigEntry<bool> ReadRevealedMapOnInteract { get; private set; }
+    public static ConfigEntry<bool> WritePinsOnInteract { get; private set; }
+    public static ConfigEntry<bool> WriteRevealedMapOnInteract { get; private set; }
     public static ConfigEntry<KeyboardShortcut> DisplayFilterPanel { get; private set; }
     public static ConfigEntry<Vector2> PlayerPinFilterSizeDelta { get; private set; }
     public static ConfigEntry<Vector2> PlayerPinFilterPosition { get; private set; }
@@ -26,6 +28,20 @@ namespace Pintervention {
               "readRevealedMapOnInteract",
               true,
               "Allows not taking shared map data when reading from cartography table.");
+
+      WritePinsOnInteract =
+          config.Bind(
+              "CartographyTable",
+              "writePinsOnInteract",
+              true,
+              "Allows not writing pins when writing to cartography table.");
+
+      WriteRevealedMapOnInteract =
+          config.Bind(
+              "CartographyTable",
+              "writeRevealedMapOnInteract",
+              true,
+              "Allows not writing shared map data when writing to cartography table.");
 
       DisplayFilterPanel =
           config.Bind(

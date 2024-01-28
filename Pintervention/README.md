@@ -20,4 +20,4 @@
 ## Notes
   * See source at: [GitHub](https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Pintervention).
   * Looking for a chill Valheim server? [Comfy Valheim Discord](https://discord.gg/ameHJz5PFk)
-  * ComfyGizmo icon created by [@jenniely](https://twitter.com/jenniely) (jenniely.com)
+  * Pintervention icon created by [@jenniely](https://twitter.com/jenniely) (jenniely.com)

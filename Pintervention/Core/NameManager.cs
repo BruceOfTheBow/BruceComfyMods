@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using static Pintervention.Pintervention;
+using static WorldGenerator;
 
 namespace Pintervention {
   public class NameManager {
@@ -52,7 +53,12 @@ namespace Pintervention {
     }
 
     public static void AddPlayerName(long pid, string name) {
+      if (PlayerNamesById.ContainsKey(pid) && !PlayerNamesById[pid].Contains("Unknown")) {
+        return;
+      }
+
       if (PlayerNamesById.ContainsKey(pid)) {
+        PlayerNamesById[pid] = name;
         return;
       }
 
@@ -81,7 +87,12 @@ namespace Pintervention {
 
     public static void WriteNamesToFile() {
       if (!ZNet.instance) {
-        LogWarning("Could not save player names as ZNet instance is null.");
+        return;
+      }
+
+      Dictionary<long, string> namesToWrite = GetNamesToWrite();
+
+      if (namesToWrite.Count == 0) {
         return;
       }
 
@@ -93,7 +104,7 @@ namespace Pintervention {
 
       writer.AutoFlush = true;
 
-      foreach (KeyValuePair<long, string> nameByPid in PlayerNamesById) {
+      foreach (KeyValuePair<long, string> nameByPid in namesToWrite) {
         if (nameByPid.Key == Player.m_localPlayer.GetPlayerID()
             || nameByPid.Value.StartsWith("Unknown")) {
           continue;
@@ -101,6 +112,21 @@ namespace Pintervention {
 
         writer.WriteLine(PidNameMapToRow(HashPid(nameByPid.Key), nameByPid.Value));
       }
+    }
+
+    public static Dictionary<long, string> GetNamesToWrite() {
+      Dictionary<long, string> namesToWrite = new();
+
+      foreach (KeyValuePair<long, string> nameByPid in PlayerNamesById) {
+        if (nameByPid.Key == Player.m_localPlayer.GetPlayerID()
+            || nameByPid.Value.StartsWith("Unknown")) {
+          continue;
+        }
+
+        namesToWrite.Add(nameByPid.Key, nameByPid.Value);
+      }
+
+      return namesToWrite;
     }
 
     public static void ReadNamesFromFile() {
