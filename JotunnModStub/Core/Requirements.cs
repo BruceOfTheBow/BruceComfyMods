@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace PlantThings.Core {
+namespace PlantThings {
   static class Requirements {
     public static Dictionary<string, int> WoodRequired = new Dictionary<string, int>() {
       { "$custompiece_log1", 5 },

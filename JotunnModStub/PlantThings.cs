@@ -13,8 +13,9 @@ using Jotunn.Utils;
 
 using HarmonyLib;
 
-using static PlantThings.Core.Category;
-using PlantThings.Core;
+using static PlantThings.Category;
+
+using BepInEx.Logging;
 
 namespace PlantThings {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
@@ -22,7 +23,7 @@ namespace PlantThings {
   public class PlantThings : BaseUnityPlugin {
     public const string PluginGUID = "bruce.valheim.comfymods.";
     public const string PluginName = "PlantThings";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginVersion = "1.1.0";
 
     static AssetBundle assetplanter;
 
@@ -43,7 +44,11 @@ namespace PlantThings {
 
     Harmony _harmony;
 
+    static ManualLogSource _logger;
+
     void Awake() {
+      _logger = Logger;
+
       LoadAssets();
       LoadTable();
       AddPieces();
@@ -61,7 +66,7 @@ namespace PlantThings {
         AssetBundle bundle = AssetUtils.LoadAssetBundleFromResources(prefabAssetBundleName, typeof(PlantThings).Assembly);
 
         if (bundle == null) {
-          ZLog.Log($"PlantIt: could not load asset bundle {prefabAssetBundleName}");
+          LogWarning($"PlantIt: could not load asset bundle {prefabAssetBundleName}");
           continue;
         }
 
@@ -114,10 +119,12 @@ namespace PlantThings {
       GameObject go = bundle.LoadAsset<GameObject>(name);
 
       if (go == null || GetCategory(name) == null) {
+        LogWarning($"Piece {name} not added. GameObject not found.");
         return;
       }
 
       CustomPiece customPiece = new CustomPiece(go,
+          false,
           new PieceConfig {
             PieceTable = _plantItPieceTable,
             Category = GetCategory(name),
@@ -152,6 +159,14 @@ namespace PlantThings {
       }
 
       return 2;
+    }
+
+    public static void Log(string message) {
+      _logger.LogInfo($"{message}");
+    }
+
+    public static void LogWarning(string message) {
+      _logger.LogWarning($"{message}");
     }
   }
 }

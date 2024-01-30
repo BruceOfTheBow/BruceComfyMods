@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-using static PlantThings.Core.Category;
+using static PlantThings.Category;
 
 namespace PlantThings.Patches {
   [HarmonyPatch(typeof(Piece))]

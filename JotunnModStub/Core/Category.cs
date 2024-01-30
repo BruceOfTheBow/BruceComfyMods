@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
-namespace PlantThings.Core {
+using static PlantThings.PlantThings;
+
+namespace PlantThings {
   static class Category {
     static readonly string _misc = "Misc.";
     static readonly string _hanging = "Hanging";
@@ -31,6 +32,8 @@ namespace PlantThings.Core {
       if (PottedPrefabs.Contains(prefabName)) {
         return _potted;
       }
+
+      LogWarning($"No category found for {prefabName}. Prefab not added to shovel build table.");
 
       return null;
     }
@@ -69,7 +72,6 @@ namespace PlantThings.Core {
       "$custompiece_dirtblock_small",
       "$custompiece_dirtblock_medium",
       "$custompiece_dirtblock_large",
-      "$custompiece_blackpine",
       "$custompiece_grassblock_small_test",
       "$custompiece_grassblock_small_test2",
     };
@@ -141,6 +143,7 @@ namespace PlantThings.Core {
       "custompiece_pottedcactus1",
       "custompiece_pottedcactus2",
       "custompiece_smallpottedplant",
+      "custompiece_weirdflowers",
       "$custompiece_s1_roundcactuspinkflowers",
       "$custompiece_s2_tallcactusredflower",
       "$custompiece_s3_pottedpricklypear",
@@ -151,6 +154,7 @@ namespace PlantThings.Core {
       "$custompiece_s8_towercactus",
       "$custompiece_s9_whiteflowers",
       "$custompiece_s10_fatboi",
+      "$custompiece_s11_clehmannii",
       "$custompiece_s11_cLehmannii",
       "$custompiece_s12_splitrocks",
       "$custompiece_s13_roundcactusyellowflowers",

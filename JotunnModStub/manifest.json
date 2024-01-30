@@ -2,7 +2,7 @@
   "name": "PlantThings",
   "author": "OdinPlus; adapted by Bruce",
   "description": "Adds lots of buildable custom plants. Use the custom item called Shovel to place them.",
-  "version_number": "1.0.0",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/BruceOfTheBow/PlantIt/tree/plant-things",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2105",
