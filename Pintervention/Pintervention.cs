@@ -10,7 +10,7 @@ namespace Pintervention {
   public class Pintervention : BaseUnityPlugin {
     public const string PluginGuid = "bruce.valheim.comfymods.pintervention";
     public const string PluginName = "Pintervention";
-    public const string PluginVersion = "0.1.0";
+    public const string PluginVersion = "1.0.0";
 
     Harmony _harmony;
 
