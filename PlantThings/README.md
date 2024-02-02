@@ -1,5 +1,5 @@
 # PlantThings 
-* Modified version of PlantIt by Plugma and the ODINPLUS Mod Team
+* Modified version of PlantIt by Plugma and the ODINPLUS Mod Team. Modified for ComfyValheim by Bruce.
 
 ## PlantThings changes from PlantIt
 

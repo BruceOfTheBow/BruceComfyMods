@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Category.cs" />
+    <Compile Include="Core\Name.cs" />
     <Compile Include="Core\Requirements.cs" />
     <Compile Include="Patches\PiecePatch.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />

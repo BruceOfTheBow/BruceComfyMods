@@ -137,6 +137,7 @@ namespace PlantThings {
               }
           });
 
+      customPiece.Piece.m_name = Name.GetName(name);
       customPiece.Piece.m_comfort = 0;
       customPiece.Piece.m_comfortGroup = Piece.ComfortGroup.None;
 
