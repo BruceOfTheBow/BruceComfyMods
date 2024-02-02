@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomieHeadcount", "HomieHead
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pintervention", "Pintervention\Pintervention.csproj", "{334130A7-42B2-4177-A221-CEDF40D6899D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantThings", "PlantThings\PlantThings.csproj", "{DEAF4438-8089-40ED-8175-398E1261D45B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{334130A7-42B2-4177-A221-CEDF40D6899D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334130A7-42B2-4177-A221-CEDF40D6899D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{334130A7-42B2-4177-A221-CEDF40D6899D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEAF4438-8089-40ED-8175-398E1261D45B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEAF4438-8089-40ED-8175-398E1261D45B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEAF4438-8089-40ED-8175-398E1261D45B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEAF4438-8089-40ED-8175-398E1261D45B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
