@@ -1,0 +1,8 @@
+{
+  "name": "WristWatch",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "A wrist watch for your viking.... or your HUD.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/WristWatch",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
