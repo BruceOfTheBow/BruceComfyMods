@@ -33,8 +33,6 @@ namespace PlantThings {
         return _potted;
       }
 
-      LogWarning($"No category found for {prefabName}. Prefab not added to shovel build table.");
-
       return null;
     }
 
