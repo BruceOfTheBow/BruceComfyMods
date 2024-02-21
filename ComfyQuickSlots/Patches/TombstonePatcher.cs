@@ -1,24 +1,20 @@
 ﻿//This file is courtesy of the creator of the original Valheim Inventory Slots mod :)
-using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
+using HarmonyLib;
+
 using UnityEngine;
 
 using static ComfyQuickSlots.PluginConfig;
 using static ComfyQuickSlots.ComfyQuickSlots;
 
 namespace ComfyQuickSlots {
-
   [HarmonyPatch(typeof(Player))]
-  public class TombstonePatcher {
+  static class TombstonePatcher {
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Player.CreateTombStone))]
-    public static void CreateTombStonePrefix(Player __instance) {
+    static void CreateTombStonePrefix(Player __instance) {
       // Log Items in tombstone on death for auditing and tracking purposes
       Directory.CreateDirectory(LogFilesPath.Value);
       string filename = __instance.GetPlayerID() + ".csv";
@@ -26,25 +22,48 @@ namespace ComfyQuickSlots {
 
       Player that = __instance;
       UnequipAllArmor(__instance);
-      GameObject additionalTombstone = UnityEngine.Object.Instantiate(that.m_tombstone, that.GetCenterPoint() + Vector3.up * 1.25f, that.transform.rotation);
-      additionalTombstone.gameObject.transform.localScale -= new Vector3(.5f, .5f, .5f);
+
+      GameObject additionalTombstone = CreateAdditionalTombstone(that);
+      SetupTombstone(additionalTombstone.GetComponent<TombStone>());
+
       Container graveContainer = additionalTombstone.GetComponent<Container>();
+      Inventory graveInventory = graveContainer.GetInventory();
 
       that.UnequipAllItems();
-      Func<ItemDrop.ItemData, bool> predicate = new Func<ItemDrop.ItemData, bool>(item => item.m_gridPos.y >= 4 && !item.m_equipped);
-      foreach (var item in that.GetInventory().GetAllItems().Where(predicate).ToArray()) {
-        if (item.m_gridPos.y >= 4) {
-          graveContainer.GetInventory().AddItem(item);
-          that.GetInventory().RemoveItem(item);
+
+      Inventory playerInventory = that.GetInventory();
+      List<ItemDrop.ItemData> playerItems = new(playerInventory.GetAllItems());
+
+      foreach (var item in playerItems) {
+        if (item.m_gridPos.y >= 4 && !item.m_equipped) {
+          graveInventory.AddItem(item);
+          playerInventory.RemoveItem(item);
         }
       }
+
       __instance.GetInventory().m_height = 4;
       __instance.GetInventory().m_width = 8;
     }
 
+    static GameObject CreateAdditionalTombstone(Player player) {
+      GameObject additionalTombstone =
+          UnityEngine.Object.Instantiate(
+              player.m_tombstone, player.GetCenterPoint() + Vector3.up * 1.25f, player.transform.rotation);
+
+      additionalTombstone.transform.localScale -= new Vector3(0.5f, 0.5f, 0.5f);
+
+      return additionalTombstone;
+    }
+
+    static void SetupTombstone(TombStone tombstone) {
+      PlayerProfile profile = Game.instance.GetPlayerProfile();
+      tombstone.m_nview.m_zdo.Set(ZDOVars.s_owner, profile.GetPlayerID());
+      tombstone.m_nview.m_zdo.Set(ZDOVars.s_ownerName, profile.GetName());
+    }
+
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Player.CreateTombStone))]
-    public static void CreateTombStonePostfix(Player __instance) {
+    static void CreateTombStonePostfix(Player __instance) {
       __instance.GetInventory().m_height = rows;
       __instance.GetInventory().m_width = columns;
     }

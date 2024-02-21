@@ -12,7 +12,7 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.5.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.6.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Features
@@ -44,6 +44,11 @@
   * Check out our community driven listing site at: [valheimlist.org](https://valheimlist.org/)
 
 ## Changelog
+
+### 1.6.0
+
+  * Updated for patch `v0.217.38`.
+  * Fixed a bug where PlayerId and PlayerName were not added to the extra tombstone created on player death.
 
 ### 1.5.0
 
