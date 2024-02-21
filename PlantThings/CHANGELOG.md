@@ -3,6 +3,7 @@
 ### v1.1.0
 
 	* Added two missing prefabs (Corpuscularia lehmannii and Potted Flowers)
+	* Change names of plant pieces added to readable names rather than asset names.
 
 ### v1.0.0
 

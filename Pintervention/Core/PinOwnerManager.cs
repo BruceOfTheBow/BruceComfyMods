@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
+using static Pintervention.FileUtils;
 using static Pintervention.Pintervention;
 
 namespace Pintervention {
   public class PinOwnerManager {
     public static List<long> ForeignPinOwners { get; private set; } = new();
-    static List<long> _filteredPinOwners = new();
+    public static List<long> FilteredPinOwners { get; private set; } = new ();
     static HashSet<Minimap.PinData> _localPlayerPins = new();
 
     public static bool Initialize() {
@@ -70,9 +73,9 @@ namespace Pintervention {
         ForeignPinOwners = new();
       }
 
-      if(_filteredPinOwners.Any()) {
-        _filteredPinOwners.Clear();
-        _filteredPinOwners = new();
+      if(FilteredPinOwners.Any()) {
+        FilteredPinOwners.Clear();
+        FilteredPinOwners = new();
       }
     }
 
@@ -116,11 +119,11 @@ namespace Pintervention {
         Initialize();
       }
 
-      if (!_filteredPinOwners.Any()) { 
+      if (!FilteredPinOwners.Any()) { 
         return; 
       }
 
-      foreach (long pid in _filteredPinOwners) {
+      foreach (long pid in FilteredPinOwners) {
         List<Minimap.PinData> pinsToFilter = GetPinsByPid(pid);
 
         foreach (Minimap.PinData pin in pinsToFilter) {
@@ -150,7 +153,7 @@ namespace Pintervention {
     }
 
     public static bool IsFiltered(long pid) {
-      if (!_filteredPinOwners.Contains(pid)) {
+      if (!FilteredPinOwners.Contains(pid)) {
         return false;
       }
 
@@ -158,12 +161,12 @@ namespace Pintervention {
     }
 
     public static void ToggleFilter(long pid) {
-      if (_filteredPinOwners.Contains(pid)) {
-        _filteredPinOwners.Remove(pid);
+      if (FilteredPinOwners.Contains(pid)) {
+        FilteredPinOwners.Remove(pid);
         return;
       }
 
-      _filteredPinOwners.Add(pid);
+      FilteredPinOwners.Add(pid);
     }
 
     public static bool IsInitialized() {
@@ -184,6 +187,74 @@ namespace Pintervention {
 
     public static void RemoveLocalPlayerPin(Minimap.PinData pin) {
       _localPlayerPins.Remove(pin);
+    }
+
+    public static string PidToRow(int hashedPid) {
+      return string.Join(
+          ",",
+          hashedPid.ToString()
+      );
+    }
+
+    public static void WriteFilteredPlayersToFile() {
+      if (!FilteredPinOwners.Any()) {
+        return;
+      }
+
+      if (!Directory.Exists(GetPath())) {
+        Directory.CreateDirectory(GetPath());
+      }
+
+      using StreamWriter writer = File.CreateText(GetFilteredFilename());
+
+      writer.AutoFlush = true;
+
+      foreach (long pid in FilteredPinOwners) {
+        writer.WriteLine(PidToRow(HashPid(pid)));
+      }
+    }
+
+    public static void LoadFilteredPinOwners() {
+      ReadFilteredPinOwnersFromFile();
+    }
+
+    public static void ReadFilteredPinOwnersFromFile() {
+      if (!ZNet.instance || ZNet.instance.GetWorldUID().Equals(default)) {
+        LogWarning("Could not read saved filtered pin owners from file as ZNet instance is null.");
+        return;
+      }
+
+      if (!File.Exists(GetFilteredFilename())) {
+        Log($"No saved filtered pin owners to load from {GetFilteredFilename()}.");
+        return;
+      }
+
+      Log($"Loading saved player names from {GetFilename()}");
+
+      List<long> loadedHashedPids = new();
+
+      using (var reader = new StreamReader(GetFilteredFilename())) {
+        while (!reader.EndOfStream) {
+          var line = reader.ReadLine();
+          var values = line.Split(',');
+
+          int hashedPid = Int32.Parse(values[0]);
+
+          loadedHashedPids.Add(hashedPid);
+        }
+      }
+
+      foreach (long pid in ForeignPinOwners) {
+        if (!loadedHashedPids.Contains(HashPid(pid))) {
+          continue;
+        }
+
+        if (FilteredPinOwners.Contains(pid)) {
+          continue;
+        }
+
+        FilteredPinOwners.Add(pid);
+      }
     }
   }
 }

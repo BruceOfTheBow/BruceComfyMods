@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using static Pintervention.FileUtils;
 using static Pintervention.Pintervention;
-using static WorldGenerator;
 
 namespace Pintervention {
   public class NameManager {
@@ -73,18 +74,6 @@ namespace Pintervention {
       );
     }
 
-    public static int HashPid(long pid) {
-      return $"{pid}".GetStableHashCode();
-    }
-
-    public static string GetPath() {
-      return Path.Combine(Utils.GetSaveDataPath(FileHelpers.FileSource.Local), "characters", "pinNames");
-    }
-
-    public static string GetFilename() {
-      return Path.Combine(GetPath(), $"{ZNet.instance.GetWorldUID()}".GetStableHashCode().ToString() + ".csv");
-    }
-
     public static void WriteNamesToFile() {
       if (!ZNet.instance) {
         return;
@@ -128,6 +117,8 @@ namespace Pintervention {
 
       return namesToWrite;
     }
+
+
 
     public static void ReadNamesFromFile() {
       if (!ZNet.instance || ZNet.instance.GetWorldUID().Equals(default)) {
