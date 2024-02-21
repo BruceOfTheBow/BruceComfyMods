@@ -65,9 +65,9 @@
     <Reference Include="assembly_valheim_publicized">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_valheim_publicized.dll</HintPath>
     </Reference>
-		<Reference Include="Unity.TextMeshPro_publicized">
-			<HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\Unity.TextMeshPro_publicized.dll</HintPath>
-		</Reference>
+    <Reference Include="Unity.TextMeshPro_publicized">
+      <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\Unity.TextMeshPro_publicized.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -105,7 +105,8 @@
     <Compile Include="Patches\HudPatch.cs" />
     <Compile Include="Patches\InventoryGridPatch.cs" />
     <Compile Include="Patches\InventoryGuiPatch.cs" />
-    <Compile Include="PluginConfig.cs" />
+    <Compile Include="Patches\TombstonePatch.cs" />
+    <Compile Include="Config\PluginConfig.cs" />
     <Compile Include="InventoryExtension.cs" />
     <Compile Include="InventoryLogger.cs" />
     <Compile Include="ComfyQuickSlots.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Patches\UIPatcher.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CHANGELOG.md" />
     <None Include="manifest.json" />
     <None Include="README.md" />
     <None Include="icon.png" />
@@ -145,7 +147,7 @@
   </Target>
   <Target Name="MakeThunderstorePackage" AfterTargets="GetAssemblyVersion">
     <ItemGroup>
-      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; README.md; manifest.json; icon.png" />
+      <PackageFiles Include="$(TargetDir)$(AssemblyName).dll; CHANGELOG.md; README.md; manifest.json; icon.png" />
     </ItemGroup>
     <MakeDir Directories="$(PackageDir)" />
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDir)" />

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Linq;
+
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.UI;
 
 using static ComfyQuickSlots.PluginConfig;
 
@@ -26,6 +24,7 @@ namespace ComfyQuickSlots {
     Harmony _harmony;
 
     public static readonly string PlayerInventoryName = "ComfyQuickSlotsInventory";
+    public static readonly int IsAdditionalTombstoneField = "cqs.tombstone".GetStableHashCode();
 
     private static bool _debug = false;
 

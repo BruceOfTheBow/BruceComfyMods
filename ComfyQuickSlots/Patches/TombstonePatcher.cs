@@ -24,7 +24,7 @@ namespace ComfyQuickSlots {
       UnequipAllArmor(__instance);
 
       GameObject additionalTombstone = CreateAdditionalTombstone(that);
-      SetupTombstone(additionalTombstone.GetComponent<TombStone>());
+      SetupAdditionalTombstone(additionalTombstone.GetComponent<TombStone>());
 
       Container graveContainer = additionalTombstone.GetComponent<Container>();
       Inventory graveInventory = graveContainer.GetInventory();
@@ -55,10 +55,11 @@ namespace ComfyQuickSlots {
       return additionalTombstone;
     }
 
-    static void SetupTombstone(TombStone tombstone) {
+    static void SetupAdditionalTombstone(TombStone tombstone) {
       PlayerProfile profile = Game.instance.GetPlayerProfile();
       tombstone.m_nview.m_zdo.Set(ZDOVars.s_owner, profile.GetPlayerID());
       tombstone.m_nview.m_zdo.Set(ZDOVars.s_ownerName, profile.GetName());
+      tombstone.m_nview.m_zdo.Set(IsAdditionalTombstoneField, true);
     }
 
     [HarmonyPostfix]
@@ -67,5 +68,7 @@ namespace ComfyQuickSlots {
       __instance.GetInventory().m_height = rows;
       __instance.GetInventory().m_width = columns;
     }
+
+
   }
 }
