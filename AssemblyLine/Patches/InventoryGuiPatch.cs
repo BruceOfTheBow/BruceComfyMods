@@ -83,6 +83,12 @@ namespace AssemblyLine.Patches {
     }
 
     [HarmonyPostfix]
+    [HarmonyPatch(nameof(InventoryGui.Hide))]
+    public static void HidePostfix(InventoryGui __instance) {
+      _craftsRemaining = 0;
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(nameof(InventoryGui.UpdateRecipe))]
     public static void OnUpdateRecipePostfix(InventoryGui __instance, Player player, float dt) {
       if (__instance == null
@@ -92,10 +98,6 @@ namespace AssemblyLine.Patches {
           || __instance.m_selectedRecipe.Key == null) { 
 
         return;
-      }
-
-      if (!InventoryGui.IsVisible()) {
-        SetCraftAmountToMin();
       }
 
       if (__instance.InCraftTab()
@@ -205,6 +207,8 @@ namespace AssemblyLine.Patches {
     }
 
     private static void OnIncrementPressed() {
+      SetMaxCraftAmount(InventoryGui.instance);
+
       if (MaxAmountChangeModifier.Value.IsPressed()) {
         SetCraftAmountToMax();
         SetRequirementText();
@@ -212,6 +216,10 @@ namespace AssemblyLine.Patches {
       }
 
       if (AmountChangeModifier.Value.IsPressed()) {
+        if (!HaveCraftRequirements(10)) {
+          SetCraftAmountToMax();
+        }
+
         IncrementCraftAmount(10);
         SetRequirementText();
         return;
