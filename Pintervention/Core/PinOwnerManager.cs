@@ -18,6 +18,9 @@ namespace Pintervention {
       }
 
       UpdatePinOwners();
+      NameManager.LoadPlayerNames();
+      LoadFilteredPinOwners();
+
       return true;
     }
 
@@ -229,7 +232,7 @@ namespace Pintervention {
         return;
       }
 
-      Log($"Loading saved player names from {GetFilename()}");
+      Log($"Loading saved filter state from {GetFilteredFilename()}");
 
       List<long> loadedHashedPids = new();
 

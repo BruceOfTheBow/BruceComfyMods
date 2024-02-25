@@ -1,13 +1,12 @@
 ﻿using HarmonyLib;
 
-using System.Collections.Generic;
-
 using static Pintervention.PluginConfig;
 
 namespace Pintervention {
   [HarmonyPatch(typeof(Minimap))]
   static class MinimapPatch {
     static int _pinCount = 999999;
+
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Minimap.Update))]
     static void UpdatePostfix(Minimap __instance) {
