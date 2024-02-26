@@ -2,11 +2,16 @@
 
 using static PassWard.PluginConfig;
 using static PassWard.PassWard;
+using BepInEx.Logging;
 
 namespace PassWard {
   [HarmonyPatch(typeof(Hud))]
   public class HudPatch {
-    static readonly string _hoverNameTextTemplate = "{0}{1}<size=18>[{2}] Regenerate Dungeon</size>";
+    static readonly string _hoverOwnerPasswordTemplate = "{0}\n<size=18>[<color=yellow>{1}</color>] Remove password.</size>\n<size=18>[<color=yellow>{2}</color>] Change password.</size>";
+    static readonly string _hoverOwnerNoneTemplate = "{0}\n<size=18>[<color=yellow>{1}</color>] Add password.</size>";
+    static readonly string _hoverNonownerTemplatePassword = "{0}\n\n<size=18><color=green>Password enabled</color>\n[<color=yellow>{1}</color>] Enter password.</size>";
+    static readonly string _hoverNonownerTemplateNone = "{0}\n\n<size=18><color=red>No password</color>";
+
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Hud.UpdateCrosshair))]
     public static void HudUpdateCrosshairPostfix(ref Hud __instance, ref Player player) {
@@ -21,13 +26,9 @@ namespace PassWard {
       }
 
       if (IsPlayerOwned(zNetView)) {
-        UpdateOwnerCrosshair();
+        UpdateOwnerCrosshair(__instance, zNetView);
       } else {
-        UpdateNonownerCrosshair();
-      }
-
-      if (ChangePasswordKey.Value.IsDown()) {
-        ChangePassword(zNetView);
+        UpdateNonownerCrosshair(__instance, zNetView);
       }
 
       if (EnterPasswordKey.Value.IsDown()) {
@@ -37,16 +38,34 @@ namespace PassWard {
       if (RemovePasswordKey.Value.IsDown()) {
         RemovePassword(zNetView);
       }
-
-      
     }
 
-    static void UpdateOwnerCrosshair(Hud hud) {
+    static void UpdateOwnerCrosshair(Hud hud, ZNetView zNetView) {
       if (hud == null) {
         return;
       }
 
-      hud.m_hoverName.text = string.Format(_hoverNameTextTemplate, hud.m_hoverName.text, (hud.m_hoverName.text.Length > 0) ? "\n" : string.Empty, RegenKey.Value);
+      if (HasPassword(zNetView)) {
+        hud.m_hoverName.text = BuildOwnerHoverTextWithPassword(hud);
+        return;
+      }
+
+      hud.m_hoverName.text = BuildOwnerHoverTextNoPassword(hud);
+    }
+
+    static string BuildOwnerHoverTextWithPassword(Hud hud) {
+      return string.Format(
+          _hoverOwnerPasswordTemplate,
+          hud.m_hoverName.text,
+          RemovePasswordKey.Value,
+          EnterPasswordKey.Value);
+    }
+
+    static string BuildOwnerHoverTextNoPassword(Hud hud) {
+      return string.Format(
+          _hoverOwnerNoneTemplate,
+          hud.m_hoverName.text,
+          EnterPasswordKey.Value);
     }
 
     static void UpdateNonownerCrosshair(Hud hud, ZNetView zNetView) {
@@ -55,50 +74,41 @@ namespace PassWard {
       }
 
       if (!HasPassword(zNetView)) {
-        hud.m_hoverName.text = string.Format(_hoverNameTextTemplate, hud.m_hoverName.text, (hud.m_hoverName.text.Length > 0) ? "\n" : string.Empty, RegenKey.Value);
+        hud.m_hoverName.text = BuildNonownerHoverTextNone(hud);
         return;
       }
 
-      hud.m_hoverName.text = string.Format(_hoverNameTextTemplate, hud.m_hoverName.text, (hud.m_hoverName.text.Length > 0) ? "\n" : string.Empty, RegenKey.Value);
+      hud.m_hoverName.text = BuildNonownerHoverTextPassword(hud);
     }
 
-    static void ChangePassword(ZNetView zNetView) {
-      if (!IsPlayerOwned(zNetView)) {
-        ShowMessage("You do not own this ward. Cannot change password.");
-        return;
-      }
+    static string BuildNonownerHoverTextPassword(Hud hud) {
+      return string.Format(
+          _hoverNonownerTemplatePassword,
+          hud.m_hoverName.text,
+          EnterPasswordKey.Value);
+    }
 
-      if (!HasPassword(zNetView)) {
-        ShowMessage("Ward does not have password");
-      }
+    static string BuildNonownerHoverTextNone(Hud hud) {
+      return string.Format(
+          _hoverNonownerTemplateNone,
+          hud.m_hoverName.text);
     }
 
     static void EnterPassword(ZNetView zNetView) {
-      if (!IsPlayerOwned(zNetView)) {
-        int passwordHash = zNetView.GetZDO().GetInt(PasswordZdoFieldHash, -1);
-        
-        if (passwordHash == -1) {
-          ShowMessage("No password assigned to this ward. Cannot opt in with password.");
-          return;
-        }
-
-        WardPassword passwordReceiver = new WardPassword();
-        TextInput.instance.RequestText(passwordReceiver, SetPasswordInputText, 32);
-
-        if (passwordHash == passwordReceiver.GetText(passwordReceiver).GetStableHashCode()) {
-          OptPlayerIn(zNetView);
-        } else {
-          ShowMessage("Incorrect password.");
-        }
-
+      if (IsPlayerOwned(zNetView)) {
+        AddPassword(zNetView);
         return;
       }
 
-      AddPassword(zNetView);
-    }
+      int passwordHash = zNetView.GetZDO().GetInt(PasswordZdoFieldHash, -1);
+        
+      if (passwordHash == -1) {
+        ShowMessage("No password assigned to this ward. Cannot opt in with password.");
+        return;
+      }
 
-    static void OptPlayerIn(ZNetView zNetView) {
-
+      TryPassword tryPassword = new TryPassword(zNetView);
+      TextInput.instance.RequestText(tryPassword, EnterPasswordInputText, 32);
     }
 
     static void RemovePassword(ZNetView zNetView) {
@@ -111,15 +121,14 @@ namespace PassWard {
     }
 
     static void AddPassword(ZNetView zNetView) {
+      WardPassword passwordReceiver = new WardPassword(zNetView);
+
       if (HasPassword(zNetView)) {
-        ShowMessage("Ward already has password. Change or remove password.");
+        TextInput.instance.RequestText(passwordReceiver, ChangePasswordInputText, 32);
         return;
       }
 
-      WardPassword passwordReceiver = new WardPassword();
       TextInput.instance.RequestText(passwordReceiver, SetPasswordInputText, 32);
-      zNetView.GetZDO().Set(PasswordZdoFieldHash, passwordReceiver.GetText(passwordReceiver).GetStableHashCode());
-      ShowMessage("Password set.");
     }
 
     static bool HasPassword(ZNetView zNetView) {
@@ -131,8 +140,9 @@ namespace PassWard {
     }
 
     static bool IsPlayerOwned(ZNetView zNetView) {
-      if (!zNetView.gameObject.TryGetComponent(out PrivateArea privateArea)
-            || !privateArea.m_piece.IsCreator()) {
+      long creatorId = zNetView.GetZDO().GetLong(ZDOVars.s_creator, 0L);
+
+      if (Player.m_localPlayer.GetPlayerID() != creatorId) {
         return false;
       }
 

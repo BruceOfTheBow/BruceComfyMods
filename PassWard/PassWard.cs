@@ -1,8 +1,11 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using System.Globalization;
+using System;
 using System.Reflection;
 
 using static PassWard.PluginConfig;
+using BepInEx.Logging;
 
 namespace PassWard {
   [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
@@ -13,11 +16,18 @@ namespace PassWard {
 
     Harmony _harmony;
 
+    internal static ManualLogSource _logger;
+
     public static readonly int WardHash = "guard_stone".GetStableHashCode();
     public static readonly int PasswordZdoFieldHash = "passward.password".GetStableHashCode();
+
     public static readonly string SetPasswordInputText = "Set password";
+    public static readonly string ChangePasswordInputText = "Change password";
+    public static readonly string EnterPasswordInputText = "Enter password";
 
     void Awake() {
+      _logger = Logger;
+
       BindConfig(Config);
 
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
@@ -32,7 +42,11 @@ namespace PassWard {
         return;
       }
 
-      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, "message");
+      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, message);
+    }
+
+    public static void LogError(object o) {
+      _logger.LogError($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {o}");
     }
   }
 }

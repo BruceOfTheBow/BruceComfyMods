@@ -102,7 +102,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\PluginConfig.cs" />
+    <Compile Include="Core\TryPassword.cs" />
+    <Compile Include="Core\WardPassword.cs" />
     <Compile Include="PassWard.cs" />
+    <Compile Include="Patches\HudPatch.cs" />
+    <Compile Include="Patches\PrivateAreaPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,16 +2,18 @@
 
 namespace PassWard {
   public class WardPassword : TextReceiver {
-    string password;
-    public WardPassword() {
+    ZNetView zNetView;
+    public WardPassword(ZNetView zNetView) {
+      this.zNetView = zNetView;
     }
 
     string TextReceiver.GetText() {
-      return password;
+      return "";
     }
 
     void TextReceiver.SetText(string password) {
-      this.password = password;
+      zNetView.GetZDO().Set(PasswordZdoFieldHash, password.GetStableHashCode());
+      ShowMessage("Password set.");
     }
 
     public string GetText(TextReceiver tr) {
