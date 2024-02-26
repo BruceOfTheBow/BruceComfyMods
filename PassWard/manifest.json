@@ -3,6 +3,6 @@
   "version_number": "1.0.0",
   "author": "Bruce",
   "description": "Passwords for wards.",
-  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/PassWards",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/PassWard",
   "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
 }
