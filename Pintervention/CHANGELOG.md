@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.2.0
+
+  * Fixed ambiguous method name for additional
+
 ### 1.1.0
 
   * Changed `LoadPlayerNames()` to run as `ZNetScene.Awake()` postfix.

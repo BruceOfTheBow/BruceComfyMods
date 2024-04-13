@@ -32,7 +32,9 @@ namespace ComfyGizmo.Patches {
       RotationManager.HideGizmos();
       RotationManager.ShowGizmos(__instance);
 
-      if (!__instance.m_buildPieces || !takeInput) {
+      if (!__instance.m_buildPieces
+            || !takeInput
+            || Hud.IsPieceSelectionVisible()) {
         return;
       }
 

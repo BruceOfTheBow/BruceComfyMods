@@ -12,7 +12,7 @@ namespace Pintervention.Patches {
     static readonly char _seperator = '_';
 
     [HarmonyPrefix]
-    [HarmonyPatch(nameof(MapTable.OnRead))]
+    [HarmonyPatch(nameof(MapTable.OnRead), typeof(Switch), typeof(Humanoid), typeof(ItemDrop.ItemData))]
     static bool OnReadPostfix(MapTable __instance, ItemDrop.ItemData item, ref bool __result) {
       if (!IsModEnabled.Value
           || !__instance
@@ -35,7 +35,7 @@ namespace Pintervention.Patches {
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(MapTable.OnRead))]
+    [HarmonyPatch(nameof(MapTable.OnRead), typeof(Switch), typeof(Humanoid), typeof(ItemDrop.ItemData))]
     static void OnReadPostfix(MapTable __instance, ItemDrop.ItemData item) {
       if (!ReadPinsOnInteract.Value) {
         return;

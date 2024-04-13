@@ -1,4 +1,4 @@
-﻿using Fishlabs.Valheim;
+﻿using Valheim.SettingsGui;
 using HarmonyLib;
 
 using static Hygge.PluginConfig;

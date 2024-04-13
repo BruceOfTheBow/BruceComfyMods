@@ -18,20 +18,6 @@
     * white - None category is not colorized as each piece is additive
 
 
-##
+## Links
   * See source at: [GitHub](https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/Hygge).
   * Looking for a chill Valheim server? [Comfy Valheim Discord](https://discord.gg/ameHJz5PFk)
-
-## Changelog
-
-### 1.2.0
-
-  * Fixed Settings references to FishlabsValheim.GraphicsSettings for updates in patch 0.217.38
-
-### 1.1.0
-
-  * Fixed text scaling issue.
-
-### 1.0.0
-
-  * Initial release.
