@@ -29,6 +29,8 @@ namespace ComfyGizmo {
               "Number of snap angles per 180 degrees. Vanilla uses 8.",
               new AcceptableValueRange<int>(MinSnapDivisions, MaxSnapDivisions));
 
+      SnapDivisions.OnSettingChanged(RotationManager.ResetRotationConditional);
+
       BindKeysConfig(config);
       BindGizmoColorsConfig(config);
 

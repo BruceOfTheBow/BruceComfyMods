@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.9.2
+
+  * Fixed bug where manually entering in snap division changes did not respect reset rotation configuration value.
+
 ### 1.9.1
 
   * Fixed bug where rotations occurred with build panel open.

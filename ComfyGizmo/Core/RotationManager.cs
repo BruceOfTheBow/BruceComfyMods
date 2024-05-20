@@ -33,6 +33,14 @@ namespace ComfyGizmo {
       _roofRotator.ResetRotation();
     }
 
+    public static void ResetRotationConditional() {
+      if (!ResetRotationOnSnapDivisionChange.Value) {
+        return;
+      }
+
+      ResetRotation();
+    }
+
     public static void ResetAxis(Vector3 axis) {
       _defaultRotator.ResetAxis(axis);
       _internalRotator.ResetAxis(axis);
@@ -149,11 +157,7 @@ namespace ComfyGizmo {
       MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions increased to {SnapDivisions.Value * 2}");
       SnapDivisions.Value = SnapDivisions.Value * 2;
 
-      if (!ResetRotationOnSnapDivisionChange.Value) {
-        return;
-      }
-
-      ResetRotation();
+      ResetRotationConditional();
     }
 
     public static void DecreaseSnapDivisions() {
@@ -164,11 +168,7 @@ namespace ComfyGizmo {
       MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Snap divisions decreased to {SnapDivisions.Value / 2}");
       SnapDivisions.Value = SnapDivisions.Value / 2;
 
-      if (!ResetRotationOnSnapDivisionChange.Value) {
-        return;
-      }
-
-      ResetRotation();
+      ResetRotationConditional();
     }
   }
 }

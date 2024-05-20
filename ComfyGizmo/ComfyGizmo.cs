@@ -11,7 +11,7 @@ namespace ComfyGizmo {
   public class ComfyGizmo : BaseUnityPlugin {
     public const string PluginGUID = "bruce.valheim.comfymods.gizmo";
     public const string PluginName = "ComfyGizmo";
-    public const string PluginVersion = "1.9.1";
+    public const string PluginVersion = "1.9.2";
 
     Harmony _harmony;
 
