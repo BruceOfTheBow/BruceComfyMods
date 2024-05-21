@@ -50,9 +50,8 @@ namespace AddAllFuel.Patches {
 
       user.GetInventory().RemoveItem(item, fuelSize);
 
-      for (int i = 0; i < fuelSize; i++) {
-        __instance.m_nview.InvokeRPC("AddFuel", Array.Empty<object>());
-      }
+      __instance.m_nview.InvokeRPC("RPC_AddFuelAmount", new object[]{ (float)fuelSize });
+     
       user.Message(MessageHud.MessageType.Center, Localization.instance.Localize("$msg_fireadding", new string[]
         {fuelName}), 0, null);
 

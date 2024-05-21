@@ -37,7 +37,7 @@ namespace AddAllFuel.Patches {
       user.GetInventory().RemoveItem(item, amountToAdd);
 
       for (int i = 0; i < amountToAdd; i++) {
-        __instance.m_nview.InvokeRPC("AddFuel", Array.Empty<object>());
+        __instance.m_nview.InvokeRPC("RPC_AddFuel", Array.Empty<object>());
       }
 
       user.Message(MessageHud.MessageType.Center, $"$msg_added {amountToAdd} {__instance.GetFuelName()}", 0, null);
@@ -79,7 +79,7 @@ namespace AddAllFuel.Patches {
       user.GetInventory().RemoveItem(item, amountToAdd);
 
       for (int i = 0; i < amountToAdd; i++) {
-        __instance.m_nview.InvokeRPC("AddItem", new object[] { item.m_dropPrefab.name });
+        __instance.m_nview.InvokeRPC("RPC_AddItem", new object[] { item.m_dropPrefab.name });
       }
 
       __result = true;
@@ -103,7 +103,7 @@ namespace AddAllFuel.Patches {
       }
 
       for (int i =0; i < doneItemCount; i++) {
-        __instance.m_nview.InvokeRPC("RemoveDoneItem", new object[] { user.transform.position });
+        __instance.m_nview.InvokeRPC("RPC_RemoveDoneItem", new object[] { user.transform.position });
       }
 
       return false;
