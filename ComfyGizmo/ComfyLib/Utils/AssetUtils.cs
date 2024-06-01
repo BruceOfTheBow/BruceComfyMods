@@ -41,6 +41,7 @@ public sealed class AssetCache<T> where T : Object {
       SoftReference<T> reference = new(assetId);
       reference.Load();
       asset = reference.Asset;
+      _cache[guid] = asset;
     }
 
     return asset;
