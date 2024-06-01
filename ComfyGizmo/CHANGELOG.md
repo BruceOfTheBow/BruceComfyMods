@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.10.0
+
+  * Bumped up `<LangVersion>` to C# 12.
+  * Code clean-up and refactoring.
+  * Created new `AssetUtils` and added logic to replace Gizmo prefab shaders at runtime.
+
 ### 1.9.2
 
   * Fixed bug where manually entering in snap division changes did not respect reset rotation configuration value.

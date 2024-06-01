@@ -1,83 +1,81 @@
-﻿using UnityEngine;
-using static ComfyGizmo.PluginConfig;
+﻿namespace ComfyGizmo;
 
-namespace ComfyGizmo {
-  
-  public abstract class AbstractRotator {
-    protected Gizmos _gizmos;
-    protected GhostGizmo _ghostGizmo;
-    protected string _name;
+using UnityEngine;
 
-    protected Vector3 _eulerAngles = Vector3.zero;
-    public abstract void Rotate(Vector3 rotationAxis);
+using static PluginConfig;
 
-    public abstract void ResetRotation();
+public abstract class AbstractRotator {
+  protected Gizmos _gizmos;
+  protected GhostGizmo _ghostGizmo;
+  protected string _name;
+  protected Vector3 _eulerAngles = Vector3.zero;
 
-    public abstract void ResetAxis(Vector3 axis);
+  public abstract void Rotate(Vector3 rotationAxis);
 
-    public abstract void MatchPieceRotation(Piece target);
+  public abstract void ResetRotation();
 
-    public abstract Quaternion GetRotation();
+  public abstract void ResetAxis(Vector3 axis);
 
-    public void DisplayModeChangeHudeMessage() {
-      if (!MessageHud.instance) {
-        return;
-      }
+  public abstract void MatchPieceRotation(Piece target);
 
-      MessageHud.instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Switchted to {GetModeName()} mode.");
+  public abstract Quaternion GetRotation();
+
+  public void DisplayModeChangeHudeMessage() {
+    if (MessageHud.m_instance) {
+      MessageHud.m_instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Switchted to {GetModeName()} mode.");
+    }
+  }
+
+  public void Destroy() {
+    DestroyGizmos();
+    DestroyGhostGizmo();
+  }
+
+  private void DestroyGizmos() {
+    if (_gizmos == null) {
+      return;
     }
 
-    public void Destroy() {
-      DestroyGizmos();
-      DestroyGhostGizmo();
+    _gizmos.Destroy();
+  }
+
+  private void DestroyGhostGizmo() {
+    if (_ghostGizmo == null ) {
+      return;
     }
 
-    private void DestroyGizmos() {
-      if (_gizmos == null) {
-        return;
-      }
+    _ghostGizmo.Destroy();
+  }
 
-      _gizmos.Destroy();
-    }
+  protected abstract Gizmos GetGizmos();
 
-    private void DestroyGhostGizmo() {
-      if (_ghostGizmo == null ) {
-        return;
-      }
+  public void ShowGizmos(Player player) {
+    GetGizmos().Show(player);
+  }
 
-      _ghostGizmo.Destroy();
-    }
+  public void HideGizmos() {
+    GetGizmos().Hide();
+  }
 
-    protected abstract Gizmos GetGizmos();
+  public void ResetScales() {
+    GetGizmos().ResetScale();
+  }
 
-    public void ShowGizmos(Player player) {
-      GetGizmos().Show(player);
-    }
+  public void SetXScale(float scale) {
+    GetGizmos().SetXScale(scale);
+  }
 
-    public void HideGizmos() {
-      GetGizmos().Hide();
-    }
+  public void SetYScale(float scale) {
+    GetGizmos().SetYScale(scale);
+  }
 
-    public void ResetScales() {
-      GetGizmos().ResetScale();
-    }
+  public void SetZScale(float scale) {
+    GetGizmos().SetZScale(scale);
+  }
 
-    public void SetXScale(float scale) {
-      GetGizmos().SetXScale(scale);
-    }
+  protected abstract string GetModeName();
 
-    public void SetYScale(float scale) {
-      GetGizmos().SetYScale(scale);
-    }
-
-    public void SetZScale(float scale) {
-      GetGizmos().SetZScale(scale);
-    }
-
-    protected abstract string GetModeName();
-
-    protected float GetAngle() {
-      return 180f / SnapDivisions.Value;
-    }
+  protected float GetAngle() {
+    return 180f / SnapDivisions.Value;
   }
 }
