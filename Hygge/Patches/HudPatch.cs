@@ -9,7 +9,7 @@ namespace Hygge.Patches {
     [HarmonyPostfix]
     [HarmonyPatch(nameof(Hud.SetupPieceInfo))]
     static void SetupPieceInfoPostfix(ref Hud __instance, Piece piece) {
-      if (!IsModEnabled.Value) {
+      if (!IsModEnabled.Value || piece == null) {
         return;
       }
 
