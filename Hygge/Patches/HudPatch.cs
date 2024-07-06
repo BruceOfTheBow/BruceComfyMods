@@ -13,7 +13,7 @@ namespace Hygge.Patches {
         return;
       }
 
-      if (piece.m_comfort == 0) {
+      if (piece && piece.m_comfort == 0) {
         ComfortPanelManager.ToggleOff();
         return;
       }
