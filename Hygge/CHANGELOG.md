@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.3.1
+
+  * Added null check for piece and disables hygge UI on successful check.
+
 ### 1.3.0
 
   * Updated UI references to gui_framework for patch 0.217.46

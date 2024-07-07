@@ -9,7 +9,7 @@ namespace Hygge {
   public class Hygge : BaseUnityPlugin {
     public const string PluginGuid = "bruce.valheim.comfymods.hygge";
     public const string PluginName = "Hygge";
-    public const string PluginVersion = "1.3.0";
+    public const string PluginVersion = "1.3.1";
 
     Harmony _harmony;
 
