@@ -2,6 +2,8 @@
 
 *Comfy version of Gizmo.*
 
+## Features
+
   * Configurable modifier hot-keys for:
     * X-axis rotation (default: hold `LeftShift`)
     * Z-axis rotation (default: hold `LeftAlt`)
@@ -20,7 +22,8 @@
 
 ### Old Rotation Mode
 
-  * Uses rotation scheme from ComfyGizmo v1.2.0-v1.4.0. Differs from default by behavior when rotating around multiple axes.
+  * Uses rotation scheme from ComfyGizmo `v1.2.0` - `v1.4.0`.
+  * Differs from default by behavior when rotating around multiple axes.
 
 ### Roof Mode
 
@@ -28,7 +31,7 @@
   * Rotations align with the beam of the roof to sync with inclined flat roof pieces.
   * Will be disabled on enabling Local Frame mode.
   * Is only active when one of the 8 corner-roof pieces are selected.
-    * Can remain enabled unless a player wishes to rotate a corner roof piece along its tradtional x or z axes.
+  * Can remain enabled unless a player wishes to rotate a corner roof piece along its tradtional x or z axes.
 
 ## Installation
 
@@ -39,7 +42,7 @@
 ### Thunderstore (manual)
 
   1. **Disable or uninstall** any installed `ComfyGizmo_v1.8.0` or earlier.
-  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.9.2.zip`.
+  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.11.0.zip`.
   3. Click "OK/Import local mod" on the pop-up for information.
   
 ## Notes

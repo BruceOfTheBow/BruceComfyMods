@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.11.0
+
+  * Fixed a NRE with prefab shaders in certain cases where ComfyGizmo is not installed alongside Jotunn.
+
 ### 1.10.0
 
   * Bumped up `<LangVersion>` to C# 12.

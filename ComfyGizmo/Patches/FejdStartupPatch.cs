@@ -1,4 +1,5 @@
 ﻿namespace ComfyGizmo;
+
 using HarmonyLib;
 
 [HarmonyPatch(typeof(FejdStartup))]
