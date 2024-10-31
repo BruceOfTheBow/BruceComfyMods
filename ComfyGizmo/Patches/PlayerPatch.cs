@@ -72,7 +72,7 @@ static class PlayerPatch {
   }
   
   private static int GetSign() {
-    return Math.Sign(ZInput.GetAxis("Mouse ScrollWheel"));
+    return Math.Sign(ZInput.GetMouseScrollWheel());
   }
 
   private static Vector3 GetRotationAxis() {

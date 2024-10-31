@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.12.0
+
+  * Fixed for the `v0.219.14` patch.
+
 ### 1.11.0
 
   * Fixed a NRE with prefab shaders in certain cases where ComfyGizmo is not installed alongside Jotunn.
