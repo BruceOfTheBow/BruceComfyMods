@@ -1,11 +1,20 @@
 ## Changelog
 
+### 1.7.0
+
+  * Fixed for the `v0.219.14` patch.
+  * Bumped up `<LangVersion>` to C# 12.
+  * Removed `MoreSlotsPatcherForComfyQuickslots` compatibility plugin as that mod is no longer supported.
+  * Added new config-option `Container.InventoryGrid`-`anchoredPosition` to position the Container InventoryGrid panel.
+  * QuickSlot bindings in the InventoryGrid will refresh only one time, each time the Player inventory is shown.
+  * Major code clean-up and refactoring (WIP).
+
 ### 1.6.0
 
   * Updated for patch `v0.217.38`.
   * Fixed a bug where PlayerId and PlayerName were not added to the extra tombstone created on player death.
   * Added check for additional tombstone to not give corpse run multiple times, otherwise acts like regular tombstone.
-    * Additional tombstone will now retrieve all items on interact as a normal tombstone.
+  * Additional tombstone will now retrieve all items on interact as a normal tombstone.
   * Moved changelog to CHANGELOG.md
 
 ### 1.5.0
@@ -61,7 +70,8 @@
 ### 1.0.4
 
   * Reduced pop of second grave to prevent clipping through low ceilings.
-  * Disabled selecting of items in armor slots to prevent unwanted inventory behavior and related bugs. Armor and utility items must be unequipped before removing from inventory.
+  * Disabled selecting of items in armor slots to prevent unwanted inventory behavior and related bugs.
+  * Armor and utility items must be unequipped before removing from inventory.
 
 ### 1.0.3
 
@@ -69,7 +79,8 @@
 
 ### 1.0.2
 
-  * Fixed issue where logging out after first log-in with mod enabled could delete armor. First log-in check now reset on player save.
+  * Fixed issue where logging out after first log-in with mod enabled could delete armor.
+  * First log-in check now reset on player save.
 
 ### 1.0.1
 

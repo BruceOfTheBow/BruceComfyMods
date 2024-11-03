@@ -1,151 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ComfyQuickSlots;
+
+using ComfyLib;
+
 using BepInEx.Configuration;
 
 using UnityEngine;
 
-namespace ComfyQuickSlots {
-    public class PluginConfig {
-        public static ConfigEntry<bool> IsModEnabled = default!;
+public sealed class PluginConfig {
+  public static ConfigEntry<bool> IsModEnabled { get; private set; }
 
-        public static ConfigEntry<bool> EnableQuickslots = default!;
+  // QuickSlots Enable
+  public static ConfigEntry<bool> EnableQuickslots { get; private set; }
 
-        // QuickSlots
-        public static ConfigEntry<KeyCode> QuickSlot1 = default!;
-        public static ConfigEntry<KeyCode> QuickSlot2 = default!;
-        public static ConfigEntry<KeyCode> QuickSlot3 = default!;
+  // QuickSlots
+  public static ConfigEntry<KeyCode> QuickSlot1 { get; private set; }
+  public static ConfigEntry<KeyCode> QuickSlot2 { get; private set; }
+  public static ConfigEntry<KeyCode> QuickSlot3 { get; private set; }
 
-        // Quick Slots Hotkeybar Positioning
-        public static ConfigEntry<TextAnchor> QuickSlotsAnchor;
-        public static ConfigEntry<Vector2> QuickSlotsPosition;
+  // QuickSlots HotKeyBar Positioning
+  public static ConfigEntry<TextAnchor> QuickSlotsAnchor { get; private set; }
+  public static ConfigEntry<Vector2> QuickSlotsPosition { get; private set; }
 
-        // Logging
-        public static ConfigEntry<string> LogFilesPath = default!;
+  // Container
+  public static ConfigEntry<Vector2> ContainerInventoryGridAnchoredPosition { get; private set; }
 
+  // Logging
+  public static ConfigEntry<string> LogFilesPath { get; private set; }
 
-        public static void BindConfig(ConfigFile config) {
-            IsModEnabled = config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod.");
+  public static void BindConfig(ConfigFile config) {
+    IsModEnabled =
+        config.BindInOrder(
+            "_Global",
+            "isModEnabled",
+            true,
+            "Globally enable or disable this mod.");
 
-            // QuickSlots
-            QuickSlot1 = config.Bind("QuickSlotBinding", "quickSlot1Use", KeyCode.Z, "Hot key for item use in quick slot 1");
-            QuickSlot2 = config.Bind("QuickSlotBinding", "quickSlot2Use", KeyCode.V, "Hot key for item use in quick slot 2");
-            QuickSlot3 = config.Bind("QuickSlotBinding", "quickSlot3Use", KeyCode.B, "Hot key for item use in quick slot 3");
+    //QuickSlots Enable
+    EnableQuickslots =
+        config.BindInOrder(
+            "QuickSlotToggles",
+            "quickSlotEnable",
+            true,
+            "Enables or disables quickslots.");
 
-            //Quick Slot Enable
-            EnableQuickslots= config.Bind("QuickSlotToggles", "quickSlotEnable", true, "Enables or disables quickslots.");
+    // QuickSlots
+    QuickSlot1 =
+        config.BindInOrder(
+            "QuickSlotBinding",
+            "quickSlot1Use",
+            KeyCode.Z,
+            "Hot key for item use in quick slot 1");
 
-            // Quick Slots Hotkeybar Positioning
-            QuickSlotsAnchor = config.Bind("QuickSlotsAnchor", "quickSlotsAnchor", TextAnchor.LowerLeft, "The point on the HUD to anchor the Quick Slots bar. Changing this also changes the pivot of the Quick Slots to that corner.");
-            QuickSlotsPosition = config.Bind("QuickSlotsOffset", "quickSlotsOffset", new Vector2(216, 150), "The position offset from the Quick Slots Anchor at which to place the Quick Slots.");
+    QuickSlot1.OnSettingChanged(QuickSlotsManager.RefreshBindings);
 
-            // Logging
-            LogFilesPath = config.Bind("Logging", "logFilesPath", "ItemsOnDeath/", "Path to where logging of items on death are saved.");
-        }
-    }
+    QuickSlot2 =
+        config.BindInOrder(
+            "QuickSlotBinding",
+            "quickSlot2Use",
+            KeyCode.V,
+            "Hot key for item use in quick slot 2");
 
-    public static class KeyCodeUtils {
-        public static readonly Dictionary<KeyCode, string> KeyCodeToShortText = new Dictionary<KeyCode, string>() {
-          //Lower Case Letters
-          {KeyCode.A, "A"},
-          {KeyCode.B, "B"},
-          {KeyCode.C, "C"},
-          {KeyCode.D, "D"},
-          {KeyCode.E, "E"},
-          {KeyCode.F, "F"},
-          {KeyCode.G, "G"},
-          {KeyCode.H, "H"},
-          {KeyCode.I, "I"},
-          {KeyCode.J, "J"},
-          {KeyCode.K, "K"},
-          {KeyCode.L, "L"},
-          {KeyCode.M, "M"},
-          {KeyCode.N, "N"},
-          {KeyCode.O, "O"},
-          {KeyCode.P, "P"},
-          {KeyCode.Q, "Q"},
-          {KeyCode.R, "R"},
-          {KeyCode.S, "S"},
-          {KeyCode.T, "T"},
-          {KeyCode.U, "U"},
-          {KeyCode.V, "V"},
-          {KeyCode.W, "W"},
-          {KeyCode.X, "X"},
-          {KeyCode.Y, "Y"},
-          {KeyCode.Z, "Z"},
-  
-          //KeyPad Numbers
-          {KeyCode.Keypad1, "kp1"},
-          {KeyCode.Keypad2, "kp2"},
-          {KeyCode.Keypad3, "kp3"},
-          {KeyCode.Keypad4, "kp4"},
-          {KeyCode.Keypad5, "kp5"},
-          {KeyCode.Keypad6, "kp6"},
-          {KeyCode.Keypad7, "kp7"},
-          {KeyCode.Keypad8, "kp8"},
-          {KeyCode.Keypad9, "kp9"},
-          {KeyCode.Keypad0, "kp10"},
-  
-          //Other Symbols
-          {KeyCode.Exclaim, "!"},
-          {KeyCode.DoubleQuote, "\""},
-          {KeyCode.Hash, "#"}, 
-          {KeyCode.Dollar, "$"}, 
-          {KeyCode.Ampersand, "&"}, 
-          {KeyCode.Quote, "\'"}, 
-          {KeyCode.LeftParen, "("},
-          {KeyCode.RightParen, ")"}, 
-          {KeyCode.Asterisk, "*"}, 
-          {KeyCode.Plus, "+"},
-          {KeyCode.Comma, ","},
-          {KeyCode.Minus, "-"},
-          {KeyCode.Period, "."},
-          {KeyCode.Slash, "/"},
-          {KeyCode.Colon, ":"},
-          {KeyCode.Semicolon, ";"},
-          {KeyCode.Less, "<"},
-          {KeyCode.Equals, "="},
-          {KeyCode.Greater, ">"},
-          {KeyCode.Question, "?"},
-          {KeyCode.At, "@"},
-          {KeyCode.LeftBracket, "["},
-          {KeyCode.Backslash, "\\"}, 
-          {KeyCode.RightBracket, "]"},
-          {KeyCode.Caret, "^"},
-          {KeyCode.Underscore, "_"},
-          {KeyCode.BackQuote, "`"},
+    QuickSlot2.OnSettingChanged(QuickSlotsManager.RefreshBindings);
 
-          {KeyCode.Alpha1, "1"},
-          {KeyCode.Alpha2, "2"},
-          {KeyCode.Alpha3, "3"},
-          {KeyCode.Alpha4, "4"},
-          {KeyCode.Alpha5, "5"},
-          {KeyCode.Alpha6, "6"},
-          {KeyCode.Alpha7, "7"},
-          {KeyCode.Alpha8, "8"},
-          {KeyCode.Alpha9, "9"},
-          {KeyCode.Alpha0, "0"},
-  
-          {KeyCode.KeypadPeriod, "kp ."},
-          {KeyCode.KeypadDivide, "kp //"},
-          {KeyCode.KeypadMultiply, "kp *"},
-          {KeyCode.KeypadMinus, "kp -"},
-          {KeyCode.KeypadPlus, "kp +"},
-          {KeyCode.KeypadEquals, "kp ="},
-                    };
+    QuickSlot3 =
+        config.BindInOrder(
+            "QuickSlotBinding",
+            "quickSlot3Use",
+            KeyCode.B,
+            "Hot key for item use in quick slot 3");
 
-        public static string ToShortString(this KeyCode keyCode) {
-            return KeyCodeToShortText.ContainsKey(keyCode) ? KeyCodeToShortText[keyCode] : keyCode.ToString();
-        }
+    QuickSlot3.OnSettingChanged(QuickSlotsManager.RefreshBindings);
 
-        public static string ToShortString(this KeyboardShortcut keyboardShortcut) {
-            return string.Join(
-                " + ",
-                keyboardShortcut.Modifiers
-                    .Concat(Enumerable.Repeat(element: keyboardShortcut.MainKey, count: 1))
-                    .Select(ToShortString));
-        }
-    }
+    // QuickSlots HotKeyBar Positioning
+    QuickSlotsAnchor =
+        config.BindInOrder(
+            "QuickSlotsAnchor",
+            "quickSlotsAnchor",
+            TextAnchor.LowerLeft,
+            "The point on the HUD to anchor the Quick Slots bar.\n"
+                + "Changing this also changes the pivot of the Quick Slots to that corner.");
+
+    QuickSlotsPosition =
+        config.BindInOrder(
+            "QuickSlotsOffset",
+            "quickSlotsOffset",
+            new Vector2(216f, 150f),
+            "The position offset from the Quick Slots Anchor at which to place the QuickSlots.");
+
+    // Container
+    ContainerInventoryGridAnchoredPosition =
+        config.BindInOrder(
+            "Container.InventoryGrid",
+            "anchoredPosition",
+            new Vector2(40f, -437f),
+            "The anchoredPosition for the the Container.InventoryGrid panel.");
+
+    // Logging
+    LogFilesPath =
+        config.BindInOrder(
+            "Logging",
+            "logFilesPath",
+            "ItemsOnDeath/",
+            "Path to where logging of items on death are saved.");
+  }
 }

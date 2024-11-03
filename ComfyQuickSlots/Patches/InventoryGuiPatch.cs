@@ -1,40 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ComfyQuickSlots;
+
 using HarmonyLib;
 
 using UnityEngine;
 
-using static ComfyQuickSlots.ComfyQuickSlots;
+using static PluginConfig;
 
-namespace ComfyQuickSlots.Patches {
-  [HarmonyPatch(typeof(InventoryGui))]
-  public class InventoryGuiPatch {
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(InventoryGui.OnSelectedItem))]
-    public static bool OnSelectedItemPrefix(InventoryGrid grid, ItemDrop.ItemData item, Vector2i pos, InventoryGrid.Modifier mod) {
-      if (IsArmorSlot(pos)) {
-        return false;
-      }
-
-      if (Player.m_localPlayer.IsEquipActionQueued(item)) {
-        return false;
-      }
-      return true;
+[HarmonyPatch(typeof(InventoryGui))]
+static class InventoryGuiPatch {
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(InventoryGui.Show))]
+  static void ShowPostfix(InventoryGui __instance) {
+    if (__instance.m_currentContainer) {
+      SetContainerGridAnchoredPosition(__instance);
     }
 
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(InventoryGui.OnCraftPressed))]
-    public static bool OnCraftPressedPrefix(ref InventoryGui __instance) {
-      if (__instance.m_selectedRecipe.Value != null) {
-        if (__instance.m_selectedRecipe.Value.m_equipped && !HaveEmptyInventorySlot(Player.m_localPlayer.GetInventory()) && ItemCountInInventory(__instance.m_selectedRecipe.Value) == 1) {
-          Player.m_localPlayer.Message(MessageHud.MessageType.Center, "Inventory full. Make room to upgrade equipped item.");
-          return false;
-        }
-      }
-      return true;
+    QuickSlotsManager.ShouldRefreshPlayerGrid = true;
+  }
+
+  static void SetContainerGridAnchoredPosition(InventoryGui inventoryGui) {
+    if (inventoryGui.m_containerGrid.transform.parent.TryGetComponent(out RectTransform rectTransform)) {
+      rectTransform.anchoredPosition = ContainerInventoryGridAnchoredPosition.Value;
     }
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(InventoryGui.OnSelectedItem))]
+  static bool OnSelectedItemPrefix(InventoryGrid grid, ItemDrop.ItemData item, Vector2i pos) {
+    if (QuickSlotsManager.IsArmorSlot(pos)) {
+      return false;
+    }
+
+    if (Player.m_localPlayer.IsEquipActionQueued(item)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(InventoryGui.OnCraftPressed))]
+  static bool OnCraftPressedPrefix(InventoryGui __instance) {
+    ItemDrop.ItemData item = __instance.m_selectedRecipe.ItemData;
+
+    if (item != null
+        && item.m_equipped
+        && !QuickSlotsManager.HaveEmptyInventorySlot(Player.m_localPlayer.GetInventory())
+        && QuickSlotsManager.ItemCountInInventory(item) >= 1) {
+      Player.m_localPlayer.Message(
+          MessageHud.MessageType.Center, "Inventory full. Make room to upgrade equipped item.");
+
+      return false;
+    }
+
+    return true;
   }
 }
