@@ -1,40 +1,35 @@
-﻿using System;
+﻿namespace AssemblyLine;
+
+using System;
 using System.Globalization;
+using System.Reflection;
 
 using BepInEx;
 using BepInEx.Logging;
 
+using ComfyLib;
+
 using HarmonyLib;
 
-using System.Reflection;
+using static PluginConfig;
 
-using static AssemblyLine.PluginConfig;
+[BepInPlugin(PluginGuid, PluginName, PluginVersion)]
+public sealed class AssemblyLine : BaseUnityPlugin {
+  public const string PluginGuid = "bruce.valheim.comfy.assemblyline";
+  public const string PluginName = "AssemblyLine";
+  public const string PluginVersion = "1.2.0";
 
-namespace AssemblyLine {
-  [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-  public class AssemblyLine : BaseUnityPlugin {
-    public const string PluginGuid = "bruce.valheim.comfy.assemblyline";
-    public const string PluginName = "AssemblyLine";
-    public const string PluginVersion = "1.1.1";
+  static ManualLogSource _logger;
 
-    static ManualLogSource _logger;
-    Harmony _harmony;
+  void Awake() {
+    _logger = Logger;
+    BindConfig(Config);
 
-    public void Awake() {
-      _logger = Logger;
+    Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
+  }
 
-      BindConfig(Config);
-
-      _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
-    }
-
-    public void OnDestroy() {
-      _harmony?.UnpatchSelf();
-    }
-
-    public static void LogInfo(string message) {
-      Chat.m_instance.AddString(message);
-      _logger.LogInfo($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {message}");
-    }
+  public static void LogInfo(object obj) {
+    _logger.LogInfo($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {obj}");
+    Chat.m_instance.AddMessage(obj);
   }
 }
