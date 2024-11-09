@@ -11,6 +11,10 @@
     stack sizes are made with fewer clicks.
   * Comfy replacement for MultiCraft by mjdegue.
 
+## Notes
+
+  * Vanilla multi-crafting is **disabled** while AssemblyLine is active.
+
 ## Attributions
 
   * Icon sourced from:

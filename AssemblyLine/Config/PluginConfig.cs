@@ -7,21 +7,12 @@ using ComfyLib;
 using UnityEngine;
 
 public static class PluginConfig {
-  public static ConfigEntry<bool> IsModEnabled { get; private set; }
-
   public static ConfigEntry<KeyboardShortcut> AmountChangeModifier { get; private set; }
   public static ConfigEntry<KeyboardShortcut> MaxAmountChangeModifier { get; private set; }
 
   public static ConfigEntry<bool> RoundToStackSize { get; private set; }
 
   public static void BindConfig(ConfigFile config) {
-    IsModEnabled =
-        config.BindInOrder(
-            "_Global",
-            "isModEnabled",
-            true,
-            "Globally enable or disable this mod.");
-
     AmountChangeModifier =
         config.BindInOrder(
             "Modifiers",

@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLine.cs" />
+    <Compile Include="ComfyLib\Extensions\CodeMatcherExtensions.cs" />
     <Compile Include="ComfyLib\Extensions\ConfigFileExtensions.cs" />
     <Compile Include="ComfyLib\Extensions\UnityExtensions.cs" />
     <Compile Include="Core\CraftingManager.cs" />

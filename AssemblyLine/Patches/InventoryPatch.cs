@@ -10,7 +10,6 @@ static class InventoryPatch {
     if (Player.m_localPlayer == null
         || Player.m_localPlayer.GetInventory() != __instance
         || !InventoryGui.IsVisible()) {
-
       return;
     }
 

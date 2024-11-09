@@ -6,18 +6,19 @@ using System.Linq;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 using static PluginConfig;
 
 public static class CraftingManager {
-  public static RectTransform IncrementButtonTransform;
-  public static RectTransform DecrementButtonTransform;
-  public static RectTransform CountText;
+  public static RectTransform IncrementButtonTransform { get; private set; }
+  public static RectTransform DecrementButtonTransform { get; private set; }
+  public static RectTransform CountText { get; private set; }
 
-  public static Button CraftButton;
-  public static Button IncrementButton;
-  public static Button DecrementButton;
+  public static Button CraftButton { get; private set; }
+  public static Button IncrementButton { get; private set; }
+  public static Button DecrementButton { get; private set; }
 
   public static int MaxCraftAmount = 1;
 
@@ -35,27 +36,46 @@ public static class CraftingManager {
     CountValue = value;
   }
 
-  public static RectTransform CreateButton(InventoryGui inventoryGui, string name, string text) {
-    Transform additionalTransform = Object.Instantiate(CraftButton.transform, CraftButton.transform.transform.parent);
-    additionalTransform.name = name;
-    Transform resultTransform = additionalTransform.transform;
-
-    RectTransform targetTransform = (RectTransform) resultTransform.transform;
-    targetTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 40f);
-    targetTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30);
-
-    RectTransform textTransform = (RectTransform) targetTransform.transform.Find("Text");
-    textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 40f);
-    textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30f);
-
-    TMP_Text component = textTransform.GetComponent<TMP_Text>();
-    component.text = text;
-    component.enableAutoSizing = true;
-    return targetTransform;
+  public static void CreateOrSetupUI(InventoryGui inventoryGui) {
+    if (!CraftButton) {
+      CreateUI(inventoryGui);
+    }
   }
 
-  public static void CreateCountText() {
-    RectTransform textTransform = (RectTransform) CraftButton.transform.transform.Find("Text");
+  static void CreateUI(InventoryGui inventoryGui) {
+    CraftButton = inventoryGui.m_craftButton;
+    ScaleCraftButton(CraftButton);
+
+    CreateIncrementDecrementButtons(CraftButton);
+    CreateCountText(CraftButton);
+
+    SetCraftAmountToMin();
+  }
+
+  static void CreateIncrementDecrementButtons(Button craftButton) {
+    IncrementButtonTransform = CreateButton(craftButton, "Increment", "+");
+    IncrementButtonTransform.anchoredPosition = new(0f, -7.5f);
+    IncrementButtonTransform.anchorMin = Vector2.one;
+    IncrementButtonTransform.anchorMax = Vector2.one;
+    IncrementButtonTransform.pivot = Vector2.one;
+    IncrementButtonTransform.sizeDelta = new(40f, 30f);
+
+    IncrementButton = IncrementButtonTransform.GetComponent<Button>();
+    IncrementButton.onClick.AddListener(new UnityAction(OnIncrementPressed));
+
+    DecrementButtonTransform = CreateButton(craftButton, "Decrement", "-");
+    DecrementButtonTransform.anchoredPosition = new(0f, 2.5f);
+    DecrementButtonTransform.anchorMin = Vector2.right;
+    DecrementButtonTransform.anchorMax = Vector2.right;
+    DecrementButtonTransform.pivot = Vector2.right;
+    DecrementButtonTransform.sizeDelta = new(40f, 30f);
+
+    DecrementButton = DecrementButtonTransform.GetComponent<Button>();
+    DecrementButton.onClick.AddListener(new UnityAction(OnDecrementPressed));
+  }
+
+  static void CreateCountText(Button craftButton) {
+    RectTransform textTransform = (RectTransform) craftButton.transform.transform.Find("Text");
     CountText = Object.Instantiate(textTransform, textTransform.parent.transform.parent);
     CountText.name = "Count";
 
@@ -66,7 +86,24 @@ public static class CraftingManager {
     CountText.sizeDelta = new(50f, -5f);
 
     CountLabel = CountText.GetComponent<TMP_Text>();
-    SetCountValue(1);
+  }
+
+  static RectTransform CreateButton(Button craftButton, string name, string text) {
+    Transform buttonTransform = Object.Instantiate(craftButton.transform, craftButton.transform.transform.parent);
+    buttonTransform.name = name;
+
+    RectTransform labelRectTransform = (RectTransform) buttonTransform.Find("Text");
+    labelRectTransform.anchoredPosition = Vector3.zero;
+    labelRectTransform.anchorMin = Vector2.zero;
+    labelRectTransform.anchorMax = Vector2.one;
+    labelRectTransform.pivot = new(0.5f, 0.5f);
+    labelRectTransform.sizeDelta = Vector2.zero;
+
+    TMP_Text label = labelRectTransform.GetComponent<TMP_Text>();
+    label.text = text;
+    label.enableAutoSizing = true;
+
+    return (RectTransform) buttonTransform;
   }
 
   public static void DecrementCraftAmount(int amount) {
@@ -174,7 +211,7 @@ public static class CraftingManager {
     SetRequirementText();
   }
 
-  public static void ScaleCraftButton(Button craftButton) {
+  static void ScaleCraftButton(Button craftButton) {
     if (craftButton.TryGetComponent(out RectTransform rectTransform)) {
       rectTransform.anchoredPosition = new(0f, 2.5f);
       rectTransform.pivot = Vector2.zero;

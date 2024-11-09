@@ -4,6 +4,8 @@
 
   * Fixed for the `v0.219.14` patch.
   * Bumped up `<LangVersion>` to C# 12.
+  * Vanilla multi-crafting is disabled while AssemblyLine is enabled.
+  * Removed config-option `isModEnabled` as the mod currently does not implement this functionality.
   * Code clean-up and refactoring.
 
 ### 1.1.1
