@@ -1,112 +1,118 @@
-﻿using AddAllFuel.Extensions;
-using HarmonyLib;
-using System;
+﻿namespace AddAllFuel;
+
 using System.Collections.Generic;
+using System.Reflection.Emit;
+
+using HarmonyLib;
 
 using UnityEngine;
 
-using static AddAllFuel.PluginConfig;
+using static PluginConfig;
 
-namespace AddAllFuel.Patches {
-  [HarmonyPatch(typeof(CookingStation))]
-  static class CookingStationPatch {
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(CookingStation.OnAddFuelSwitch))]
-    public static bool OnAddFuelSwitchPrefix(CookingStation __instance, ref bool __result, Switch sw, Humanoid user, ItemDrop.ItemData item) {
-      if (!IsModEnabled.Value || !Input.GetKey(AddAllModifier.Value)) {
-        return true;
-      }
-
-      __result = false;
-
-      if (__instance.GetFuel() > __instance.m_maxFuel - 1) {
-        user.Message(MessageHud.MessageType.Center, "$msg_itsfull", 0, null);
-        return false;
-      }
-
-      item = user.GetInventory().GetItem(__instance.GetFuelName(), -1, false);
-
-      if (item == null) {
-        user.Message(MessageHud.MessageType.Center, $"$msg_donthaveany {__instance.GetFuelName()}", 0, null);
-        return false;
-      }
-
-      int diffFromFull = (int)(__instance.m_maxFuel - __instance.GetFuel());
-      int amountToAdd = Math.Min(item.m_stack, diffFromFull);
-
-      user.GetInventory().RemoveItem(item, amountToAdd);
-
-      for (int i = 0; i < amountToAdd; i++) {
-        __instance.m_nview.InvokeRPC("RPC_AddFuel", Array.Empty<object>());
-      }
-
-      user.Message(MessageHud.MessageType.Center, $"$msg_added {amountToAdd} {__instance.GetFuelName()}", 0, null);
-
-      __result = true;
+[HarmonyPatch(typeof(CookingStation))]
+static class CookingStationPatch {
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(CookingStation.GetFreeSlot))]
+  static bool GetFreeSlotPrefix(CookingStation __instance, ref int __result) {
+    if (IsModEnabled.Value) {
+      __result = __instance.TryGetFreeSlot(out int slotIndex) ? slotIndex : -1;
       return false;
     }
 
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(CookingStation.CookItem))]
-    public static bool OnAddFoodSwitchPrefix(CookingStation __instance, ref bool __result, Humanoid user, ItemDrop.ItemData item) {
-      if (!IsModEnabled.Value || !Input.GetKey(AddAllModifier.Value)) {
-        return true;
-      }
+    return true;
+  }
 
-      __result = false;
-
-      if (!__instance.m_nview.HasOwner()) {
-        __instance.m_nview.ClaimOwnership();
-      }
-
-      foreach (CookingStation.ItemMessage itemMessage in __instance.m_incompatibleItems) {
-        if (itemMessage.m_item.m_itemData.m_shared.m_name == item.m_shared.m_name) {
-          user.Message(MessageHud.MessageType.Center, itemMessage.m_message + " " + itemMessage.m_item.m_itemData.m_shared.m_name, 0, null);
-          return true;
-        }
-      }
-
-      if (!__instance.IsItemAllowed(item)) {
-        return false;
-      }
-
-      int amountToAdd = __instance.GetFreeSlots();
-
-      if (item.m_stack < amountToAdd) {
-        amountToAdd = item.m_stack; 
-      }
-
-      user.GetInventory().RemoveItem(item, amountToAdd);
-
-      for (int i = 0; i < amountToAdd; i++) {
-        __instance.m_nview.InvokeRPC("RPC_AddItem", new object[] { item.m_dropPrefab.name });
-      }
-
-      __result = true;
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(CookingStation.HaveDoneItem))]
+  static bool HaveDoneItemPrefix(CookingStation __instance, ref bool __result) {
+    if (IsModEnabled.Value) {
+      __result = __instance.HaveDoneItemByStatus();
       return false;
     }
 
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(CookingStation.OnInteract))]
-    public static bool OnInteractPrefix(CookingStation __instance, Humanoid user) {
-      if (!__instance 
-           || !user 
-           || __instance.GetFreeSlots() > 0) {
+    return true;
+  }
 
-        return true;
-      }
+  [HarmonyTranspiler]
+  [HarmonyPatch(nameof(CookingStation.Awake))]
+  static IEnumerable<CodeInstruction> AwakeTranspiler(
+      IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+    return new CodeMatcher(instructions, generator)
+        .Start()
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldarg_0),
+            new CodeMatch(
+                OpCodes.Ldftn, AccessTools.Method(typeof(CookingStation), nameof(CookingStation.OnAddFuelSwitch))),
+            new CodeMatch(OpCodes.Newobj))
+        .ThrowIfInvalid($"Could not patch CookingStation.Awake()! (on-add-fuel-switch)")
+        .Advance(offset: 3)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(
+                OpCodes.Call, AccessTools.Method(typeof(CookingStationPatch), nameof(OnAddFuelSwitchCallbackDelegate))))
+        .InstructionEnumeration();
+  }
 
-      int doneItemCount = __instance.GetDoneItemCount();
-      
-      if (doneItemCount == 0) {
-        return true;
-      }
+  static Switch.Callback OnAddFuelSwitchCallbackDelegate(
+      Switch.Callback onAddFuelSwitchCallback, CookingStation smelter) {
+    return IsModEnabled.Value ? new(smelter.OnRepeatAddFuelSwitch) : onAddFuelSwitchCallback;
+  }
 
-      for (int i =0; i < doneItemCount; i++) {
-        __instance.m_nview.InvokeRPC("RPC_RemoveDoneItem", new object[] { user.transform.position });
-      }
+  public static bool OnRepeatAddFuelSwitch(
+      this CookingStation cookingStation, Switch sw, Humanoid user, ItemDrop.ItemData item) {
+    if (!IsModEnabled.Value || !ZInput.GetKey(AddAllModifier.Value)) {
+      return cookingStation.OnAddFuelSwitch(sw, user, item);
+    }
 
+    string fuelItemName = cookingStation.GetFuelItemName();
+    item ??= user.GetInventory().GetItem(fuelItemName);
+
+    int repeatCount = 0;
+
+    if (item != default && item.m_shared.m_name == fuelItemName) {
+      int requiredFuel = Mathf.RoundToInt(cookingStation.m_maxFuel - cookingStation.GetFuel());
+      repeatCount = Mathf.Max(Mathf.Min(requiredFuel, item.m_stack), 0);
+    }
+
+    return cookingStation.RepeatAddFuel(sw, user, item, repeatCount);
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(CookingStation.OnAddFoodSwitch))]
+  static bool OnAddFoodSwitchPrefix(
+      CookingStation __instance, Humanoid user, ItemDrop.ItemData item, ref bool __result) {
+    if (IsModEnabled.Value && ZInput.GetKey(AddAllModifier.Value)) {
+      __result = item == default ? OnRepeatInteract(__instance, user) : OnRepeatUseItem(__instance, user, item);
       return false;
     }
+
+    return true;
+  }
+
+  public static bool OnRepeatUseItem(CookingStation cookingStation, Humanoid user, ItemDrop.ItemData item) {
+    int freeSlotCount = cookingStation.GetFreeSlotCount();
+    return cookingStation.RepeatUseItem(user, item, Mathf.Min(freeSlotCount, item.m_stack));
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(CookingStation.Interact))]
+  static bool InteractPrefix(CookingStation __instance, Humanoid user, bool hold, ref bool __result) {
+    if (!hold && __instance.m_addFoodSwitch == default && IsModEnabled.Value && ZInput.GetKey(AddAllModifier.Value)) {
+      __result = OnRepeatInteract(__instance, user);
+      return false;
+    }
+
+    return true;
+  }
+
+  public static bool OnRepeatInteract(CookingStation cookingStation, Humanoid user) {
+    int doneItemCount = cookingStation.GetDoneItemCount();
+
+    if (doneItemCount > 0) {
+      return cookingStation.RepeatInteract(user, doneItemCount);
+    }
+
+    int freeSlotCount = cookingStation.GetFreeSlotCount();
+    return cookingStation.RepeatInteract(user, freeSlotCount);
   }
 }

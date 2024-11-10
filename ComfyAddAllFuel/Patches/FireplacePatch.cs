@@ -1,62 +1,107 @@
-﻿using System;
+﻿namespace AddAllFuel;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 using HarmonyLib;
 
 using UnityEngine;
 
-using static AddAllFuel.AddAllFuel;
-using static AddAllFuel.PluginConfig;
+using static PluginConfig;
 
-namespace AddAllFuel.Patches {
-  [HarmonyPatch(typeof(Fireplace))]
-  public static class FireplacePatch {
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(Fireplace.Interact))]
-    public static bool FireplaceInteractPrefix(ref Fireplace __instance, Humanoid user, bool hold, bool alt, ref bool __result) {
-      if (!IsModEnabled.Value || !Input.GetKey(AddAllModifier.Value)) {
-        return true;
-      }
+[HarmonyPatch(typeof(Fireplace))]
+static class FireplacePatch {
+  [HarmonyTranspiler]
+  [HarmonyPatch(nameof(Fireplace.Interact))]
+  static IEnumerable<CodeInstruction> InteractTranspiler(
+      IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+    return new CodeMatcher(instructions, generator)
+        .Start()
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldloc_1),
+            new CodeMatch(OpCodes.Ldarg_0),
+            new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Fireplace), nameof(Fireplace.m_fuelItem))),
+            new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ItemDrop), nameof(ItemDrop.m_itemData))),
+            new CodeMatch(
+                OpCodes.Ldfld, AccessTools.Field(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_shared))),
+            new CodeMatch(
+                OpCodes.Ldfld,
+                AccessTools.Field(typeof(ItemDrop.ItemData.SharedData), nameof(ItemDrop.ItemData.SharedData.m_name))),
+            new CodeMatch(OpCodes.Ldc_I4_1),
+            new CodeMatch(OpCodes.Ldc_I4_M1),
+            new CodeMatch(OpCodes.Ldc_I4_1),
+            new CodeMatch(
+                OpCodes.Callvirt,
+                AccessTools.Method(
+                    typeof(Inventory),
+                    nameof(Inventory.RemoveItem),
+                    parameters: [typeof(string), typeof(int), typeof(int), typeof(bool)])))
+        .ThrowIfInvalid($"Could not patch Fireplace.Interact()! (remove-item)")
+        .CreateLabel(out Label removeItemLabel)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Ldarg_1),
+            new CodeInstruction(OpCodes.Ldnull),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FireplacePatch), nameof(AddFuelDelegate))),
+            new CodeInstruction(OpCodes.Brfalse, removeItemLabel),
+            new CodeInstruction(OpCodes.Ldc_I4_1),
+            new CodeInstruction(OpCodes.Ret))
+        .InstructionEnumeration();
+  }
 
-      __result = false;
+  [HarmonyTranspiler]
+  [HarmonyPatch(nameof(Fireplace.UseItem))]
+  static IEnumerable<CodeInstruction> UseItemTranspiler(
+      IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+    return new CodeMatcher(instructions, generator)
+        .Start()
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldloc_0),
+            new CodeMatch(OpCodes.Ldarg_2),
+            new CodeMatch(OpCodes.Ldc_I4_1),
+            new CodeMatch(
+                OpCodes.Callvirt,
+                AccessTools.Method(
+                    typeof(Inventory),
+                    nameof(Inventory.RemoveItem),
+                    parameters: [typeof(ItemDrop.ItemData), typeof(int)])))
+        .ThrowIfInvalid($"Could not patch Fireplace.UseItem()! (remove-item)")
+        .CreateLabel(out Label removeItemLabel)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Ldarg_1),
+            new CodeInstruction(OpCodes.Ldarg_2),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FireplacePatch), nameof(AddFuelDelegate))),
+            new CodeInstruction(OpCodes.Brfalse, removeItemLabel),
+            new CodeInstruction(OpCodes.Ldc_I4_1),
+            new CodeInstruction(OpCodes.Ret))
+        .InstructionEnumeration();
+  }
 
-      if (hold) {
+  static bool AddFuelDelegate(Fireplace fireplace, Humanoid user, ItemDrop.ItemData item) {
+    if (IsModEnabled.Value && ZInput.GetKey(AddAllModifier.Value)) {
+      string fuelItemName = fireplace.GetFuelItemName();
+      item ??= user.GetInventory().GetItem(fuelItemName);
+
+      if (item == default || item.m_shared.m_name != fuelItemName) {
         return false;
       }
 
-      if (!__instance.m_nview.HasOwner()) {
-        __instance.m_nview.ClaimOwnership();
-      }
+      int requiredFuel = Mathf.CeilToInt(fireplace.m_maxFuel - fireplace.GetFuel());
+      requiredFuel = Mathf.Max(Mathf.Min(requiredFuel, item.m_stack), 0);
 
-      string fuelName = __instance.m_fuelItem.m_itemData.m_shared.m_name;
-      float fuelNow = (float)Mathf.CeilToInt(__instance.m_nview.GetZDO().GetFloat("fuel", 0f));
-      if (fuelNow > __instance.m_maxFuel - 1) {
-        user.Message(MessageHud.MessageType.Center, Localization.instance.Localize("$msg_cantaddmore", new string[]
-            {fuelName}), 0, null);
+      if (requiredFuel <= 0) {
         return false;
       }
 
-      ItemDrop.ItemData item = user.GetInventory()?.GetItem(fuelName, -1, false);
-      if (item == null) {
-        user.Message(MessageHud.MessageType.Center, $"$msg_outof {fuelName}", 0, null);
+      if (!user.GetInventory().RemoveItem(item, requiredFuel)) {
         return false;
       }
 
-      int fuelLeft = (int)(__instance.m_maxFuel - fuelNow);
-      int fuelSize = Math.Min(item.m_stack, fuelLeft);
-
-      user.GetInventory().RemoveItem(item, fuelSize);
-
-      __instance.m_nview.InvokeRPC("RPC_AddFuelAmount", new object[]{ (float)fuelSize });
-     
-      user.Message(MessageHud.MessageType.Center, Localization.instance.Localize("$msg_fireadding", new string[]
-        {fuelName}), 0, null);
-
-      __result = true;
-      return false;
+      fireplace.AddFuel(requiredFuel);
+      return true;
     }
+
+    return false;
   }
 }

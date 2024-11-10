@@ -1,91 +1,94 @@
-﻿using System;
-using AddAllFuel.Extensions;
+﻿namespace AddAllFuel;
+
+using System.Collections.Generic;
+using System.Reflection.Emit;
+
 using HarmonyLib;
 
 using UnityEngine;
 
-using static AddAllFuel.AddAllFuel;
-using static AddAllFuel.PluginConfig;
+using static PluginConfig;
 
-namespace AddAllFuel.Patches {
-  [HarmonyPatch(typeof(Smelter))]
-  public static class SmelterPatch {
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(Smelter.OnAddOre))]
-    public static bool SmelterOnAddOrePrefix(ref Smelter __instance, ref Switch sw, ref Humanoid user, ItemDrop.ItemData item, ref bool __result) {
-      if (!IsModEnabled.Value || !Input.GetKey(AddAllModifier.Value)) {
-        return true;
-      }
+[HarmonyPatch(typeof(Smelter))]
+static class SmelterPatch {
+  [HarmonyTranspiler]
+  [HarmonyPatch(nameof(Smelter.Awake))]
+  static IEnumerable<CodeInstruction> AwakeTranspiler(
+      IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+    return new CodeMatcher(instructions, generator)
+        .Start()
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldarg_0),
+            new CodeMatch(OpCodes.Ldftn, AccessTools.Method(typeof(Smelter), nameof(Smelter.OnAddOre))),
+            new CodeMatch(OpCodes.Newobj))
+        .ThrowIfInvalid($"Could not patch Smelter.Awake()! (on-add-ore)")
+        .Advance(offset: 3)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(
+                OpCodes.Call, AccessTools.Method(typeof(SmelterPatch), nameof(OnAddOreCallbackDelegate))))
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldarg_0),
+            new CodeMatch(OpCodes.Ldftn, AccessTools.Method(typeof(Smelter), nameof(Smelter.OnAddFuel))),
+            new CodeMatch(OpCodes.Newobj))
+        .ThrowIfInvalid($"Could not patch Smelter.Awake()! (on-add-fuel)")
+        .Advance(offset: 3)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(
+                OpCodes.Call, AccessTools.Method(typeof(SmelterPatch), nameof(OnAddFuelCallbackDelegate))))
+        .InstructionEnumeration();
+  }
 
-      __result = false;
+  static Switch.Callback OnAddOreCallbackDelegate(Switch.Callback onAddOreCallback, Smelter smelter) {
+    return IsModEnabled.Value ? new(smelter.OnRepeatAddOre) : onAddOreCallback;
+  }
 
-      if (__instance.GetQueueSize() >= __instance.m_maxOre) {
-        user.Message(MessageHud.MessageType.Center, "$msg_itsfull", 0, null);
-        return false;
-      }
+  public static bool OnRepeatAddOre(this Smelter smelter, Switch sw, Humanoid user, ItemDrop.ItemData item) {
+    if (!IsModEnabled.Value || !ZInput.GetKey(AddAllModifier.Value)) {
+      return smelter.OnAddOre(sw, user, item);
+    }
 
-      if (item == null) {
-        item = FindCookableItem(__instance, user.GetInventory());
-      }
+    int requiredOre = smelter.m_maxOre - smelter.GetQueueSize();
+    item ??= smelter.FindCookableItem(user.GetInventory());
 
-      if (item == null) {
-        user.Message(MessageHud.MessageType.Center, "$msg_noprocessableitems", 0, null);
-        return false;
-      }
+    if (item != default) {
+      requiredOre = Mathf.Max(Mathf.Min(requiredOre, item.m_stack), 0);
+    }
 
-      if (!__instance.IsItemAllowed(item)) {
-        user.Message(MessageHud.MessageType.Center, "$msg_wontwork", 0, null);
-        return false;
-      }
+    return smelter.RepeatAddOre(sw, user, item, requiredOre);
+  }
 
-      int queueSizeLeft = __instance.m_maxOre - __instance.GetQueueSize();
-      int queueSize = Math.Min(item.m_stack, queueSizeLeft);
+  static Switch.Callback OnAddFuelCallbackDelegate(Switch.Callback onAddFuelCallback, Smelter smelter) {
+    return IsModEnabled.Value ? new(smelter.OnRepeatAddFuel) : onAddFuelCallback;
+  }
 
-      user.GetInventory().RemoveItem(item, queueSize);
+  public static bool OnRepeatAddFuel(this Smelter smelter, Switch sw, Humanoid user, ItemDrop.ItemData item) {
+    if (!IsModEnabled.Value || !ZInput.GetKey(AddAllModifier.Value)) {
+      return smelter.OnAddFuel(sw, user, item);
+    }
 
-      for (int i = 0; i < queueSize; i++) {
-        __instance.m_nview.InvokeRPC("RPC_AddOre", new object[] { item.m_dropPrefab.name });
-      }
+    string fuelItemName = smelter.GetFuelItemName();
+    item ??= user.GetInventory().GetItem(fuelItemName);
 
-      user.Message(MessageHud.MessageType.Center, $"$msg_added {queueSize} {item.m_shared.m_name}", 0, null);
-      __result = true;
-      return false;
-    }  
+    int repeatCount = 0;
 
-    [HarmonyPrefix]
-    [HarmonyPatch(nameof(Smelter.OnAddFuel))]
-    public static bool Prefix(ref Smelter __instance, ref bool __result, Switch sw, Humanoid user, ItemDrop.ItemData item) {
-      if (!IsModEnabled.Value || !Input.GetKey(AddAllModifier.Value)) {
-        return true;
-      }
+    if (item != default && item.m_shared.m_name == fuelItemName) {
+      int requiredFuel = Mathf.RoundToInt(smelter.m_maxFuel - smelter.GetFuel());
+      repeatCount = Mathf.Max(Mathf.Min(requiredFuel, item.m_stack), 0);
+    }
 
-      __result = false;
+    return smelter.RepeatAddFuel(sw, user, item, repeatCount);
+  }
 
-      if (__instance.GetFuel() > __instance.m_maxFuel - 1) {
-        user.Message(MessageHud.MessageType.Center, "$msg_itsfull", 0, null);
-        return false;
-      }
-
-      item = user.GetInventory().GetItem(__instance.GetFuelName(), -1, false);
-
-      if (item == null) {
-        user.Message(MessageHud.MessageType.Center, $"$msg_donthaveany {__instance.GetFuelName()}", 0, null);
-        return false;
-      }
-
-      int diffFromFull = (int)(__instance.m_maxFuel - __instance.GetFuel());
-      int amountToAdd = Math.Min(item.m_stack, diffFromFull);
-
-      user.GetInventory().RemoveItem(item, amountToAdd);
-
-      for (int i = 0; i < amountToAdd; i++) {
-        __instance.m_nview.InvokeRPC("RPC_AddFuel", Array.Empty<object>());
-      }
-
-      user.Message(MessageHud.MessageType.Center, $"$msg_added {amountToAdd} {__instance.GetFuelName()}", 0, null);
-
-      __result = true;
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Smelter.FindCookableItem))]
+  static bool FindCookableItemPrefix(Smelter __instance, Inventory inventory, ref ItemDrop.ItemData __result) {
+    if (IsModEnabled.Value && SmelterManager.ExcludeCookableItems.Count > 0) {
+      __instance.TryFindCookableItem(inventory, out __result);
       return false;
     }
+
+    return true;
   }
- }
+}
