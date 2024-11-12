@@ -17,7 +17,7 @@ using static PluginConfig;
 public sealed class AssemblyLine : BaseUnityPlugin {
   public const string PluginGuid = "bruce.valheim.comfy.assemblyline";
   public const string PluginName = "AssemblyLine";
-  public const string PluginVersion = "1.2.0";
+  public const string PluginVersion = "1.2.1";
 
   static ManualLogSource _logger;
 

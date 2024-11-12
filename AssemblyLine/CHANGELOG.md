@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.2.1
+
+  * Fixed Increment/Decrement buttons not being re-enabled in certain situations.
+
 ### 1.2.0
 
   * Fixed for the `v0.219.14` patch.

@@ -169,4 +169,10 @@ static class InventoryGuiPatch {
 
     CraftingManager.SetRequirementText();
   }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(InventoryGui.UpdateCraftingPanel))]
+  static void UpdateCraftingPanelPostfix(InventoryGui __instance) {
+    CraftingManager.SetButtonInteractable(__instance.InCraftTab());
+  }
 }
