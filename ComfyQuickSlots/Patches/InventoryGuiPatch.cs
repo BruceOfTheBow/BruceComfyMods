@@ -45,7 +45,7 @@ static class InventoryGuiPatch {
 
     if (item != null
         && item.m_equipped
-        && !QuickSlotsManager.HaveEmptyInventorySlot(Player.m_localPlayer.GetInventory())
+        && !QuickSlotsManager.HasEmptyNonEquipmentSlot(Player.m_localPlayer.GetInventory())
         && QuickSlotsManager.ItemCountInInventory(item) >= 1) {
       Player.m_localPlayer.Message(
           MessageHud.MessageType.Center, "Inventory full. Make room to upgrade equipped item.");

@@ -46,7 +46,7 @@ static class HumanoidPatch {
   static bool UnequipItemPrefix(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects) {
     if (item != null) {
       if (QuickSlotsManager.IsArmor(item) && item.m_equipped) {
-        if (!QuickSlotsManager.HaveEmptyInventorySlot(__instance.GetInventory())) {
+        if (!QuickSlotsManager.HasEmptyNonEquipmentSlot(__instance.GetInventory())) {
           __instance.Message(MessageHud.MessageType.Center, "Inventory full. Item not unequipped.");
           return false;
         }

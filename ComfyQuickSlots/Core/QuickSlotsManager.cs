@@ -287,7 +287,12 @@ public static class QuickSlotsManager {
     return true;
   }
 
-  public static bool SwapArmorItems(Humanoid humanoid, ItemDrop.ItemData itemToMove, ItemDrop.ItemData itemInArmorSlot, int armorSlotX, int armorSlotY) {
+  public static bool SwapArmorItems(
+      Humanoid humanoid,
+      ItemDrop.ItemData itemToMove,
+      ItemDrop.ItemData itemInArmorSlot,
+      int armorSlotX,
+      int armorSlotY) {
     Vector2i otherSlot = itemToMove.m_gridPos;
     itemToMove.m_gridPos = new Vector2i(armorSlotX, armorSlotY);
     itemInArmorSlot.m_gridPos = otherSlot;
@@ -342,5 +347,67 @@ public static class QuickSlotsManager {
       return true;
     }
     return false;
+  }
+
+  public static bool CanAddItem(Inventory inventory, ItemDrop.ItemData item, int stack) {
+    int emptySlots = (inventory.m_width * inventory.m_height) - 5;
+    int stackSpace = 0;
+
+    string itemName = item.m_shared.m_name;
+    int worldLevel = item.m_worldLevel;
+
+    foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
+      Vector2i gridPos = itemData.m_gridPos;
+
+      if (gridPos.y == 4 && gridPos.x <= 4) {
+        continue;
+      }
+
+      emptySlots--;
+
+      if (itemData.m_shared.m_name == itemName && itemData.m_worldLevel == worldLevel) {
+        stackSpace += (itemData.m_shared.m_maxStackSize - itemData.m_stack);
+      }
+    }
+
+    if (stack <= 0) {
+      stack = item.m_stack;
+    }
+
+    return emptySlots > 0 || (stackSpace + (emptySlots * item.m_shared.m_maxStackSize)) >= stack;
+  }
+
+  public static bool HasEmptyNonEquipmentSlot(Inventory inventory) {
+    int emptySlots = (inventory.m_width * inventory.m_height) - 5;
+
+    foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
+      Vector2i gridPos = itemData.m_gridPos;
+
+      if (gridPos.y == 4 && gridPos.x <= 4) {
+        continue;
+      }
+
+      emptySlots--;
+    }
+
+    return emptySlots > 0;
+  }
+
+  public static int FindFreeNonEquipmentStackSpace(Inventory inventory, string itemName, int worldLevel) {
+    int stackSpace = 0;
+
+    foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
+      Vector2i gridPos = itemData.m_gridPos;
+
+      if (gridPos.y == 4 && gridPos.x <= 4) {
+        continue;
+      }
+
+      if (itemData.m_shared.m_name == itemName && itemData.m_worldLevel == worldLevel) {
+        stackSpace += (itemData.m_shared.m_maxStackSize - itemData.m_stack);
+      }
+    }
+
+    return stackSpace;
   }
 }

@@ -2,6 +2,8 @@
 
 using HarmonyLib;
 
+using UnityEngine;
+
 [HarmonyPatch(typeof(Inventory))]
 static class InventoryPatch {
   [HarmonyPrefix]
@@ -65,9 +67,31 @@ static class InventoryPatch {
 
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Inventory.HaveEmptySlot))]
-  public static bool HaveEmptySlotPrefix(Inventory __instance, ref bool __result) {
+  static bool HaveEmptySlotPrefix(Inventory __instance, ref bool __result) {
     if (__instance.m_name == "ComfyQuickSlotsInventory") {
-      __result = QuickSlotsManager.HaveEmptyInventorySlot(__instance);
+      __result = QuickSlotsManager.HasEmptyNonEquipmentSlot(__instance);
+      return false;
+    }
+
+    return true;
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Inventory.CanAddItem), typeof(ItemDrop.ItemData), typeof(int))]
+  static bool CanAddItemPrefix(Inventory __instance, ItemDrop.ItemData item, int stack, ref bool __result) {
+    if (__instance == Player.m_localPlayer.m_inventory) {
+      __result = QuickSlotsManager.CanAddItem(__instance, item, stack);
+      return false;
+    }
+
+    return true;
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Inventory.FindFreeStackSpace))]
+  static bool FindFreeStackSpacePrefix(Inventory __instance, string name, float worldLevel, ref int __result) {
+    if (__instance == Player.m_localPlayer.m_inventory) {
+      __result = QuickSlotsManager.FindFreeNonEquipmentStackSpace(__instance, name, Mathf.RoundToInt(worldLevel));
       return false;
     }
 

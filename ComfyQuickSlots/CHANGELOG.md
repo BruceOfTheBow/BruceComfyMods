@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.7.1
+
+  * Fixed a bug with auto-pickup and quick-slot inventory interactions.
+  * Minor inventory-related optimizations.
+
 ### 1.7.0
 
   * Fixed for the `v0.219.14` patch.

@@ -15,7 +15,7 @@ using static PluginConfig;
 public sealed class ComfyQuickSlots : BaseUnityPlugin {
   public const string PluginGuid = "com.bruce.valheim.comfyquickslots";
   public const string PluginName = "ComfyQuickSlots";
-  public const string PluginVersion = "1.7.0";
+  public const string PluginVersion = "1.7.1";
 
   static ManualLogSource _logger;
 
