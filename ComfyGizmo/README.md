@@ -42,7 +42,7 @@
 ### Thunderstore (manual)
 
   1. **Disable or uninstall** any installed `ComfyGizmo_v1.8.0` or earlier.
-  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.11.0.zip`.
+  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.13.0.zip`.
   3. Click "OK/Import local mod" on the pop-up for information.
   
 ## Notes

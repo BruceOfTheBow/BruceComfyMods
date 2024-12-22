@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.13.0
+
+  * Updated for the `v0.219.16` patch.
+  * Added new config option `[Ignored] ignoreTerrainOpPrefab`.
+    * If enabled, rotation will be ignored for terrain-modifying prefabs.
+
 ### 1.12.0
 
   * Fixed for the `v0.219.14` patch.

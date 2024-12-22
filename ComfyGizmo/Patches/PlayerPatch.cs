@@ -12,29 +12,13 @@ using static PluginConfig;
 
 [HarmonyPatch(typeof(Player))]
 static class PlayerPatch {
-  [HarmonyPrefix]
-  [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
-  static void UpdatePlacementGhostPrefix(Player __instance) {
-    if (!ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey)
-        || !__instance 
-        || !__instance.m_buildPieces 
-        || __instance.m_buildPieces.m_availablePieces == null
-        || !__instance.GetHoveringPiece()) {
-      return;
-    }
-
-    HammerTableManager.SelectTargetPiece(__instance);
-  }
-
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.UpdatePlacement))]
   static void UpdatePlacementPostfix(Player __instance, bool takeInput) {
     RotationManager.HideGizmos();
     RotationManager.ShowGizmos(__instance);
 
-    if (!__instance.m_buildPieces
-        || !takeInput
-        || Hud.IsPieceSelectionVisible()) {
+    if (!takeInput || !__instance.m_buildPieces || Hud.IsPieceSelectionVisible()) {
       return;
     }
 
@@ -90,6 +74,27 @@ static class PlayerPatch {
     return Vector3.up;
   }
 
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Player.SetupPlacementGhost))]
+  static void SetupPlacementGhostPostfix(Player __instance) {
+    RotationManager.OnSetupPlacementGhost(__instance.m_placementGhost);
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
+  static void UpdatePlacementGhostPrefix(Player __instance) {
+    if (ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey) && HasValidTargetPiece(__instance)) {
+      HammerTableManager.SelectTargetPiece(__instance);
+    }
+  }
+
+  static bool HasValidTargetPiece(Player player) {
+    return player
+        && player.GetHoveringPiece()
+        && player.m_buildPieces
+        && player.m_buildPieces.m_availablePieces != default;
+  }
+
   [HarmonyTranspiler]
   [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
   static IEnumerable<CodeInstruction> UpdatePlacementGhostTranspiler(IEnumerable<CodeInstruction> instructions) {
@@ -102,13 +107,18 @@ static class PlayerPatch {
             new CodeMatch(OpCodes.Ldc_R4),
             new CodeMatch(OpCodes.Call),
             new CodeMatch(OpCodes.Stloc_S))
-        .ThrowIfInvalid($"Could not patch Player.UpdatePlacementGhost()! (PlaceRotation)")
+        .ThrowIfInvalid($"Could not patch Player.UpdatePlacementGhost()! (place-rotation)")
         .Advance(offset: 5)
-        .InsertAndAdvance(Transpilers.EmitDelegate(PlaceRotationDelegate))
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PlayerPatch), nameof(PlaceRotationDelegate))))
         .InstructionEnumeration();
   }
 
-  public static Quaternion PlaceRotationDelegate(Quaternion rotation) {
-    return RotationManager.GetRotation();
+  static Quaternion PlaceRotationDelegate(Quaternion rotation) {
+    if (RotationManager.TryGetRotation(out Quaternion gizmoRotation)) {
+      return gizmoRotation;
+    }
+
+    return rotation;
   }
 }

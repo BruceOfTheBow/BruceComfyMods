@@ -6,7 +6,7 @@ using UnityEngine;
 
 using static PluginConfig;
 
-public sealed class RotationManager {
+public static class RotationManager {
   static DefaultRotator _defaultRotator;
   static InternalRotator _internalRotator;
   static LocalFrameRotator _localFrameRotator;
@@ -172,5 +172,25 @@ public sealed class RotationManager {
     if (MessageHud.m_instance) {
       MessageHud.m_instance.ShowMessage(MessageHud.MessageType.TopLeft, message);
     }
+  }
+
+  public static bool IsTerrainOpPrefab { get; private set; }
+
+  public static void OnSetupPlacementGhost(GameObject placementGhost) {
+    if (placementGhost) {
+      IsTerrainOpPrefab = placementGhost.TryGetComponent(out TerrainOp _);
+    } else {
+      IsTerrainOpPrefab = false;
+    }
+  }
+
+  public static bool TryGetRotation(out Quaternion rotation) {
+    if (IsTerrainOpPrefab && IgnoreTerrainOpPrefab.Value) {
+      rotation = Quaternion.identity;
+      return false;
+    }
+
+    rotation = GetRotation();
+    return true;
   }
 }

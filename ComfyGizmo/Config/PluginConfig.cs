@@ -16,6 +16,8 @@ public static class PluginConfig {
   public static ConfigEntry<bool> IsOldRotationEnabled { get; private set; }
   public static ConfigEntry<bool> IsRoofModeEnabled { get; private set; }
 
+  public static ConfigEntry<bool> IgnoreTerrainOpPrefab { get; private set; }
+
   public static readonly int MinSnapDivisions = 2;
   public static readonly int MaxSnapDivisions = 256;
 
@@ -88,6 +90,13 @@ public static class PluginConfig {
           RotationManager.OnModeChange(Player.m_localPlayer);
           RotationManager.DisableLocalFrameMode();
         });
+
+    IgnoreTerrainOpPrefab =
+        config.BindInOrder(
+            "Ignored",
+            "ignoreTerrainOpPrefab",
+            false,
+            "If enabled, rotation will be ignored for terrain-modifying prefabs.");
   }
 
   public static ConfigEntry<KeyboardShortcut> XRotationKey { get; private set; }
