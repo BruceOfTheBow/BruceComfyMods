@@ -4,8 +4,23 @@ guidelines = 120
 
 [*.cs]
 
+# IDE0003: Remove qualification
+dotnet_diagnostic.IDE0003.severity = none
+
 # IDE0051: Remove unused private members
 dotnet_diagnostic.IDE0051.severity = none
 
 # IDE0060: Remove unused parameter
 dotnet_diagnostic.IDE0060.severity = none
+
+# IDE0066: Convert switch statement to expression
+dotnet_diagnostic.IDE0066.severity = none
+
+# IDE0090: 'new' expression can be simplified
+dotnet_diagnostic.IDE0090.severity = none
+
+# CS8632: Nullable reference types should only be used within a '#nullable' annotations context
+dotnet_diagnostic.CS8632.severity = none
+
+# IDE0290: Use primary constructor
+csharp_style_prefer_primary_constructors = false

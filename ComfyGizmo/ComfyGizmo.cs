@@ -14,7 +14,7 @@ using static PluginConfig;
 public sealed class ComfyGizmo : BaseUnityPlugin {
   public const string PluginGUID = "bruce.valheim.comfymods.gizmo";
   public const string PluginName = "ComfyGizmo";
-  public const string PluginVersion = "1.13.0";
+  public const string PluginVersion = "1.14.0";
 
   void Awake() {
     BindConfig(Config);

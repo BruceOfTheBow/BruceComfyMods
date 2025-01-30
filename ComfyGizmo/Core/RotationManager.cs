@@ -1,6 +1,7 @@
 ﻿namespace ComfyGizmo;
 
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -175,17 +176,42 @@ public static class RotationManager {
   }
 
   public static bool IsTerrainOpPrefab { get; private set; }
+  public static bool IsIgnoredPrefab { get; private set; }
+  public static HashSet<string> IgnoredPrefabNames { get; private set; } = [];
+
+  public static void SetIgnoredPrefabNames(IEnumerable<string> values) {
+    IgnoredPrefabNames.Clear();
+
+    foreach (string value in values) {
+      string prefabName = value.Trim();
+
+      if (!string.IsNullOrEmpty(prefabName)) {
+        IgnoredPrefabNames.Add(prefabName);
+      }
+    }
+  }
+
+  public static bool ShouldIgnorePrefabByName(GameObject prefab) {
+    string prefabName = Utils.GetPrefabName(prefab.name);
+
+    return
+        !string.IsNullOrEmpty(prefabName)
+        && IgnoredPrefabNames.Count > 0
+        && IgnoredPrefabNames.Contains(prefabName);
+  }
 
   public static void OnSetupPlacementGhost(GameObject placementGhost) {
     if (placementGhost) {
       IsTerrainOpPrefab = placementGhost.TryGetComponent(out TerrainOp _);
+      IsIgnoredPrefab = ShouldIgnorePrefabByName(placementGhost);
     } else {
       IsTerrainOpPrefab = false;
+      IsIgnoredPrefab = false;
     }
   }
 
   public static bool TryGetRotation(out Quaternion rotation) {
-    if (IsTerrainOpPrefab && IgnoreTerrainOpPrefab.Value) {
+    if (IsIgnoredPrefab || (IsTerrainOpPrefab && IgnoreTerrainOpPrefab.Value)) {
       rotation = Quaternion.identity;
       return false;
     }

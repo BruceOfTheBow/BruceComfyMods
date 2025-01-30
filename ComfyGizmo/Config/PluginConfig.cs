@@ -17,6 +17,7 @@ public static class PluginConfig {
   public static ConfigEntry<bool> IsRoofModeEnabled { get; private set; }
 
   public static ConfigEntry<bool> IgnoreTerrainOpPrefab { get; private set; }
+  public static ToggleStringListConfigEntry IgnorePrefabNameList { get; private set; }
 
   public static readonly int MinSnapDivisions = 2;
   public static readonly int MaxSnapDivisions = 256;
@@ -96,7 +97,22 @@ public static class PluginConfig {
             "Ignored",
             "ignoreTerrainOpPrefab",
             false,
-            "If enabled, rotation will be ignored for terrain-modifying prefabs.");
+            "If enabled, Gizmo rotation will be ignored for terrain-modifying prefabs.");
+
+    IgnorePrefabNameList =
+        new ToggleStringListConfigEntry(
+            config,
+            "Ignored",
+            "ignorePrefabNameList",
+            string.Empty,
+            "List of prefab names to ignore for Gizmo rotation.");
+
+    IgnorePrefabNameList.SettingChanged += OnIgnorePrefabNameListChanged;
+    OnIgnorePrefabNameListChanged(default, IgnorePrefabNameList.ToggledStringValues());
+  }
+
+  static void OnIgnorePrefabNameListChanged(object sender, string[] values) {
+    RotationManager.SetIgnoredPrefabNames(values);
   }
 
   public static ConfigEntry<KeyboardShortcut> XRotationKey { get; private set; }
@@ -137,7 +153,6 @@ public static class PluginConfig {
             "resetAllRotationKey",
             KeyboardShortcut.Empty,
             "Press this key to reset _all axis_ rotations to zero rotation.");
-
 
     ChangeRotationModeKey =
         config.BindInOrder(

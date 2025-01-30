@@ -33,6 +33,20 @@
   * Is only active when one of the 8 corner-roof pieces are selected.
   * Can remain enabled unless a player wishes to rotate a corner roof piece along its tradtional x or z axes.
 
+## Configuration
+
+### Ignoring Rotation
+
+Prefabs can be ignored for Gizmo-rotation during placement using the following config-options under `[Ignored]`.
+
+  * `ignoreTerrainOpPrefab`
+    * If enabled, rotation will be ignored for terrain-modifying prefabs.
+  * `ignorePrefabNameList` 
+    * Comma-separated toggle-list of values where Gizmo-rotation will be ignored for prefabs with matching names.
+    * Each value is in the format of: `prefab_name=0` or `prefab_name=1` where `0|1` indicates toggled off/on.
+    * Example: `Beech_Sapling=1,Birch_Sapling=1,VineGreen_sapling=1`
+    * Implements a custom user-friendly UI accessible in `ConfigurationManager`.
+
 ## Installation
 
 ### Manual
@@ -42,7 +56,7 @@
 ### Thunderstore (manual)
 
   1. **Disable or uninstall** any installed `ComfyGizmo_v1.8.0` or earlier.
-  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.13.0.zip`.
+  2. Go to Settings > Import local mod > select `ComfyGizmo_v1.14.0.zip`.
   3. Click "OK/Import local mod" on the pop-up for information.
   
 ## Notes

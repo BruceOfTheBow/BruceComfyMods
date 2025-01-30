@@ -1,5 +1,13 @@
 ## Changelog
 
+### 1.14.0
+
+  * Added new config option `[Ignored] ignorePrefabNameList`.
+    * Comma-separated toggle-list of values where Gizmo-rotation will be ignored for prefabs with matching names.
+    * Each value is in the format of: `prefab_name=0` or `prefab_name=1` where `0|1` indicate toggled off/on.
+    * Example: `Beech_Sapling=1,Birch_Sapling=1,VineGreen_sapling=1`
+    * Implements a custom user-friendly UI accessible in `ConfigurationManager`.
+
 ### 1.13.0
 
   * Updated for the `v0.219.16` patch.
