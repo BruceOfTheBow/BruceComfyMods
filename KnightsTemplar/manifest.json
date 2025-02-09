@@ -1,0 +1,8 @@
+{
+  "name": "KnightsTemplar",
+  "version_number": "1.3.0",
+  "author": "bruce",
+  "description": "The knowledge of the Knights Templar unlocks the power to repair sword and shield.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/KnightsTemplar",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
