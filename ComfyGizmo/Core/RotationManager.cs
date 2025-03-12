@@ -96,7 +96,7 @@ public static class RotationManager {
     }
 
     HideGizmos();
-    GetActiveRotator().DisplayModeChangeHudeMessage();
+    GetActiveRotator().DisplayModeChangeHudMessage();
     GetActiveRotator().ShowGizmos(player);
   }
   

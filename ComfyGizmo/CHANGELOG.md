@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.15.0
+
+  * Fixed for the `v0.220.3` patch.
+
 ### 1.14.0
 
   * Added new config option `[Ignored] ignorePrefabNameList`.

@@ -20,9 +20,9 @@ public abstract class AbstractRotator {
 
   public abstract Quaternion GetRotation();
 
-  public void DisplayModeChangeHudeMessage() {
+  public void DisplayModeChangeHudMessage() {
     if (MessageHud.m_instance) {
-      MessageHud.m_instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Switchted to {GetModeName()} mode.");
+      MessageHud.m_instance.ShowMessage(MessageHud.MessageType.TopLeft, $"Switched to {GetModeName()} mode.");
     }
   }
 
