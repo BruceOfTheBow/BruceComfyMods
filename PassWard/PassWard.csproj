@@ -112,11 +112,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComfyLib\Extensions\ConfigFileExtensions.cs" />
     <Compile Include="Config\PluginConfig.cs" />
     <Compile Include="Core\TextReceivers\TryPasswordReceiver.cs" />
     <Compile Include="Core\TextReceivers\WardPasswordReceiver.cs" />
     <Compile Include="Core\WardManager.cs" />
     <Compile Include="PassWard.cs" />
+    <Compile Include="Patches\GamePatch.cs" />
     <Compile Include="Patches\PlayerPatch.cs" />
     <Compile Include="Patches\PrivateAreaPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

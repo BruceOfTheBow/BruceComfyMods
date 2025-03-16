@@ -21,8 +21,8 @@ static class PrivateAreaPatch {
   }
 
   public static void AddUserListUsingSeparator(PrivateArea privateArea, StringBuilder text) {
-    List<KeyValuePair<long, string>> permittedPlayers = privateArea.GetPermittedPlayers();
-    int playerCount = permittedPlayers.Count;
+    List<string> playerNames = WardManager.GetCachedPermittedPlayerNames(privateArea.m_nview.m_zdo);
+    int playerCount = playerNames.Count;
 
     text.Append("\n$piece_guardstone_additional: ");
 
@@ -35,12 +35,12 @@ static class PrivateAreaPatch {
             ? "\n"
             : ", ";
 
-    text.Append(permittedPlayers[0].Value);
+    text.Append(playerNames[0]);
 
     for (int i = 1; i < playerCount; i++) {
       text
           .Append(separator)
-          .Append(permittedPlayers[i].Value);
+          .Append(playerNames[i]);
     }
   }
 

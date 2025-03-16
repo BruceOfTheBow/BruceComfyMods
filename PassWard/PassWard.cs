@@ -15,7 +15,7 @@ using static PluginConfig;
 public sealed class PassWard : BaseUnityPlugin {
   public const string PluginGuid = "bruce.valheim.mods.passward";
   public const string PluginName = "PassWard";
-  public const string PluginVersion = "1.1.0";
+  public const string PluginVersion = "1.2.0";
 
   static ManualLogSource _logger;
 
