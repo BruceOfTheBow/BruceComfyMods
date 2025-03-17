@@ -12,7 +12,3 @@
     * `Lshift + R` while targeting **your own ward** by default
   * Enter a password on a passworded ward
     * `Lshift + P` while targeting a passworded ward by default
-
-## Attributions
-
-  * Icon provided by Lyka on Comfy AKA [@jenniely](https://twitter.com/jenniely) (jenniely.com).

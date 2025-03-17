@@ -21,7 +21,8 @@ public static class PluginConfig {
 
   public enum UserListSorting {
     Unsorted,
-    Alphabetically
+    Alphabetically,
+    ReverseAlphabetically
   }
 
   public static ConfigEntry<UserListSorting> WardHoverTextUserListSorting { get; private set; }

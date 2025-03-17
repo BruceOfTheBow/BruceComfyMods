@@ -141,8 +141,13 @@ public static class WardManager {
       }
     }
 
-    if (WardHoverTextUserListSorting.Value == UserListSorting.Alphabetically) {
+    UserListSorting sorting = WardHoverTextUserListSorting.Value;
+
+    if (sorting == UserListSorting.Alphabetically) {
       _cachedPlayerNames.Sort(StringComparer.OrdinalIgnoreCase);
+    } else if (sorting == UserListSorting.ReverseAlphabetically) {
+      _cachedPlayerNames.Sort(StringComparer.OrdinalIgnoreCase);
+      _cachedPlayerNames.Reverse();
     }
 
     return _cachedPlayerNames;
