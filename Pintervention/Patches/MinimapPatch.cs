@@ -1,80 +1,80 @@
-﻿using HarmonyLib;
+﻿namespace Pintervention;
 
-using static Pintervention.PluginConfig;
+using HarmonyLib;
 
-namespace Pintervention {
-  [HarmonyPatch(typeof(Minimap))]
-  static class MinimapPatch {
-    static int _pinCount = 999999;
+using static PluginConfig;
 
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.Update))]
-    static void UpdatePostfix(Minimap __instance) {
-      if (!IsModEnabled.Value 
-            || !Minimap.IsOpen()
-            || !__instance
-            || !__instance.m_largeRoot
-            || !DisplayFilterPanel.Value.IsDown()) {
+[HarmonyPatch(typeof(Minimap))]
+static class MinimapPatch {
+  static int _pinCount = 999999;
 
-        return;
-      }
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Minimap.Update))]
+  static void UpdatePostfix(Minimap __instance) {
+    if (!IsModEnabled.Value 
+          || !Minimap.IsOpen()
+          || !__instance
+          || !__instance.m_largeRoot
+          || !DisplayFilterPanel.Value.IsDown()) {
 
-      PinOwnerManager.Initialize();
-      PlayerFilterPanelManager.ToggleFilterPanel();
+      return;
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.UpdatePins))]
-    static void UpdatePinsPostfix(Minimap __instance) {
-      if (!IsModEnabled.Value
-            || !Minimap.IsOpen()
-            || !__instance
-            || !__instance.m_largeRoot) {
+    PinOwnerManager.Initialize();
+    PlayerFilterPanelManager.ToggleFilterPanel();
+  }
 
-        return;
-      }
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Minimap.UpdatePins))]
+  static void UpdatePinsPostfix(Minimap __instance) {
+    if (!IsModEnabled.Value
+          || !Minimap.IsOpen()
+          || !__instance
+          || !__instance.m_largeRoot) {
 
-      PinOwnerManager.FilterPins();
-      PlayerFilterPanelManager.UpdatePinCounts();
+      return;
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.UpdatePlayerPins))]
-    static void UpdatePlayerPinsPostfix(Minimap __instance) {
-      if (!IsModEnabled.Value
-            || !__instance
-            || !Player.m_localPlayer) {
-      }
+    PinOwnerManager.FilterPins();
+    PlayerFilterPanelManager.UpdatePinCounts();
+  }
 
-      if (_pinCount <= __instance.m_pins.Count) {
-        return;
-      }
-
-      _pinCount = __instance.m_pins.Count;
-
-      PinOwnerManager.AddAllLocalPlayerPins();
-      PlayerFilterPanelManager.UpdatePanel();
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Minimap.UpdatePlayerPins))]
+  static void UpdatePlayerPinsPostfix(Minimap __instance) {
+    if (!IsModEnabled.Value
+          || !__instance
+          || !Player.m_localPlayer) {
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.RemovePin), typeof(Minimap.PinData))]
-    static void RemovePinPostfix(Minimap __instance, Minimap.PinData pin) {
-      long pid = pin.m_ownerID;
-
-      PinOwnerManager.RemoveLocalPlayerPin(pin);
-
-      if (PinOwnerManager.GetPinsByPid(pid).Count == 0) {
-        PinOwnerManager.RemoveForeignPinOwner(pid);
-      }
-
-      PlayerFilterPanelManager.UpdatePanel();
+    if (_pinCount <= __instance.m_pins.Count) {
+      return;
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(Minimap.ResetSharedMapData))]
-    static void ResetSharedMapData(Minimap __instance) {
-      PinOwnerManager.ForeignPinOwners.RemoveAll(x => PinOwnerManager.GetPinsByPid(x).Count == 0);
-      PlayerFilterPanelManager.UpdatePanel();
+    _pinCount = __instance.m_pins.Count;
+
+    PinOwnerManager.AddAllLocalPlayerPins();
+    PlayerFilterPanelManager.UpdatePanel();
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Minimap.RemovePin), typeof(Minimap.PinData))]
+  static void RemovePinPostfix(Minimap __instance, Minimap.PinData pin) {
+    long pid = pin.m_ownerID;
+
+    PinOwnerManager.RemoveLocalPlayerPin(pin);
+
+    if (PinOwnerManager.GetPinsByPid(pid).Count == 0) {
+      PinOwnerManager.RemoveForeignPinOwner(pid);
     }
+
+    PlayerFilterPanelManager.UpdatePanel();
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Minimap.ResetSharedMapData))]
+  static void ResetSharedMapData(Minimap __instance) {
+    PinOwnerManager.ForeignPinOwners.RemoveAll(x => PinOwnerManager.GetPinsByPid(x).Count == 0);
+    PlayerFilterPanelManager.UpdatePanel();
   }
 }

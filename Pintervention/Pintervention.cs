@@ -1,47 +1,44 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
+﻿namespace Pintervention;
+
+using System;
+using System.Globalization;
 using System.Reflection;
 
-using static Pintervention.PluginConfig;
+using BepInEx;
+using BepInEx.Logging;
 
-namespace Pintervention {
-  [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-  public class Pintervention : BaseUnityPlugin {
-    public const string PluginGuid = "bruce.valheim.comfymods.pintervention";
-    public const string PluginName = "Pintervention";
-    public const string PluginVersion = "1.2.0";
+using HarmonyLib;
 
-    Harmony _harmony;
+using static PluginConfig;
 
-    static ManualLogSource _logger;
+[BepInPlugin(PluginGuid, PluginName, PluginVersion)]
+public sealed class Pintervention : BaseUnityPlugin {
+  public const string PluginGuid = "bruce.valheim.comfymods.pintervention";
+  public const string PluginName = "Pintervention";
+  public const string PluginVersion = "1.3.0";
 
-    void Awake() {
-      BindConfig(Config);
+  static ManualLogSource _logger;
 
-      _logger = Logger;
+  void Awake() {
+    _logger = Logger;
+    BindConfig(Config);
 
-      _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
+    Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
+  }
+
+  public static void MessageLocalPlayer(string message) {
+    if (!Player.m_localPlayer) {
+      return;
     }
 
-    void OnDestroy() {
-      _harmony?.UnpatchSelf();
-    }
+    Player.m_localPlayer.Message(MessageHud.MessageType.Center, message, 0, null);
+  }
 
-    public static void MessageLocalPlayer(string message) {
-      if (!Player.m_localPlayer) {
-        return;
-      }
+  public static void LogInfo<T>(T obj) {
+    _logger.LogInfo($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {obj}");
+  }
 
-      Player.m_localPlayer.Message(MessageHud.MessageType.Center, message, 0, null);
-    }
-
-    public static void Log(string message) {
-      _logger.LogInfo(message);
-    }
-
-    public static void LogWarning(string message) {
-      _logger.LogWarning(message);
-    }
+  public static void LogWarning<T>(T obj) {
+    _logger.LogWarning($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {obj}");
   }
 }
