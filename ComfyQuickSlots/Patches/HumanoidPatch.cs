@@ -44,19 +44,23 @@ static class HumanoidPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Humanoid.UnequipItem))]
   static bool UnequipItemPrefix(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects) {
-    if (item != null) {
-      if (QuickSlotsManager.IsArmor(item) && item.m_equipped) {
-        if (!QuickSlotsManager.HasEmptyNonEquipmentSlot(__instance.GetInventory())) {
-          __instance.Message(MessageHud.MessageType.Center, "Inventory full. Item not unequipped.");
-          return false;
-        }
+    if (item == null) {
+      return true;
+    }
 
-        QuickSlotsManager.UnequipItem(__instance, item);
-        Vector2i emptyLoc = QuickSlotsManager.GetEmptyInventorySlot(__instance.GetInventory(), true);
-        QuickSlotsManager.MoveArmorItemToSlot(__instance, item, emptyLoc.x, emptyLoc.y);
+    if (QuickSlotsManager.IsArmor(item) && item.m_equipped) {
+      if (!QuickSlotsManager.HasEmptyNonEquipmentSlot(__instance.GetInventory())) {
+        __instance.Message(MessageHud.MessageType.Center, "Inventory full. Item not unequipped.");
         return false;
       }
+
+      QuickSlotsManager.UnequipItem(__instance, item);
+      Vector2i emptyLoc = QuickSlotsManager.GetEmptyInventorySlot(__instance.GetInventory(), true);
+      QuickSlotsManager.MoveArmorItemToSlot(__instance, item, emptyLoc.x, emptyLoc.y);
+
+      return false;
     }
+
     return true;
   }
 }

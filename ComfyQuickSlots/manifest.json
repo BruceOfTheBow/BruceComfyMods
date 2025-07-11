@@ -1,8 +1,8 @@
 {
   "name": "ComfyQuickSlots",
-  "version_number": "1.7.1",
+  "version_number": "1.8.0",
   "author": "ComfyMods",
-  "description": "Armor and Quick Slots mod to replace Equipment and Quickslots mod fixing item deletion issues.",
+  "description": "Comfy-fork of EquipmentAndQuickSlots.",
   "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/ComfyQuickSlots",
   "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
 }

@@ -6,11 +6,10 @@ using HarmonyLib;
 static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.Awake))]
-  static void AwakePrefix(ref Player __instance) {
-    __instance.m_inventory.m_name = "ComfyQuickSlotsInventory";
-    __instance.m_inventory.m_height = QuickSlotsManager.Rows;
-    __instance.m_inventory.m_width = QuickSlotsManager.Columns;
+  static void AwakePrefix(Player __instance) {
+    QuickSlotsManager.SetupPlayerInventory(__instance.m_inventory);
   }
+
 
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.Load))]

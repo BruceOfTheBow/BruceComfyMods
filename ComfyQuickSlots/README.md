@@ -35,7 +35,7 @@
 
 ### Thunderstore (manual)
 
-  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.7.0.zip`.
+  * Go to Settings > Import local mod > Select `ComfyQuickSlots_v1.8.0.zip`.
   * Click "OK/Import local mod" on the pop-up for information.
 
 ## Notes

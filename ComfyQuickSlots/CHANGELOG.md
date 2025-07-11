@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.8.0
+
+  * Fixed an inventory issue when upgrading equipped armor in a equipment-slot (armor will now unequip correctly).
+  * Minor code clean-up and refactoring.
+
 ### 1.7.1
 
   * Fixed a bug with auto-pickup and quick-slot inventory interactions.

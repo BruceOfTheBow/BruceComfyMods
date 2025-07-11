@@ -3,13 +3,19 @@
 using System.Collections.Generic;
 
 public static class QuickSlotsManager {
+  public const string PlayerInventoryName = "ComfyQuickSlotsInventory";
   public const int Rows = 5;
   public const int Columns = 8;
 
-  public const string PlayerDataKey = "ComfyQuickSlotsInventory";
+  public static void SetupPlayerInventory(Inventory inventory) {
+    inventory.m_name = PlayerInventoryName;
+    inventory.m_height = Rows;
+    inventory.m_width = Columns;
+  }
 
+  public const string PlayerDataKey = "ComfyQuickSlotsInventory";
   public const int QuickSlotsCount = 3;
-  public static readonly string PlayerInventoryName = "ComfyQuickSlotsInventory";
+  
   public static readonly int IsAdditionalTombstoneField = "cqs.tombstone".GetStableHashCode();
 
   public static readonly List<ItemDrop.ItemData.ItemType> ArmorSlotTypes = [
@@ -246,12 +252,15 @@ public static class QuickSlotsManager {
     return false;
   }
 
-  public static int ItemCountInInventory(ItemDrop.ItemData item) {
+  public static int ItemCountInInventory(Inventory inventory, ItemDrop.ItemData item) {
+    string itemName = item.m_shared.m_name;
     int count = 0;
 
     for (int j = 0; j < Rows; j++) {
       for (int i = 0; i < Columns; i++) {
-        if (Player.m_localPlayer.GetInventory().GetItemAt(i, j).m_shared.m_name == item.m_shared.m_name) {
+        ItemDrop.ItemData inventoryItem = inventory.GetItemAt(i, j);
+
+        if (inventoryItem != null && inventoryItem.m_shared.m_name == itemName) {
           count++;
         }
       }
@@ -262,6 +271,7 @@ public static class QuickSlotsManager {
 
   public static bool MoveArmorItemToSlot(Humanoid humanoid, ItemDrop.ItemData item, int x, int y) {
     ItemDrop.ItemData itemInArmorSlot = humanoid.GetInventory().GetItemAt(x, y);
+
     if (itemInArmorSlot != null && !itemInArmorSlot.Equals(item)) {
       return SwapArmorItems(humanoid, item, itemInArmorSlot, x, y);
     } else {
@@ -272,6 +282,7 @@ public static class QuickSlotsManager {
         return true;
       }
     }
+
     return false;
   }
 
@@ -314,38 +325,53 @@ public static class QuickSlotsManager {
     if (player.m_helmetItem == item) {
       player.m_helmetItem = null;
       item.m_equipped = false;
+
       player.SetupEquipment();
       player.TriggerEquipEffect(item);
+
       return true;
     }
+
     if (player.m_chestItem == item) {
       player.m_chestItem = null;
       item.m_equipped = false;
+
       player.SetupEquipment();
       player.TriggerEquipEffect(item);
+
       return true;
     }
+
     if (player.m_legItem == item) {
       player.m_legItem = null;
       item.m_equipped = false;
+
       player.SetupEquipment();
       player.TriggerEquipEffect(item);
+
       return true;
     }
+
     if (player.m_shoulderItem == item) {
       player.m_shoulderItem = null;
       item.m_equipped = false;
+
       player.SetupEquipment();
       player.TriggerEquipEffect(item);
+
       return true;
     }
+
     if (player.m_utilityItem == item) {
       player.m_utilityItem = null;
       item.m_equipped = false;
+
       player.SetupEquipment();
       player.TriggerEquipEffect(item);
+
       return true;
     }
+
     return false;
   }
 
