@@ -1,20 +1,18 @@
-﻿using Valheim.SettingsGui;
+﻿namespace Hygge;
+
 using HarmonyLib;
 
-using static Hygge.PluginConfig;
+using Valheim.SettingsGui;
 
-namespace Hygge.Patches {
-  [HarmonyPatch(typeof(GraphicsSettings))]
-  static class SettingsPatch {
-    [HarmonyPostfix]
-    [HarmonyPatch(nameof(GraphicsSettings.ApplyResolution))]
-    public static void ApplyResolutionPostfix(ref GraphicsSettings __instance) {
-      if (!IsModEnabled.Value || !ComfortPanelManager.ComfortPanel?.Panel) {
-        return;
-      }
+using static PluginConfig;
 
+[HarmonyPatch(typeof(GraphicsSettings))]
+static class SettingsPatch {
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(GraphicsSettings.ApplyResolution))]
+  public static void ApplyResolutionPostfix(GraphicsSettings __instance) {
+    if (IsModEnabled.Value) {
       ComfortPanelManager.DestroyPanel();
     }
   }
 }
-    

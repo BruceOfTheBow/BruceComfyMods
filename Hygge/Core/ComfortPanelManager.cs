@@ -1,50 +1,67 @@
-﻿namespace Hygge {
-  public static class ComfortPanelManager {
-    public static ComfortPanel ComfortPanel { get; private set; }
-    private static Piece lastPiece = null;
-    public static void ToggleOn(Piece piece) {
-      if (!ComfortPanel?.Panel) {
-        if (!InstantiateComfortPanel(piece)) {
-          ZLog.LogWarning("Failed to instantiate comfort panel.");
-          return;
-        }
-      }
-      
-      ComfortPanel.Panel.SetActive(true);
-    }
+﻿namespace Hygge;
 
-    public static void ToggleOff() {
-      if (!ComfortPanel?.Panel) {
+using UnityEngine;
+
+public static class ComfortPanelManager {
+  public static ComfortPanel ComfortPanel { get; private set; }
+
+  public static bool HasValidPanel() {
+    return ComfortPanel != default && ComfortPanel.Panel;
+  }
+
+  public static void ToggleOn(Piece piece) {
+    if (!HasValidPanel()) {
+      if (!InstantiateComfortPanel(piece)) {
+        Hygge.LogWarning("Failed to instantiate ComfortPanel.");
         return;
       }
+    }
+    
+    ComfortPanel.Panel.SetActive(true);
+  }
 
+  public static void ToggleOff() {
+    if (HasValidPanel()) {
       ComfortPanel.Panel.SetActive(false);
     }
+  }
 
-    public static void Update(Piece piece) {
-      ComfortPanel.Update(piece);
+  static Piece _lastUpdatePiece = default;
+  static float _lastUpdateTime = 0f;
+
+  public static void Update(Piece piece) {
+    float time = Time.time;
+
+    if (_lastUpdatePiece == piece && (time - _lastUpdateTime < 0.5f)) {
+      return;
     }
 
-    public static void DestroyPanel() {
-      if (!ComfortPanel?.Panel) {
-        return;
-      }
+    _lastUpdatePiece = piece;
+    _lastUpdateTime = time;
 
-      ComfortPanel.Panel.SetActive(false);
-      UnityEngine.Object.Destroy(ComfortPanel.Panel);
-      ComfortPanel = null;
+    ComfortPanel.Update(piece);
+  }
+
+  public static void DestroyPanel() {
+    if (!HasValidPanel()) {
+      return;
     }
 
-    private static bool InstantiateComfortPanel(Piece piece) {
-      ComfortPanel = ComfortPanel.CreateComfortPanel();
+    ComfortPanel.Panel.SetActive(false);
+    UnityEngine.Object.Destroy(ComfortPanel.Panel);
 
-      if (ComfortPanel == null) {
-        return false;
-      }
+    ComfortPanel = default;
+  }
 
-      ComfortPanel.Update(piece);
-     
-      return true;
+  static bool InstantiateComfortPanel(Piece piece) {
+    ComfortPanel = ComfortPanel.CreateComfortPanel();
+
+    if (ComfortPanel == default) {
+      return false;
     }
+
+    ComfortPanel.Update(piece);
+   
+    return true;
   }
 }

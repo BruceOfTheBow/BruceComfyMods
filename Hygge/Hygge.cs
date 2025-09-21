@@ -1,26 +1,32 @@
-﻿using BepInEx;
-using HarmonyLib;
+﻿namespace Hygge;
+
+using System;
+using System.Globalization;
 using System.Reflection;
 
-using static Hygge.PluginConfig;
+using BepInEx;
+using BepInEx.Logging;
 
-namespace Hygge {
-  [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-  public class Hygge : BaseUnityPlugin {
-    public const string PluginGuid = "bruce.valheim.comfymods.hygge";
-    public const string PluginName = "Hygge";
-    public const string PluginVersion = "1.3.1";
+using HarmonyLib;
 
-    Harmony _harmony;
+using static PluginConfig;
 
-    void Awake() {
-      BindConfig(Config);
+[BepInPlugin(PluginGuid, PluginName, PluginVersion)]
+public sealed class Hygge : BaseUnityPlugin {
+  public const string PluginGuid = "bruce.valheim.comfymods.hygge";
+  public const string PluginName = "Hygge";
+  public const string PluginVersion = "1.4.0";
 
-      _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
-    }
+  static ManualLogSource _logger;
 
-    void OnDestroy() {
-      _harmony?.UnpatchSelf();
-    }
+  void Awake() {
+    _logger = Logger;
+    BindConfig(Config);
+
+    Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGuid);
+  }
+
+  public static void LogWarning(object obj) {
+    _logger.LogWarning($"[{DateTime.Now.ToString(DateTimeFormatInfo.InvariantInfo)}] {obj}");
   }
 }
