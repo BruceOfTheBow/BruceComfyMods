@@ -22,50 +22,73 @@ static class PlayerPatch {
       return;
     }
 
-    if (ZInput.GetKeyDown(SnapDivisionIncrementKey.Value.MainKey)) {
+    if (ZInput.GetKeyDown(SnapDivisionIncrementKey.Value.MainKey) || ZInput.GetButtonDown(SnapDivisionIncrementButton.Value)) {
       RotationManager.IncreaseSnapDivisions();
     }
 
-    if (ZInput.GetKeyDown(SnapDivisionDecrementKey.Value.MainKey)) {
+    if (ZInput.GetKeyDown(SnapDivisionDecrementKey.Value.MainKey) || ZInput.GetButtonDown(SnapDivisionDecrementButton.Value)) {
       RotationManager.DecreaseSnapDivisions();
     }
 
-    if (ZInput.GetKeyDown(CopyPieceRotationKey.Value.MainKey) && __instance.m_hoveringPiece != null) {
+    if ((ZInput.GetKeyDown(CopyPieceRotationKey.Value.MainKey) || ZInput.GetButtonDown(CopyPieceRotationButton.Value)) && __instance.m_hoveringPiece != null) {
       RotationManager.MatchPieceRotation(__instance.m_hoveringPiece);
     }
 
-    if (ZInput.GetKeyDown(ChangeRotationModeKey.Value.MainKey)) {
+    if (ZInput.GetKeyDown(ChangeRotationModeKey.Value.MainKey) || ZInput.GetButtonDown(ChangeRotationModeButton.Value)) {
       IsLocalFrameEnabled.Value = !IsLocalFrameEnabled.Value;
     }
 
     RotationManager.ResetScales();
 
-    if (ZInput.GetKey(ResetAllRotationKey.Value.MainKey)) {
+    if (ZInput.GetKey(ResetAllRotationKey.Value.MainKey) || ZInput.GetButton(ResetAllRotationButton.Value)) {
       RotationManager.ResetRotation();
       return;
     }
 
+    if (ZInput.GamepadActive && ZInput.InputLayout == InputLayout.Default && !ZInput.GetButton("JoyRotate"))
+      return;
+
     Vector3 rotationAxis = GetRotationAxis();
 
-    if (ZInput.GetKey(ResetRotationKey.Value.MainKey)) {
+    if (ZInput.GetKey(ResetRotationKey.Value.MainKey) || ZInput.GetButton(ResetRotationButton.Value)) {
       RotationManager.ResetAxis(rotationAxis);
     }
-
+    
     rotationAxis *= GetSign();
     RotationManager.Rotate(rotationAxis);
   }
+
+  private static float GetCombinedTriggerRotation()
+  {
+    if (ZInput.GetButton("JoyRotate"))
+    {
+      return -1;
+    }
+    
+    return ZInput.GetButton("JoyRotateRight") ? 1 : 0;
+  }
   
-  private static int GetSign() {
+  private static float GetSign() {
+    if (ZInput.GamepadActive)
+    {
+      float rotationSpeedRatio = 2;
+      return ZInput.InputLayout switch
+      {
+        InputLayout.Alternative1 or InputLayout.Alternative2 => GetCombinedTriggerRotation() / rotationSpeedRatio,
+        _ => ZInput.GetJoyRightStickX(true) / rotationSpeedRatio
+      };
+    }
     return Math.Sign(ZInput.GetMouseScrollWheel());
   }
 
   private static Vector3 GetRotationAxis() {
-    if (ZInput.GetKey(XRotationKey.Value.MainKey)) {
+    if (ZInput.GetKey(XRotationKey.Value.MainKey) || ZInput.GetButton(XRotationButton.Value))
+    {
       RotationManager.SetActiveXScale(1.5f);
       return Vector3.right;
     }
 
-    if (ZInput.GetKey(ZRotationKey.Value.MainKey)) {
+    if (ZInput.GetKey(ZRotationKey.Value.MainKey) || ZInput.GetButton(ZRotationButton.Value)) {
       RotationManager.SetActiveZScale(1.5f);
       return Vector3.forward;
     }
@@ -83,7 +106,7 @@ static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
   static void UpdatePlacementGhostPrefix(Player __instance) {
-    if (ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey) && HasValidTargetPiece(__instance)) {
+    if (ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey) || ZInput.GetButton(SelectTargetPieceButton.Value) && HasValidTargetPiece(__instance)) {
       HammerTableManager.SelectTargetPiece(__instance);
     }
   }
