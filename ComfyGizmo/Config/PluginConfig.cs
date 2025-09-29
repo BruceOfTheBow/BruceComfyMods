@@ -248,7 +248,7 @@ public static class PluginConfig {
         config.BindInOrder(
             "Controller",
             "selectTargetPieceButton",
-            "JoyRStickDown",
+            "StickRButton",
             "Selects target piece to be used.");
 
     SnapDivisionIncrementButton =
