@@ -204,63 +204,63 @@ public static class PluginConfig {
   public static void BindButtonsConfig(ConfigFile config) {
     XRotationButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "xRotationButton",
             "JoyDPadLeft",
             "Hold this key to rotate on the x-axis/plane (red circle).");
 
     ZRotationButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "zRotationButton",
             "JoyDPadRight",
             "Hold this key to rotate on the z-axis/plane (blue circle).");
 
     ResetRotationButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "resetRotationButton",
             "JoyButtonY",
             "Press this key to reset the selected axis to zero rotation.");
 
     ResetAllRotationButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "resetAllRotationButton",
             "JoyButtonBack",
             "Press this key to reset _all axis_ rotations to zero rotation.");
 
     ChangeRotationModeButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "changeRotationModeButton",
             "JoyButtonX",
             "Press this key to toggle rotation modes.");
 
     CopyPieceRotationButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "copyPieceRotationButton",
             "JoyLBumper",
             "Press this key to copy targeted piece's rotation.");
 
     SelectTargetPieceButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "selectTargetPieceButton",
             "JoyRStickDown",
             "Selects target piece to be used.");
 
     SnapDivisionIncrementButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "snapDivisionIncrementButton",
             "JoyDPadUp",
             "Doubles snap divisions from current.");
 
     SnapDivisionDecrementButton =
         config.BindInOrder(
-            "Keys",
+            "Controller",
             "snapDivisionDecrementButton",
             "JoyDPadDown",
             "Halves snap divisions from current.");

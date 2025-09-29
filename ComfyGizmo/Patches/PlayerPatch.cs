@@ -106,7 +106,7 @@ static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
   static void UpdatePlacementGhostPrefix(Player __instance) {
-    if (ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey) || ZInput.GetButton(SelectTargetPieceButton.Value) && HasValidTargetPiece(__instance)) {
+    if ((ZInput.GetKeyDown(SelectTargetPieceKey.Value.MainKey) || ZInput.GetButtonDown(SelectTargetPieceButton.Value)) && HasValidTargetPiece(__instance)) {
       HammerTableManager.SelectTargetPiece(__instance);
     }
   }
