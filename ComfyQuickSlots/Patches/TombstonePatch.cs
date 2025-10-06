@@ -3,11 +3,11 @@
 using HarmonyLib;
 
 [HarmonyPatch(typeof(TombStone))]
-static class TombstonePatch {
+static class TombStonePatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(TombStone.GiveBoost))]
   static bool GiveBoostPrefix(TombStone __instance) {
-    if (__instance.m_nview.m_zdo.GetBool(QuickSlotsManager.IsAdditionalTombstoneField)) {
+    if (TombStoneManager.IsAdditionalTombStone(__instance)) {
       return false;
     }
 

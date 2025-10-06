@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.9.0
+
+  * Added support for GlobalKey `DeathKeepEquip`.
+  * Minor code clean-up and refactoring.
+
 ### 1.8.0
 
   * Fixed an inventory issue when upgrading equipped armor in a equipment-slot (armor will now unequip correctly).
