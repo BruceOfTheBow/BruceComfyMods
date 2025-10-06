@@ -15,8 +15,6 @@ public static class QuickSlotsManager {
 
   public const string PlayerDataKey = "ComfyQuickSlotsInventory";
   public const int QuickSlotsCount = 3;
-  
-  public static readonly int IsAdditionalTombstoneField = "cqs.tombstone".GetStableHashCode();
 
   public static readonly List<ItemDrop.ItemData.ItemType> ArmorSlotTypes = [
     ItemDrop.ItemData.ItemType.Helmet,
@@ -276,6 +274,7 @@ public static class QuickSlotsManager {
       return SwapArmorItems(humanoid, item, itemInArmorSlot, x, y);
     } else {
       item.m_gridPos = new Vector2i(x, y);
+
       if (!humanoid.GetInventory().m_inventory.Contains(item)) {
         humanoid.GetInventory().AddItem(item);
         humanoid.GetInventory().Changed();
@@ -289,6 +288,7 @@ public static class QuickSlotsManager {
   public static bool Save(Player player) {
     ZPackage pkg = new();
     player.GetInventory().Save(pkg);
+
     if (player.m_knownTexts.ContainsKey(PlayerDataKey)) {
       player.m_knownTexts[PlayerDataKey] = pkg.GetBase64();
     } else {
@@ -308,16 +308,21 @@ public static class QuickSlotsManager {
     itemToMove.m_gridPos = new Vector2i(armorSlotX, armorSlotY);
     itemInArmorSlot.m_gridPos = otherSlot;
     humanoid.GetInventory().Changed();
+
     return false;
   }
 
   public static bool UnequipAllArmor(Player player) {
+    Inventory playerInventory = player.GetInventory();
+
     for (int i = 0; i < 5; i++) {
-      ItemDrop.ItemData item = player.GetInventory().GetItemAt(i, 4);
+      ItemDrop.ItemData item = playerInventory.GetItemAt(i, 4);
+
       if (item != null) {
         UnequipItem(player, item);
       }
     }
+
     return true;
   }
 

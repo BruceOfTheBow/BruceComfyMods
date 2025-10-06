@@ -60,4 +60,19 @@ static class PlayerPatch {
 
     return true;
   }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Player.CreateTombStone))]
+  static void CreateTombStonePrefix(Player __instance) {
+    TombStoneManager.CreateTombStone(__instance);
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Player.CreateTombStone))]
+  static void CreateTombStonePostfix(Player __instance) {
+    Inventory playerInventory = __instance.GetInventory();
+
+    playerInventory.m_height = QuickSlotsManager.Rows;
+    playerInventory.m_width = QuickSlotsManager.Columns;
+  }
 }

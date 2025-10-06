@@ -1,8 +1,10 @@
 ﻿namespace ComfyQuickSlots;
 
-using ComfyLib;
+using System.IO;
 
 using BepInEx.Configuration;
+
+using ComfyLib;
 
 using UnityEngine;
 
@@ -102,5 +104,7 @@ public sealed class PluginConfig {
             "logFilesPath",
             "ItemsOnDeath/",
             "Path to where logging of items on death are saved.");
+
+    Directory.CreateDirectory(LogFilesPath.Value);
   }
 }

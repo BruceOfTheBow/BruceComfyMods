@@ -15,7 +15,7 @@ using static PluginConfig;
 public sealed class ComfyQuickSlots : BaseUnityPlugin {
   public const string PluginGuid = "com.bruce.valheim.comfyquickslots";
   public const string PluginName = "ComfyQuickSlots";
-  public const string PluginVersion = "1.8.0";
+  public const string PluginVersion = "1.9.0";
 
   static ManualLogSource _logger;
 
@@ -33,7 +33,7 @@ public sealed class ComfyQuickSlots : BaseUnityPlugin {
   void Update() {
     Player player = Player.m_localPlayer;
 
-    if (player == null || !EnableQuickslots.Value || !player.TakeInput()) {
+    if (!player || !EnableQuickslots.Value || !player.TakeInput()) {
       return;
     }
 
