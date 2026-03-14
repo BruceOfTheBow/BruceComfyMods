@@ -17,7 +17,27 @@ static class PlayerPatch {
     if (__instance.m_knownTexts.ContainsKey(QuickSlotsManager.PlayerDataKey)) {
       ZPackage pkg = new(__instance.m_knownTexts[QuickSlotsManager.PlayerDataKey]);
       __instance.GetInventory().Load(pkg);
-      QuickSlotsManager.EquipArmorInArmorSlots(__instance);
+
+      // Clear stale equipment references left over from the native Player.Load.
+      // inventory.Load() replaced all ItemData objects, so the old equipment refs
+      // now point to orphaned instances. Without clearing these, mods like
+      // AdventureBackpacks bind their data to the wrong item, causing backpack
+      // contents to be lost on save/load.
+      __instance.m_helmetItem = null;
+      __instance.m_chestItem = null;
+      __instance.m_legItem = null;
+      __instance.m_shoulderItem = null;
+      __instance.m_utilityItem = null;
+
+      // Equip armor via Humanoid.EquipItem (instead of QuickSlotsManager.EquipItem)
+      // so that all Harmony postfixes from other mods fire correctly.
+      for (int i = 0; i < 5; i++) {
+        var item = __instance.GetInventory().GetItemAt(i, 4);
+        if (item != null) {
+          __instance.EquipItem(item);
+        }
+      }
+
       __instance.GetInventory().Changed();
     } else {
       QuickSlotsManager.FirstLoad = true;
