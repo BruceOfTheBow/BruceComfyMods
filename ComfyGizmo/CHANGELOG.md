@@ -1,5 +1,28 @@
 ## Changelog
 
+### 1.16.0
+
+  * Restored and extended controller support for piece rotation while building.
+    * Right joystick now drives all three gizmo axes, tap to nudge one step, hold to auto-repeat (mirrors vanilla cadence):
+      * Left/right -> yaw (Y).
+      * Up/down -> pitch (X), or roll (Z) when toggled.
+    * `X` (`JoyButtonX`) drives both gizmo actions: tap to toggle the up/down stick between pitch and roll, hold to reset all rotation.
+      * `X` is free during building in every controller layout, so this avoids the right-stick click (which cycles snap points in all layouts).
+    * Added new config section `[Joystick]`:
+      * `joystickRotationEnabled` - toggles right-joystick rotation (default enabled).
+      * `joystickRotationDeadzone` - how far the stick must be pushed before rotating (default `0.5`).
+      * `joystickRotationInvert` - inverts left/right (yaw) direction.
+      * `joystickVerticalInvert` - inverts up/down (pitch/roll) direction.
+      * `joystickRotationRepeatDelay` - seconds between repeats while the stick is held (default `0.1`).
+      * `joystickGizmoButton` - gamepad button for the tap-toggle / hold-reset actions (default `JoyButtonX`).
+      * `joystickResetHoldSeconds` - how long to hold the gizmo button to reset (default `0.4`).
+  * Added adaptive on-screen control hints to the build key-hint bar.
+    * On a controller: the pitch/roll toggle and reset, shown with native button glyphs.
+    * On keyboard: the rotation reset key.
+    * Hints switch automatically to match the active input device.
+    * Hints are localized through Valheim's localization (English and French included, translatable like any other addon).
+    * Toggle with new config option `[UI] showKeyHints` (default enabled).
+
 ### 1.15.0
 
   * Fixed for the `v0.220.3` patch.

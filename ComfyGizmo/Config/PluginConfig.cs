@@ -10,6 +10,7 @@ public static class PluginConfig {
   public static ConfigEntry<int> SnapDivisions { get; private set; }
 
   public static ConfigEntry<bool> ShowGizmoPrefab { get; private set; }
+  public static ConfigEntry<bool> ShowKeyHints { get; private set; }
   public static ConfigEntry<bool> ResetRotationOnModeChange { get; private set; }
   public static ConfigEntry<bool> ResetRotationOnSnapDivisionChange { get; private set; }
   public static ConfigEntry<bool> IsLocalFrameEnabled { get; private set; }
@@ -34,6 +35,7 @@ public static class PluginConfig {
     SnapDivisions.OnSettingChanged(RotationManager.ResetRotationConditional);
 
     BindKeysConfig(config);
+    BindJoystickConfig(config);
     BindGizmoColorsConfig(config);
 
     ShowGizmoPrefab =
@@ -42,6 +44,13 @@ public static class PluginConfig {
             "showGizmoPrefab",
             true,
             "Show the Gizmo prefab in placement mode.");
+
+    ShowKeyHints =
+        config.BindInOrder(
+            "UI",
+            "showKeyHints",
+            true,
+            "Show ComfyGizmo control hints in the build key-hint bar. Adapts to keyboard or controller.");
 
     ResetRotationOnSnapDivisionChange =
         config.BindInOrder(
@@ -188,6 +197,72 @@ public static class PluginConfig {
             "snapDivisionDecrement",
             new KeyboardShortcut(KeyCode.PageDown),
             "Doubles snap divisions from current.");
+  }
+
+  public static ConfigEntry<bool> JoystickRotationEnabled { get; private set; }
+  public static ConfigEntry<float> JoystickRotationDeadzone { get; private set; }
+  public static ConfigEntry<bool> JoystickRotationInvert { get; private set; }
+  public static ConfigEntry<bool> JoystickVerticalInvert { get; private set; }
+  public static ConfigEntry<float> JoystickRotationRepeatDelay { get; private set; }
+  public static ConfigEntry<string> JoystickGizmoButton { get; private set; }
+  public static ConfigEntry<float> JoystickResetHoldSeconds { get; private set; }
+
+  public static void BindJoystickConfig(ConfigFile config) {
+    JoystickRotationEnabled =
+        config.BindInOrder(
+            "Joystick",
+            "joystickRotationEnabled",
+            true,
+            "Use the controller's right joystick to rotate pieces while building. "
+                + "Left/right = yaw (Y), up/down = pitch (X) or roll (Z) when toggled.");
+
+    JoystickRotationDeadzone =
+        config.BindInOrder(
+            "Joystick",
+            "joystickRotationDeadzone",
+            0.5f,
+            "How far the right joystick must be pushed before a rotation is triggered.",
+            new AcceptableValueRange<float>(0.1f, 0.95f));
+
+    JoystickRotationInvert =
+        config.BindInOrder(
+            "Joystick",
+            "joystickRotationInvert",
+            false,
+            "Invert the left/right (yaw) right-joystick rotation direction.");
+
+    JoystickVerticalInvert =
+        config.BindInOrder(
+            "Joystick",
+            "joystickVerticalInvert",
+            false,
+            "Invert the up/down (pitch and roll) right-joystick rotation direction.");
+
+    JoystickRotationRepeatDelay =
+        config.BindInOrder(
+            "Joystick",
+            "joystickRotationRepeatDelay",
+            0.1f,
+            "Seconds between repeated rotations while the right joystick is held. Lower is faster.",
+            new AcceptableValueRange<float>(0.01f, 1f));
+
+    JoystickGizmoButton =
+        config.BindInOrder(
+            "Joystick",
+            "joystickGizmoButton",
+            "JoyButtonX",
+            "Gamepad button for gizmo actions while building: tap to toggle the up/down stick between "
+                + "pitch (X) and roll (Z), hold to reset all rotation. Uses Valheim's Joy* button names. "
+                + "Default 'JoyButtonX' is free during building in every controller layout (unlike the "
+                + "right-stick click, which cycles snap points).");
+
+    JoystickResetHoldSeconds =
+        config.BindInOrder(
+            "Joystick",
+            "joystickResetHoldSeconds",
+            0.4f,
+            "How long to hold the gizmo button to reset all rotation.",
+            new AcceptableValueRange<float>(0.2f, 1.5f));
   }
 
   public static ConfigEntry<Color> XGizmoColor { get; private set; }
