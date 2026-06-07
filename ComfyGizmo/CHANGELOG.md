@@ -1,6 +1,6 @@
 ## Changelog
 
-### 1.16.0
+### Unreleased
 
   * Restored and extended controller support for piece rotation while building.
     * Right joystick now drives all three gizmo axes, tap to nudge one step, hold to auto-repeat (mirrors vanilla cadence):
