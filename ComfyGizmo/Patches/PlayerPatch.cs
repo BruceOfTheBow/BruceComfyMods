@@ -14,7 +14,7 @@ using static PluginConfig;
 static class PlayerPatch {
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.UpdatePlacement))]
-  static void UpdatePlacementPostfix(Player __instance, bool takeInput) {
+  static void UpdatePlacementPostfix(Player __instance, bool takeInput, float dt) {
     RotationManager.HideGizmos();
     RotationManager.ShowGizmos(__instance);
 
@@ -38,6 +38,10 @@ static class PlayerPatch {
       IsLocalFrameEnabled.Value = !IsLocalFrameEnabled.Value;
     }
 
+    if (HandleGizmoButton()) {
+      return;
+    }
+
     RotationManager.ResetScales();
 
     if (ZInput.GetKey(ResetAllRotationKey.Value.MainKey)) {
@@ -51,12 +55,172 @@ static class PlayerPatch {
       RotationManager.ResetAxis(rotationAxis);
     }
 
-    rotationAxis *= GetSign();
-    RotationManager.Rotate(rotationAxis);
+    int scrollSign = Math.Sign(ZInput.GetMouseScrollWheel());
+
+    if (scrollSign != 0) {
+      _joystickRotationTimer = 0f;
+      RotationManager.Rotate(rotationAxis * scrollSign);
+      return;
+    }
+
+    if (TryGetJoystickRotation(dt, out Vector3 joystickRotation)) {
+      RotationManager.Rotate(joystickRotation);
+    }
   }
-  
-  private static int GetSign() {
-    return Math.Sign(ZInput.GetMouseScrollWheel());
+
+  // Initial hold time (seconds) before the right joystick starts auto-repeating
+  // rotations, matching vanilla's building-rotation feel.
+  const float JoystickRotationHoldDelay = 0.25f;
+
+  static float _joystickRotationTimer = 0f;
+
+  // Up/down stick rotates pitch (X) by default; tapping the gizmo button switches it to roll (Z).
+  static bool _joystickVerticalIsRoll = false;
+
+  static float _gizmoButtonDownTime = -1f;
+  static bool _gizmoButtonResetFired = false;
+
+  // One gamepad button drives both gizmo actions: a quick tap toggles the up/down
+  // stick between pitch and roll, holding it resets all rotation. This deliberately
+  // avoids the right-stick click, which cycles snap points in every controller layout.
+  // Returns true if a reset happened this frame.
+  private static bool HandleGizmoButton() {
+    if (!JoystickRotationEnabled.Value || !ZInput.IsGamepadActive()) {
+      _gizmoButtonDownTime = -1f;
+      _gizmoButtonResetFired = false;
+      return false;
+    }
+
+    string button = JoystickGizmoButton.Value;
+
+    if (string.IsNullOrWhiteSpace(button)) {
+      return false;
+    }
+
+    if (ZInput.GetButtonDown(button)) {
+      _gizmoButtonDownTime = Time.time;
+      _gizmoButtonResetFired = false;
+    }
+
+    bool didReset = false;
+
+    if (!_gizmoButtonResetFired
+        && _gizmoButtonDownTime >= 0f
+        && ZInput.GetButton(button)
+        && Time.time - _gizmoButtonDownTime >= JoystickResetHoldSeconds.Value) {
+      RotationManager.ResetRotation();
+      ShowMessage(GizmoLocalization.Translate(GizmoLocalization.ResetMessageToken));
+      _gizmoButtonResetFired = true;
+      didReset = true;
+    }
+
+    if (ZInput.GetButtonUp(button)) {
+      bool wasTap =
+          !_gizmoButtonResetFired
+          && _gizmoButtonDownTime >= 0f
+          && Time.time - _gizmoButtonDownTime < JoystickResetHoldSeconds.Value;
+
+      if (wasTap) {
+        _joystickVerticalIsRoll = !_joystickVerticalIsRoll;
+        ShowMessage(
+            GizmoLocalization.Translate(
+                _joystickVerticalIsRoll
+                    ? GizmoLocalization.RollMessageToken
+                    : GizmoLocalization.PitchMessageToken));
+      }
+
+      _gizmoButtonDownTime = -1f;
+      _gizmoButtonResetFired = false;
+    }
+
+    return didReset;
+  }
+
+  // Right-stick rotation: left/right -> yaw (Y), up/down -> pitch (X) or roll (Z).
+  // The dominant stick axis wins so a diagonal push never rotates two axes at once.
+  private static bool TryGetJoystickRotation(float dt, out Vector3 rotation) {
+    rotation = Vector3.zero;
+
+    if (!JoystickRotationEnabled.Value || !ZInput.IsGamepadActive()) {
+      _joystickRotationTimer = 0f;
+      return false;
+    }
+
+    float stickX = ZInput.GetJoyRightStickX();
+    float stickY = ZInput.GetJoyRightStickY();
+    float deadzone = JoystickRotationDeadzone.Value;
+
+    if (Mathf.Abs(stickX) <= deadzone && Mathf.Abs(stickY) <= deadzone) {
+      _joystickRotationTimer = 0f;
+      return false;
+    }
+
+    Vector3 axis;
+    float stickValue;
+    bool invert;
+
+    if (Mathf.Abs(stickX) >= Mathf.Abs(stickY)) {
+      axis = Vector3.up;
+      stickValue = stickX;
+      invert = JoystickRotationInvert.Value;
+    } else {
+      axis = _joystickVerticalIsRoll ? Vector3.forward : Vector3.right;
+      stickValue = stickY;
+      invert = JoystickVerticalInvert.Value;
+    }
+
+    HighlightAxis(axis);
+
+    int sign = GetJoystickRepeatSign(stickValue, dt);
+
+    if (sign == 0) {
+      return false;
+    }
+
+    if (invert) {
+      sign = -sign;
+    }
+
+    rotation = axis * sign;
+    return true;
+  }
+
+  // One tick the moment the stick passes the deadzone, then a brief hold delay,
+  // then auto-repeating ticks while it stays held (mirrors vanilla cadence).
+  private static int GetJoystickRepeatSign(float stickValue, float dt) {
+    int sign = (stickValue > 0f) ? 1 : -1;
+
+    if (_joystickRotationTimer <= 0f) {
+      _joystickRotationTimer = JoystickRotationHoldDelay;
+      return sign;
+    }
+
+    _joystickRotationTimer -= dt;
+
+    if (_joystickRotationTimer <= 0f) {
+      _joystickRotationTimer = JoystickRotationRepeatDelay.Value;
+      return sign;
+    }
+
+    return 0;
+  }
+
+  private static void HighlightAxis(Vector3 axis) {
+    RotationManager.ResetScales();
+
+    if (axis == Vector3.right) {
+      RotationManager.SetActiveXScale(1.5f);
+    } else if (axis == Vector3.forward) {
+      RotationManager.SetActiveZScale(1.5f);
+    } else {
+      RotationManager.SetActiveYScale(1.5f);
+    }
+  }
+
+  private static void ShowMessage(string message) {
+    if (MessageHud.m_instance) {
+      MessageHud.m_instance.ShowMessage(MessageHud.MessageType.TopLeft, message);
+    }
   }
 
   private static Vector3 GetRotationAxis() {

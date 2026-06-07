@@ -117,6 +117,10 @@
       <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GamePath)\valheim_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComfyGizmo.cs" />
@@ -134,6 +138,8 @@
     <Compile Include="ComfyLib\Extensions\ConfigFileExtensions.cs" />
     <Compile Include="Patches\FejdStartupPatch.cs" />
     <Compile Include="Patches\GamePatch.cs" />
+    <Compile Include="Patches\KeyHintsPatch.cs" />
+    <Compile Include="Patches\LocalizationPatch.cs" />
     <Compile Include="Patches\PlayerPatch.cs" />
     <Compile Include="Config\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

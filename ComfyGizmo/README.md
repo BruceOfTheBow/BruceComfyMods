@@ -12,6 +12,8 @@
   * Can disable the Gizmo placement visual.
   * Can set the snap angles per 180 degrees from 2 - 256.
   * Original Euler-style rotation.
+  * Controller support: the right joystick rotates the selected piece on all three gizmo axes.
+  * Adaptive on-screen control hints in the build bar that switch between keyboard and controller.
  
 ## Rotation Modes
 
@@ -34,6 +36,38 @@
   * Can remain enabled unless a player wishes to rotate a corner roof piece along its tradtional x or z axes.
 
 ## Configuration
+
+### Controller / Joystick
+
+Right-joystick rotation is enabled by default. Tap the stick to nudge one snap step; hold to auto-repeat.
+
+| Input | Action |
+| --- | --- |
+| Right stick left/right | Rotate yaw (Y) |
+| Right stick up/down | Rotate pitch (X), or roll (Z) when toggled |
+| Tap `X` (`JoyButtonX`) | Toggle up/down stick between pitch and roll |
+| Hold `X` (`JoyButtonX`) | Reset all rotation |
+
+`X` is used because it is free during building in every predefined controller layout. The right-stick click is intentionally avoided since it cycles snap points in all layouts.
+
+Tune everything under `[Joystick]`:
+
+  * `joystickRotationEnabled`
+    * Use the controller's right joystick to rotate pieces while building.
+  * `joystickRotationDeadzone`
+    * How far the right joystick must be pushed before a rotation is triggered (default `0.5`).
+  * `joystickRotationInvert`
+    * Inverts the left/right (yaw) rotation direction.
+  * `joystickVerticalInvert`
+    * Inverts the up/down (pitch/roll) rotation direction.
+  * `joystickRotationRepeatDelay`
+    * Seconds between repeated rotations while the stick is held. Lower is faster (default `0.1`).
+  * `joystickGizmoButton`
+    * Gamepad button for the gizmo actions (tap = toggle pitch/roll, hold = reset), using Valheim's `Joy*` button names (default `JoyButtonX`).
+  * `joystickResetHoldSeconds`
+    * How long to hold the gizmo button to reset all rotation (default `0.4`).
+
+ComfyGizmo control hints are also shown in the build key-hint bar at the bottom of the screen. They switch automatically between keyboard and controller: on a controller the pitch/roll toggle and reset are shown with native button glyphs, and on keyboard the reset key is shown. Hints are localized via Valheim's localization system (English and French included). Disable them with `[UI] showKeyHints`.
 
 ### Ignoring Rotation
 
