@@ -22,7 +22,7 @@ public static class PluginConfig {
       config.BindInOrder(
           "Keys",
           "toggleKey",
-          new KeyboardShortcut(KeyCode.F9),
+          new KeyboardShortcut(KeyCode.F8),
           "Hold this key to rotate on the x-axis/plane (red circle).");
 
     RaiseKey =
