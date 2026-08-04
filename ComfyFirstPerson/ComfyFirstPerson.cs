@@ -13,13 +13,6 @@ public sealed class ComfyFirstPerson : BaseUnityPlugin {
   public const string PluginName = "ComfyFirstPerson";
   public const string PluginVersion = "1.0.0";
 
-
-  public static Vector3 OldOffset = Vector3.zero;
-  public static Vector3 OldFps = Vector3.zero;
-  public static float ZoomSens = 10f;
-  public static float MinDist = 1f;
-  public static float MaxDist = 8f;
-
   void Awake() {
     BindConfig(Config);
 

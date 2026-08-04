@@ -9,7 +9,14 @@ public sealed class FPVManager {
   private static bool isFirstPerson = false;
   private static bool isInitialized = false;
 
-   private static void changeFOV(int delta) {
+  private static float defaultZoomSens = 10f;
+  private static float defaultMinDist = 1f;
+  private static float defaultMaxDist = 8f;
+
+  private static Vector3 previousOffset = Vector3.zero;
+  private static Vector3 previousFps = Vector3.zero;
+
+  private static void changeFOV(int delta) {
     GameCamera gameCamera = GameCamera.instance;
 
     if (gameCamera == null) {
@@ -18,8 +25,8 @@ public sealed class FPVManager {
 
     gameCamera.m_fov += delta;
     ShowMessage($"Changed fov to: {gameCamera.m_fov}");
-
   }
+
   public static bool CanChangePOV() {
     return (!Chat.instance || !Chat.instance.HasFocus())
           && !Console.IsVisible()
@@ -42,9 +49,9 @@ public sealed class FPVManager {
       return;
     }
 
-    MinDist = gameCamera.m_minDistance;
-    MaxDist = gameCamera.m_maxDistance;
-    ZoomSens = gameCamera.m_zoomSens;
+    defaultMinDist = gameCamera.m_minDistance;
+    defaultMaxDist = gameCamera.m_maxDistance;
+    defaultZoomSens = gameCamera.m_zoomSens;
 
     isInitialized = true;
   }
@@ -69,8 +76,8 @@ public sealed class FPVManager {
       return;
     }
 
-    OldOffset = gameCamera.m_3rdOffset;
-    OldFps = gameCamera.m_fpsOffset;
+    previousOffset = gameCamera.m_3rdOffset;
+    previousFps = gameCamera.m_fpsOffset;
 
     gameCamera.m_3rdOffset = new Vector3(0f, 0f, 0f);
     gameCamera.m_fpsOffset = Vector3.zero;
@@ -91,11 +98,11 @@ public sealed class FPVManager {
     if (gameCamera == null || localPlayer == null) {
       return;
     }
-    gameCamera.m_3rdOffset = OldOffset;
-    gameCamera.m_fpsOffset = OldFps;
-    gameCamera.m_minDistance = MinDist;
-    gameCamera.m_maxDistance = MaxDist;
-    gameCamera.m_zoomSens = ZoomSens;
+    gameCamera.m_3rdOffset = previousOffset;
+    gameCamera.m_fpsOffset = previousFps;
+    gameCamera.m_minDistance = defaultMinDist;
+    gameCamera.m_maxDistance = defaultMaxDist;
+    gameCamera.m_zoomSens = defaultZoomSens;
     gameCamera.m_fov = 65f;
 
     localPlayer.m_head.localScale = Vector3.one;
