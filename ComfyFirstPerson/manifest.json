@@ -1,0 +1,8 @@
+{
+  "name": "ComfyFirstPerson",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Comfy first person.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/ComfyFirstPerson",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
