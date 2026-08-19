@@ -8,6 +8,8 @@ using UnityEngine;
 
 public static class PluginConfig {
   public static ConfigEntry<bool> IsModEnabled { get; private set; }
+
+  public static ConfigEntry<bool> IsFirstPersonEnabled { get; private set; }
   public static ConfigEntry<float> DefaultFov { get; private set; }
   public static ConfigEntry<KeyboardShortcut> ToggleKey { get; private set; }
   public static ConfigEntry<KeyboardShortcut> RaiseKey { get; private set; }
@@ -16,7 +18,10 @@ public static class PluginConfig {
 
   public static void BindConfig(ConfigFile config) {
     IsModEnabled = config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod.");
+    IsFirstPersonEnabled = config.Bind("Enable", "isFirstPersonEnabled", false, "Enable first person view.");
+    
     DefaultFov = config.Bind("FOV", "defaultFov", 90.0f, "Default FOV when in first person mode.");
+
 
     ToggleKey =
       config.BindInOrder(

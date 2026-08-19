@@ -6,7 +6,6 @@ using static PluginConfig;
 using static ComfyFirstPerson;
 
 public sealed class FPVManager {
-  private static bool isFirstPerson = false;
   private static bool isInitialized = false;
 
   private static float defaultZoomSens = 10f;
@@ -61,7 +60,7 @@ public sealed class FPVManager {
   }
 
   public static bool IsFirstPerson() {
-    return isFirstPerson;
+    return IsFirstPersonEnabled.Value;
   }
 
   public static bool IsInitialized() {
@@ -118,15 +117,15 @@ public sealed class FPVManager {
     }
 
     gameCamera.transform.position = new Vector3(
-        Player.m_localPlayer.m_head.position.x + 0.15f,
-        Player.m_localPlayer.m_head.position.y + 0.30f,
+        Player.m_localPlayer.m_head.position.x - 0.25f,
+        Player.m_localPlayer.m_head.position.y + 0.5f,
         Player.m_localPlayer.m_head.position.z);
   }
 
   public static void ToggleFirstPerson() {
-    isFirstPerson = !isFirstPerson;
+    IsFirstPersonEnabled.Value = !IsFirstPersonEnabled.Value;
 
-    if (isFirstPerson) {
+    if (IsFirstPersonEnabled.Value) {
       SetActiveCameraFields();
       return;
     }
