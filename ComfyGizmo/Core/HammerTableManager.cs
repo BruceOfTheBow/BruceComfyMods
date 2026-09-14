@@ -86,14 +86,15 @@ public sealed class HammerTableManager {
     _cachedAvailablePieceCount = 0;
     _pieceLocations = [];
 
-    for (int i = 0; i < hammerPieceTable.m_availablePieces.Count; i++) {
-      List<Piece> categoryPieces = hammerPieceTable.m_availablePieces[i];
+    for (int i = 0; i < hammerPieceTable.m_availablePiecesByCategory.Count; i++) {
+      List<Piece> categoryPieces = hammerPieceTable.m_availablePiecesByCategory[i];
 
       for (int j = 0; j < categoryPieces.Count; j++) {
         if (_pieceLocations.ContainsKey(GetPieceIdentifier(categoryPieces[j]))) {
           continue;
         }
 
+        
         _pieceLocations.Add(GetPieceIdentifier(categoryPieces[j]), new Vector2Int(i, j));
         _cachedAvailablePieceCount++;
       }
@@ -106,8 +107,8 @@ public sealed class HammerTableManager {
     }
     int currentPieceCount = 0;
 
-    for (int i = 0; i < player.m_buildPieces.m_availablePieces.Count; i++) {
-      currentPieceCount += player.m_buildPieces.m_availablePieces[i].Count;
+    for (int i = 0; i < player.m_buildPieces.m_availablePiecesByCategory.Count; i++) {
+      currentPieceCount += player.m_buildPieces.m_availablePiecesByCategory[i].Count;
     }
 
     if (currentPieceCount == _cachedAvailablePieceCount) {

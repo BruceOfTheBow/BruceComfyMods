@@ -1,5 +1,10 @@
 ## Changelog
 
+
+### 1.16.0
+
+  * Fixed for `v1.0` patch.
+
 ### 1.15.0
 
   * Fixed for the `v0.220.3` patch.
