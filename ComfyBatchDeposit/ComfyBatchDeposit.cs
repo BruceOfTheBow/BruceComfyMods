@@ -14,7 +14,7 @@ namespace ComfyBatchDeposit {
   public class ComfyBatchDeposit : BaseUnityPlugin {
     public const string PluginGuid = "com.bruce.valheim.comfybatchdeposit";
     public const string PluginName = "ComfyBatchDeposit";
-    public const string PluginVersion = "1.3.1";
+    public const string PluginVersion = "1.4.0";
 
     static ManualLogSource _logger;
 
