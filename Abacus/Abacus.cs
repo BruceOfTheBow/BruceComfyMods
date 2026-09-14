@@ -12,7 +12,7 @@ namespace Abacus {
   public class Abacus : BaseUnityPlugin {
     public const string PluginGuid = "bruce.valheim.brucecomfymods.abacus";
     public const string PluginName = "Abacus";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginVersion = "1.1.0";
 
     Harmony _harmony;
 

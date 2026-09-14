@@ -26,16 +26,14 @@ namespace Abacus.Patches {
     public static int _currentSmallIncrement = 0;
     public static int _currentLargeIncrement = 0;
 
-    private static readonly string _winBkgName = "win_bkg";
     private static readonly string _okButtonName = "Button_ok";
-    private static readonly string _coinsItemName = "$item_coins";
 
     [HarmonyPrefix]
     [HarmonyPatch(nameof(InventoryGui.ShowSplitDialog))]
     public static void ShowSplitDialogPrefix(InventoryGui __instance, ItemDrop.ItemData item, Inventory fromIventory) {
       if (!IsModEnabled.Value
             || !__instance
-            || !__instance.m_splitPanel) {
+            || !__instance.m_splitDialog.m_splitSlider) {
         return;
       }
 
@@ -58,71 +56,72 @@ namespace Abacus.Patches {
       _largeValueSelect = CreateButton(inventoryGui, "largeSelect", _currentLargeIncrement.ToString(), new Vector2(50, 40), new Vector3(120, 20, 0));
       _largeValueIncrement = CreateButton(inventoryGui, "largeIncrement", "+", new Vector2(50, 40), new Vector3(170, 20, 0));
 
+      SplitDialog splitDialog = inventoryGui.m_splitDialog;
       if (_smallValueDecrement.TryGetComponent(out Button svdButton)) {
         svdButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
-              = Mathf.Clamp(((int)inventoryGui.m_splitSlider.value) - _currentSmallIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+          splitDialog.m_splitSlider.value
+              = Mathf.Clamp(((int)splitDialog.m_splitSlider.value) - _currentSmallIncrement,
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
         });
       }
 
       if (_smallValueSelect.TryGetComponent(out Button svsButton)) {
         svsButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
+          splitDialog.m_splitSlider.value
               = Mathf.Clamp(_currentSmallIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
           inventoryGui.OnSplitOk();
         });
       }
 
       if (_smallValueIncrement.TryGetComponent(out Button sviButton)) {
         sviButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
-              = Mathf.Clamp(((int)inventoryGui.m_splitSlider.value) + _currentSmallIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+          splitDialog.m_splitSlider.value
+              = Mathf.Clamp(((int)splitDialog.m_splitSlider.value) + _currentSmallIncrement,
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
         });
       }
 
       if (_largeValueDecrement.TryGetComponent(out Button lvdButton)) {
         lvdButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
-              = Mathf.Clamp(((int)inventoryGui.m_splitSlider.value) - _currentLargeIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+          splitDialog.m_splitSlider.value
+              = Mathf.Clamp(((int)splitDialog.m_splitSlider.value) - _currentLargeIncrement,
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
         });
       }
 
       if (_largeValueSelect.TryGetComponent(out Button lvsButton)) {
         lvsButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
+          splitDialog.m_splitSlider.value
               = Mathf.Clamp(_currentLargeIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
           inventoryGui.OnSplitOk();
         });
       }
 
       if (_largeValueIncrement.TryGetComponent(out Button lviButton)) {
         lviButton.onClick.AddListener(() => {
-          inventoryGui.m_splitSlider.value
-              = Mathf.Clamp(((int)inventoryGui.m_splitSlider.value) + _currentLargeIncrement,
-                  inventoryGui.m_splitSlider.minValue,
-                  inventoryGui.m_splitSlider.maxValue);
+          splitDialog.m_splitSlider.value
+              = Mathf.Clamp(((int)splitDialog.m_splitSlider.value) + _currentLargeIncrement,
+                  splitDialog.m_splitSlider.minValue,
+                  splitDialog.m_splitSlider.maxValue);
 
-          inventoryGui.OnSplitSliderChanged(inventoryGui.m_splitSlider.value);
+          splitDialog.SliderChanged(splitDialog.m_splitSlider.value);
         });
       }
     }
@@ -165,7 +164,7 @@ namespace Abacus.Patches {
 
 
     private static RectTransform CreateButton(InventoryGui inventoryGui, string name, string text, Vector2 size, Vector3 position) {
-      RectTransform okButtonTransform = FindOkButton(inventoryGui.m_splitPanel);
+      RectTransform okButtonTransform = FindOkButton(inventoryGui.m_splitDialog.m_panel);
 
       if (okButtonTransform == null) {
         ZLog.LogWarning("Ok button not found.");
@@ -197,12 +196,7 @@ namespace Abacus.Patches {
     }
 
     private static RectTransform FindOkButton(Transform splitPanel) {
-      RectTransform winBkg = (RectTransform)splitPanel.transform.Find(_winBkgName);
-      if (winBkg == null) {
-        return null;
-      }
-
-      return (RectTransform)winBkg.transform.Find(_okButtonName);
+      return (RectTransform)splitPanel.transform.Find(_okButtonName);
     }
 
     public static void UpdateAbacusUI(ItemDrop.ItemData item) {
