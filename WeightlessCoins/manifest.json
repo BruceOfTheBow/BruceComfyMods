@@ -1,0 +1,8 @@
+{
+  "name": "WeightlessCoins",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Coins as light as a feather.",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/WeightlessCoins",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}
