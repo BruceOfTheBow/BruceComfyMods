@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.4.0
+
+  * Updated for Valheim `v1.0` release.
+
 ### 1.3.0
 
   * Added `ReverseAlphabetically` option to config-option `[HoverText] userListSorting`.
