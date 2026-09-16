@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public static class QuickSlotsManager {
   public const string PlayerInventoryName = "ComfyQuickSlotsInventory";
-  public const int Rows = 5;
   public const int Columns = 8;
+  private static int _rows = 5;
+
 
   public static void SetupPlayerInventory(Inventory inventory) {
     inventory.m_name = PlayerInventoryName;
-    inventory.m_height = Rows;
     inventory.m_width = Columns;
   }
 
@@ -156,7 +156,7 @@ public static class QuickSlotsManager {
 
   public static Vector2i GetEmptyInventorySlot(Inventory inventory, bool topFirst) {
     if (topFirst) {
-      for (int j = 0; j < Rows; j++) {
+      for (int j = 0; j < _rows; j++) {
         for (int i = 0; i < Columns; i++) {
           if (inventory.GetItemAt(i, j) == null && j != 4) {
             return new Vector2i(i, j);
@@ -168,7 +168,7 @@ public static class QuickSlotsManager {
         }
       }
     } else {
-      for (int j = Rows - 1; j >= 0; j--) {
+      for (int j = _rows - 1; j >= 0; j--) {
         for (int i = 0; i < Columns; i++) {
           if (inventory.GetItemAt(i, j) == null && j != 4) {
             return new Vector2i(i, j);
@@ -186,7 +186,7 @@ public static class QuickSlotsManager {
 
   public static bool HaveEmptyInventorySlot(Inventory inventory) {
     for (int i = 0; i < Columns; i++) {
-      for (int j = 0; j < Rows; j++) {
+      for (int j = 0; j < _rows; j++) {
         if (inventory.GetItemAt(i, j) == null && j != 4) {
           return true;
         } else {
@@ -254,7 +254,7 @@ public static class QuickSlotsManager {
     string itemName = item.m_shared.m_name;
     int count = 0;
 
-    for (int j = 0; j < Rows; j++) {
+    for (int j = 0; j < _rows; j++) {
       for (int i = 0; i < Columns; i++) {
         ItemDrop.ItemData inventoryItem = inventory.GetItemAt(i, j);
 
@@ -440,5 +440,29 @@ public static class QuickSlotsManager {
     }
 
     return stackSpace;
+  }
+
+  public static int GetRows() {
+    return _rows;
+  }
+  public static void SetRows(int rows) {
+    if (rows == _rows) {
+      return;
+    }
+
+    _rows = rows;
+    PositionQuickslots();
+  }
+
+  public static void PositionQuickslots() {
+    HelmetSlot = new(0, _rows - 1);
+    ChestSlot = new(1, _rows - 1);
+    LegsSlot = new(2, _rows - 1);
+    ShoulderSlot = new(3, _rows - 1);
+    UtilitySlot = new(4, _rows - 1);
+
+    QuickSlot1 = new(5, _rows - 1);
+    QuickSlot2 = new(6, _rows - 1);
+    QuickSlot3 = new(7, _rows - 1);
   }
 }

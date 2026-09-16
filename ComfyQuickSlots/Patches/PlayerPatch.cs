@@ -1,6 +1,8 @@
 ﻿namespace ComfyQuickSlots;
 
 using HarmonyLib;
+using System.Diagnostics.Eventing.Reader;
+using static ComfyQuickSlots;
 
 [HarmonyPatch(typeof(Player))]
 static class PlayerPatch {
@@ -9,7 +11,6 @@ static class PlayerPatch {
   static void AwakePrefix(Player __instance) {
     QuickSlotsManager.SetupPlayerInventory(__instance.m_inventory);
   }
-
 
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.Load))]
@@ -72,7 +73,7 @@ static class PlayerPatch {
   static void CreateTombStonePostfix(Player __instance) {
     Inventory playerInventory = __instance.GetInventory();
 
-    playerInventory.m_height = QuickSlotsManager.Rows;
+    playerInventory.m_height = QuickSlotsManager.GetRows();
     playerInventory.m_width = QuickSlotsManager.Columns;
   }
 }

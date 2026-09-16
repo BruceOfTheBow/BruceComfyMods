@@ -7,8 +7,8 @@ using UnityEngine;
 [HarmonyPatch(typeof(Inventory))]
 static class InventoryPatch {
   [HarmonyPrefix]
-  [HarmonyPatch(nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int))]
-  static bool AddItemPrefix(Inventory __instance, ItemDrop.ItemData item, int amount, int x, int y) {
+  [HarmonyPatch(nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int), typeof(bool))]
+  static bool AddItemPrefix(Inventory __instance, ItemDrop.ItemData item, int amount, int x, int y, bool skipValidPositionCheck) {
     if (item == null) {
       return true;
     }
@@ -55,6 +55,8 @@ static class InventoryPatch {
         typeof(long),
         typeof(string),
         typeof(Vector2i),
+        typeof(bool),
+        typeof(bool),
         typeof(bool)
       ])]
   static void AddItemStringIntIntIntLongStringVector2iBoolPrefix(Inventory __instance,ref Vector2i position) {

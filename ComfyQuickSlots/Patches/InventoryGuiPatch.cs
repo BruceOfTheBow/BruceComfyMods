@@ -18,6 +18,15 @@ static class InventoryGuiPatch {
     QuickSlotsManager.ShouldRefreshPlayerGrid = true;
   }
 
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(InventoryGui.SetInventorySize))]
+  static void SetInventorySize(InventoryGui __instance, int rows) {
+    Player.m_localPlayer.m_inventory.m_height = rows + 1;
+    __instance.m_player.sizeDelta 
+        = new Vector2(__instance.m_player.sizeDelta.x, __instance.m_playerHeight 
+            + (rows + 1 - 4) * __instance.m_invGridHeight);
+  }
+
   static void SetContainerGridAnchoredPosition(InventoryGui inventoryGui) {
     if (inventoryGui.m_containerGrid.transform.parent.TryGetComponent(out RectTransform rectTransform)) {
       rectTransform.anchoredPosition = ContainerInventoryGridAnchoredPosition.Value;

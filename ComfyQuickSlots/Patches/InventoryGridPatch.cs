@@ -21,13 +21,13 @@ static class InventoryGridPatch {
   static void UpdatePlayerGrid(InventoryGrid inventoryGrid) {
     QuickSlotsManager.ShouldRefreshPlayerGrid = false;
 
-    int addedRows = QuickSlotsManager.Rows - 4;
-    float offset = -35f * addedRows;
+    //int addedRows = QuickSlotsManager.GetRows() - 4;
+    //float offset = -35f * addedRows;
 
-    RectTransform gridBkg = GetOrCreateBackground(inventoryGrid, "ExtInvGrid");
-    gridBkg.anchoredPosition = new Vector2(0f, offset);
-    gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 590f);
-    gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f + 75f * addedRows);
+    //RectTransform gridBkg = GetOrCreateBackground(inventoryGrid, "ExtInvGrid");
+    //gridBkg.anchoredPosition = new Vector2(0f, offset);
+    //gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 590f);
+    //gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f + 75f * addedRows);
 
     //Add Quick slots and equipment overlays
     //for(int i = 36; i < rows*columns - 1; i++) {
@@ -64,8 +64,8 @@ static class InventoryGridPatch {
     return existingBkg as RectTransform;
   }
 
-  static void SetupBindingLabel(InventoryGrid.Element element, string text, bool enabled = true) {
-    Transform binding = element.m_go.transform.Find("binding");
+  static void SetupBindingLabel(InventoryElement element, string text, bool enabled = true) {
+    Transform binding = element.gameObject.transform.Find("binding");
 
     if (binding && binding.TryGetComponent(out TMP_Text label)) {
       label.text = text;
