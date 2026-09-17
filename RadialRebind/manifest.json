@@ -2,7 +2,7 @@
   "name": "RadialRebind",
   "version_number": "1.0.0",
   "author": "ComfyMods",
-  "description": "Rebind the radial key.",
+  "description": "Rebind the open radial key.",
   "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/RadialRebind",
   "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
 }

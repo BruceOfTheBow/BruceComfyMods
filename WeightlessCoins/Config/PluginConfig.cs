@@ -25,6 +25,7 @@ public static class PluginConfig {
           "Scale",
           "coinWeightScale",
           0.0f,
-          "Multiplies the coin's base weight by this value.");
+          "Multiplies the coin's base weight by this value.",
+          new AcceptableValueRange<float>(0.0f, 10.0f));
   }
 }

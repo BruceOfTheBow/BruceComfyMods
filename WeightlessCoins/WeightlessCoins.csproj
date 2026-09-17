@@ -50,9 +50,6 @@
 		<Reference Include="BepInEx" Private="false">
 			<HintPath>$(GamePath)\BepInEx\core\BepInEx.dll</HintPath>
 		</Reference>
-		<Reference Include="com.rlabrecque.steamworks.net_publicized" Private="false">
-			<HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\com.rlabrecque.steamworks.net_publicized.dll</HintPath>
-		</Reference>
 		<Reference Include="gui_framework_publicized" Private="false">
 			<HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\gui_framework_publicized.dll</HintPath>
 		</Reference>
