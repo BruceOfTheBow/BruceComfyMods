@@ -94,7 +94,7 @@ public sealed class PluginConfig {
         config.BindInOrder(
             "Container.InventoryGrid",
             "anchoredPosition",
-            new Vector2(40f, -437f),
+            new Vector2(0f, 150f),
             "The anchoredPosition for the the Container.InventoryGrid panel.");
 
     // Logging

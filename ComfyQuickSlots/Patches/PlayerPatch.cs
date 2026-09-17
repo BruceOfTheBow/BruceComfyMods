@@ -50,6 +50,13 @@ static class PlayerPatch {
     return QuickSlotsManager.Save(__instance);
   }
 
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Player.SetInventorySize))]
+  static void SetInventorySizePostfix(Player __instance, int rows) {
+    QuickSlotsManager.SetRows(rows + 1);
+    QuickSlotsManager.MoveEquippedArmorToArmorSlots();
+  }
+
   // Prevents interaction with item stands and armor stands while item is equipping
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.UseHotbarItem))]

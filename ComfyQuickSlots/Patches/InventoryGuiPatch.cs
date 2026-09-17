@@ -15,7 +15,7 @@ static class InventoryGuiPatch {
       SetContainerGridAnchoredPosition(__instance);
     }
 
-    QuickSlotsManager.ShouldRefreshPlayerGrid = true;
+    QuickSlotsManager.RefreshBindings();
   }
 
   [HarmonyPostfix]
