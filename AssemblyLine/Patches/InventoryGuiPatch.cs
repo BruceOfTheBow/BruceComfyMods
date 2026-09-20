@@ -107,7 +107,6 @@ static class InventoryGuiPatch {
     }
   }
 
-  [HarmonyEmitIL] //!!!!
   [HarmonyTranspiler]
   [HarmonyPatch(nameof(InventoryGui.UpdateRecipe))]
   static IEnumerable<CodeInstruction> UpdateRecipeTranspiler(IEnumerable<CodeInstruction> instructions) {
