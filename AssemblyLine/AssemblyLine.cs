@@ -1,4 +1,4 @@
-﻿namespace AssemblyLine;
+namespace AssemblyLine;
 
 using System;
 using System.Globalization;
@@ -17,7 +17,7 @@ using static PluginConfig;
 public sealed class AssemblyLine : BaseUnityPlugin {
   public const string PluginGuid = "bruce.valheim.comfy.assemblyline";
   public const string PluginName = "AssemblyLine";
-  public const string PluginVersion = "1.2.1";
+  public const string PluginVersion = "1.3.0";
 
   static ManualLogSource _logger;
 
