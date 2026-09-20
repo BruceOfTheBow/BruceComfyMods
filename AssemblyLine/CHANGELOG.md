@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.3.1
+
+  * Removed `[HarmonyEmitIL]` added for debugging (sigh).
+
 ### 1.3.0
 
   * Fixed for the `v1.0.15` patch.
