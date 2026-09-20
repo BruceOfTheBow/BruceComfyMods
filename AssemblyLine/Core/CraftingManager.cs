@@ -1,4 +1,4 @@
-﻿namespace AssemblyLine;
+namespace AssemblyLine;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +83,7 @@ public static class CraftingManager {
     CountText.anchorMin = Vector2.right;
     CountText.anchorMax = Vector2.one;
     CountText.pivot = Vector2.right;
-    CountText.sizeDelta = new(50f, -5f);
+    CountText.sizeDelta = new(50f, 0f);
 
     CountLabel = CountText.GetComponent<TMP_Text>();
   }
@@ -131,9 +131,12 @@ public static class CraftingManager {
 
     foreach (Piece.Requirement requirement in inventoryGui.m_selectedRecipe.Recipe.m_resources) {
       if (requirement.m_resItem && requirement.m_amount > 0) {
-        int totalAmount = Player.m_localPlayer.GetInventory().CountItems(
-            requirement.m_resItem.m_itemData.m_shared.m_name);
-        int craftableAmount = totalAmount / requirement.m_amount; // Integer division rounds down by default
+        int totalAmount =
+            Player.m_localPlayer.GetInventory().CountItems(requirement.m_resItem.m_itemData.m_shared.m_name);
+
+        // Integer division rounds down by default.
+        int craftableAmount = totalAmount / requirement.m_amount;
+
         craftableAmounts.Add(craftableAmount);
       }
     }

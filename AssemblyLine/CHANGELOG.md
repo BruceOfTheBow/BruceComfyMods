@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.3.0
+
+  * Fixed for the `v1.0.15` patch.
+  * Migrated to SDK-style project.
+  * Minor code clean-up and refactoring.
+
 ### 1.2.1
 
   * Fixed Increment/Decrement buttons not being re-enabled in certain situations.

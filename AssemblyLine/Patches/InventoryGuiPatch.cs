@@ -1,4 +1,4 @@
-﻿namespace AssemblyLine;
+namespace AssemblyLine;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -107,25 +107,30 @@ static class InventoryGuiPatch {
     }
   }
 
+  [HarmonyEmitIL] //!!!!
   [HarmonyTranspiler]
   [HarmonyPatch(nameof(InventoryGui.UpdateRecipe))]
   static IEnumerable<CodeInstruction> UpdateRecipeTranspiler(IEnumerable<CodeInstruction> instructions) {
     return new CodeMatcher(instructions)
         .Start()
         .MatchStartForward(
+            new CodeMatch(OpCodes.Ldarg_0),
+            new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(InventoryGui), nameof(InventoryGui.m_touchMultiCrafting))))
+        .ThrowIfInvalid($"Could not patch InventoryGui.UpdateRecipe()! (touch-multi-crafting)")
+        .MatchStartForward(
             new CodeMatch(OpCodes.Ldc_I4_0),
             new CodeMatch(OpCodes.Stloc_S),
-            new CodeMatch(OpCodes.Ldloc_2),
+            new CodeMatch(OpCodes.Ldloc_S),
             new CodeMatch(OpCodes.Brtrue))
-        .ThrowIfInvalid($"Could not patch InventoryGui.UpdateRecipe()! (get-button-alt-place)")
+        .ThrowIfInvalid($"Could not patch InventoryGui.UpdateRecipe()! (bool-is-multi-crafting)")
         .Advance(offset: 1)
-        .SaveInstruction(out CodeInstruction stLocSv5Instruction)
+        .SaveInstruction(out CodeInstruction stLocSv6Instruction)
         .Advance(offset: 1)
         .InsertAndAdvance(
             new CodeInstruction(
                 OpCodes.Call,
                 AccessTools.Method(typeof(InventoryGuiPatch), nameof(SetIsMultiCraftingDelegate))),
-            stLocSv5Instruction)
+            stLocSv6Instruction)
         .InstructionEnumeration();
   }
 
