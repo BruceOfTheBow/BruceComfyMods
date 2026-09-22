@@ -15,6 +15,8 @@ public sealed class GhostGizmo {
     _root = _prefab.transform;
   }
 
+  public bool IsAlive => _prefab && _root;
+
   public void Destroy() {
     Object.Destroy(_prefab);
   }
