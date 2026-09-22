@@ -10,6 +10,11 @@ public abstract class AbstractRotator {
   protected string _name;
   protected Vector3 _eulerAngles = Vector3.zero;
 
+  public bool IsAlive =>
+      _gizmos != null
+      && _gizmos.IsAlive
+      && (_ghostGizmo == null || _ghostGizmo.IsAlive);
+
   public abstract void Rotate(Vector3 rotationAxis);
 
   public abstract void ResetRotation();
