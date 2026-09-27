@@ -9,36 +9,34 @@ static class InventoryPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int), typeof(bool))]
   static bool AddItemPrefix(Inventory __instance, ItemDrop.ItemData item, int amount, int x, int y, bool skipValidPositionCheck) {
-    if (item == null) {
+    if (item == null || __instance.m_name != QuickSlotsManager.PlayerInventoryName) {
       return true;
     }
 
-    if (__instance.m_name == QuickSlotsManager.PlayerInventoryName) {
-      if (QuickSlotsManager.FirstLoad && QuickSlotsManager.IsArmor(item) && item.m_equipped) {
-        if (!QuickSlotsManager.InitialEquippedArmor.Contains((item))) {
-          QuickSlotsManager.InitialEquippedArmor.Add(item);
-        }
-        return false;
+    if (QuickSlotsManager.FirstLoad && QuickSlotsManager.IsArmor(item) && item.m_equipped) {
+      if (!QuickSlotsManager.InitialEquippedArmor.Contains((item))) {
+        QuickSlotsManager.InitialEquippedArmor.Add(item);
       }
+      return false;
+    }
 
-      if (item.m_equipped && QuickSlotsManager.IsArmor(item) && Player.m_localPlayer != null) {
-        QuickSlotsManager.UnequipItem(Player.m_localPlayer, item);
-        Vector2i armorSlot = QuickSlotsManager.GetArmorSlot(item);
+    if (item.m_equipped && QuickSlotsManager.IsArmor(item) && Player.m_localPlayer != null) {
+      QuickSlotsManager.UnequipItem(Player.m_localPlayer, item);
+      Vector2i armorSlot = QuickSlotsManager.GetArmorSlot(item);
 
-        if (x == armorSlot.x && y == armorSlot.y) {
-          return true;
-        }
-
-        return false;
-      }
-
-      if (Player.m_localPlayer == null) {
+      if (x == armorSlot.x && y == armorSlot.y) {
         return true;
       }
 
-      if (x < 5 && y == 4) {
-        return false;
-      }
+      return false;
+    }
+
+    if (Player.m_localPlayer == null) {
+      return true;
+    }
+
+    if (QuickSlotsManager.IsArmorSlot(new Vector2i(x, y))) {
+      return false;
     }
 
     return true;
@@ -60,11 +58,11 @@ static class InventoryPatch {
         typeof(bool)
       ])]
   static void AddItemStringIntIntIntLongStringVector2iBoolPrefix(Inventory __instance,ref Vector2i position) {
-    if (__instance.m_name == QuickSlotsManager.PlayerInventoryName) {
-      if (position.x < 5 && position.y == 4) {
-        position = new(-1, -1);
-      }
+    if (__instance.m_name != QuickSlotsManager.PlayerInventoryName || !QuickSlotsManager.IsArmorSlot(position)) {
+      return;
     }
+
+    position = new(-1, -1);
   }
 
   [HarmonyPrefix]
@@ -72,13 +70,11 @@ static class InventoryPatch {
       nameof(Inventory.MoveItemToThis),
       typeof(Inventory), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int))]
   static bool MoveItemToThisPrefix(Inventory __instance, ref bool __result, int x, int y) {
-    if (__instance.m_name == QuickSlotsManager.PlayerInventoryName) {
-      if (x < 5 && y == 4) {
-        return false;
-      }
+    if (__instance.m_name != QuickSlotsManager.PlayerInventoryName || !QuickSlotsManager.IsArmorSlot(new Vector2i(x, y))) {
+      return true;
     }
-
-    return true;
+    
+    return false;
   }
 
   [HarmonyPrefix]

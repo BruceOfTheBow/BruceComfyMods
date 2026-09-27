@@ -1,6 +1,7 @@
 ﻿namespace ComfyQuickSlots;
 
 using HarmonyLib;
+using System.Diagnostics.Eventing.Reader;
 
 [HarmonyPatch(typeof(Humanoid))]
 static class HumanoidPatch {
@@ -23,6 +24,7 @@ static class HumanoidPatch {
       return false;
     }
 
+    ComfyQuickSlots.LogInfo($"Equipping {item.m_shared.m_name}");
     QuickSlotsManager.EquipItem(__instance, item);
 
     if (!(item.m_gridPos.x == armorSlot.x && item.m_gridPos.y == armorSlot.y)) {

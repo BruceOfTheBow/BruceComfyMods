@@ -1,6 +1,7 @@
 ﻿namespace ComfyQuickSlots;
 
 using System.Collections.Generic;
+using System.Linq;
 
 public static class QuickSlotsManager {
   public const string PlayerInventoryName = "ComfyQuickSlotsInventory";
@@ -8,9 +9,15 @@ public static class QuickSlotsManager {
   private static int _rows = 5;
 
 
-  public static void SetupPlayerInventory(Inventory inventory) {
-    inventory.m_name = PlayerInventoryName;
-    inventory.m_width = Columns;
+  public static void SetupPlayerInventory(Player player) {
+    player.m_inventory.m_name = PlayerInventoryName;
+    player.m_inventory.m_width = Columns;
+
+    if (player.TryGetUniqueKeyValue("invrows", out string rowStr) && int.TryParse(rowStr, out int rows)) {
+      SetRows(rows + 1);
+    }
+
+    player.m_inventory.m_height = _rows;
   }
 
   public const string PlayerDataKey = "ComfyQuickSlotsInventory";
@@ -48,31 +55,6 @@ public static class QuickSlotsManager {
     ShouldRefreshPlayerGrid = true;
   }
 
-  public static bool AddItemToExistingStacks(Inventory inventory, ItemDrop.ItemData item) {
-    int i = 0;
-    if (item.m_shared.m_maxStackSize > 1) {
-      while (i < item.m_stack) {
-        ItemDrop.ItemData itemData =
-            inventory.FindFreeStackItem(item.m_shared.m_name, item.m_quality, item.m_worldLevel);
-
-        if (itemData != null) {
-          itemData.m_stack++;
-          i++;
-        } else {
-          item.m_stack -= i;
-          Vector2i vector2i = GetEmptyInventorySlot(inventory, true);
-          if (vector2i.x >= 0) {
-            item.m_gridPos = vector2i;
-            inventory.m_inventory.Add(item);
-            return true;
-          }
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-
   public static bool AddItemToSlot(Humanoid humanoid, ItemDrop.ItemData item, int x, int y) {
     humanoid.GetInventory().m_inventory.Add(item);
     item.m_gridPos = new Vector2i(x, y);
@@ -85,8 +67,16 @@ public static class QuickSlotsManager {
   }
 
   public static void EquipArmorInArmorSlots(Player player) {
+    
     foreach (Vector2i armorSlot in ArmorSlots) {
-      EquipItem(player, player.GetInventory().GetItemAt(armorSlot.x, armorSlot.y));
+      ItemDrop.ItemData item = player.GetInventory().GetItemAt(armorSlot.x, armorSlot.y);
+
+      if (item == null) {
+        continue;
+      }
+
+      ComfyQuickSlots.LogInfo($"Equipping {item.m_shared.m_name} to {armorSlot}");
+      EquipItem(player, item);
     }
   }
 
@@ -110,24 +100,6 @@ public static class QuickSlotsManager {
     item.m_equipped = true;
     humanoid.SetupEquipment();
     humanoid.TriggerEquipEffect(item);
-  }
-
-  public static void GetAllArmorFirst(Player player) {
-    if (player.m_helmetItem != null) {
-      InitialEquippedArmor.Add(player.m_helmetItem);
-    }
-    if (player.m_chestItem != null) {
-      InitialEquippedArmor.Add(player.m_chestItem);
-    }
-    if (player.m_legItem != null) {
-      InitialEquippedArmor.Add(player.m_legItem);
-    }
-    if (player.m_shoulderItem != null) {
-      InitialEquippedArmor.Add(player.m_shoulderItem);
-    }
-    if (player.m_utilityItem != null) {
-      InitialEquippedArmor.Add(player.m_utilityItem);
-    }
   }
 
   public static ItemDrop.ItemData GetArmorItemToSwap(Humanoid humanoid, ItemDrop.ItemData item) {
@@ -181,18 +153,6 @@ public static class QuickSlotsManager {
     return new Vector2i(-1, -1);
   }
 
-  public static bool HaveEmptyInventorySlot(Inventory inventory) {
-    for (int i = 0; i < Columns; i++) {
-      for (int j = 0; j < _rows; j++) {
-        if (inventory.GetItemAt(i, j) == null && !IsArmorSlot(new Vector2i(i, j))) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
   public static bool IsArmor(ItemDrop.ItemData item) {
     ItemDrop.ItemData.ItemType itemType = item.m_shared.m_itemType;
 
@@ -227,22 +187,6 @@ public static class QuickSlotsManager {
     };
   }
 
-  public static bool IsQuickSlot(Vector2i loc) {
-    if (QuickSlots.Contains(loc)) {
-      return true;
-    }
-    return false;
-  }
-
-  public static bool IsSimilarItemEquipped(ItemDrop.ItemData item) {
-    foreach (ItemDrop.ItemData itemCheck in Player.m_localPlayer.GetInventory().GetEquippedItems()) {
-      if (item.m_shared.m_name.Equals(itemCheck.m_shared.m_name)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   public static int ItemCountInInventory(Inventory inventory, ItemDrop.ItemData item) {
     string itemName = item.m_shared.m_name;
     int count = 0;
@@ -258,6 +202,35 @@ public static class QuickSlotsManager {
     }
 
     return count;
+  }
+
+  public static void LoadSavedData(Player player) {
+    foreach (ItemDrop.ItemData item in player.GetInventory().m_inventory) {
+      if (item.IsEquipable() && !IsArmor(item) && item.m_equipped) {
+        player.EquipItem(item);
+      }
+    }
+
+    if (player.m_knownTexts.ContainsKey(PlayerDataKey)) {
+      player.GetInventory().Load(new ZPackage(player.m_knownTexts[PlayerDataKey]));
+      EquipArmorInArmorSlots(player);
+      player.GetInventory().Changed();
+      
+      return;
+    }
+
+    FirstLoad = true;
+
+    List<ItemDrop.ItemData> initialEquippedArmor = player.m_inventory.m_inventory.Where(x => x.m_equipped && IsArmor(x)).ToList();
+    
+    foreach (ItemDrop.ItemData armorPiece in InitialEquippedArmor) {
+      UnequipItem(player, armorPiece);
+      player.GetInventory().AddItem(armorPiece);
+      player.EquipItem(armorPiece);
+      Vector2i armorSlot = GetArmorSlot(armorPiece);
+      MoveArmorItemToSlot(player, armorPiece, armorSlot.x, armorSlot.y);
+      player.GetInventory().Changed();
+    }
   }
 
   public static void MoveArmorItemToSlot(Humanoid humanoid, ItemDrop.ItemData item, int x, int y) {
@@ -317,20 +290,6 @@ public static class QuickSlotsManager {
     humanoid.GetInventory().Changed();
 
     return false;
-  }
-
-  public static bool UnequipAllArmor(Player player) {
-    Inventory playerInventory = player.GetInventory();
-
-    for (int i = 0; i < 5; i++) {
-      ItemDrop.ItemData item = playerInventory.GetItemAt(i, 4);
-
-      if (item != null) {
-        UnequipItem(player, item);
-      }
-    }
-
-    return true;
   }
 
   public static bool UnequipItem(Humanoid player, ItemDrop.ItemData item) {
@@ -395,9 +354,7 @@ public static class QuickSlotsManager {
     int worldLevel = item.m_worldLevel;
 
     foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
-      Vector2i gridPos = itemData.m_gridPos;
-
-      if (gridPos.y == 4 && gridPos.x <= 4) {
+      if (IsArmorSlot(itemData.m_gridPos)) {
         continue;
       }
 
@@ -419,9 +376,7 @@ public static class QuickSlotsManager {
     int emptySlots = (inventory.m_width * inventory.m_height) - 5;
 
     foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
-      Vector2i gridPos = itemData.m_gridPos;
-
-      if (gridPos.y == 4 && gridPos.x <= 4) {
+      if (IsArmorSlot(itemData.m_gridPos)) {
         continue;
       }
 
@@ -435,9 +390,7 @@ public static class QuickSlotsManager {
     int stackSpace = 0;
 
     foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
-      Vector2i gridPos = itemData.m_gridPos;
-
-      if (gridPos.y == 4 && gridPos.x <= 4) {
+      if (IsArmorSlot(itemData.m_gridPos)) {
         continue;
       }
 
@@ -452,25 +405,26 @@ public static class QuickSlotsManager {
   public static int GetRows() {
     return _rows;
   }
-  public static void SetRows(int rows) {
-    if (rows == _rows) {
-      return;
-    }
 
+  public static int GetRowIndex() {
+    return _rows - 1;
+  }
+
+  public static void SetRows(int rows) {
     _rows = rows;
     PositionQuickslots();
   }
 
   public static void PositionQuickslots() {
-    HelmetSlot.y = _rows - 1;
-    ChestSlot.y = _rows - 1;
-    LegsSlot.y = _rows - 1;
-    ShoulderSlot.y = _rows - 1;
-    UtilitySlot.y = _rows - 1;
+    HelmetSlot = new Vector2i(0, GetRowIndex());
+    ChestSlot = new Vector2i(1, GetRowIndex());
+    LegsSlot = new Vector2i(2, GetRowIndex());
+    ShoulderSlot = new Vector2i(3, GetRowIndex());
+    UtilitySlot = new Vector2i(4, GetRowIndex());
 
-    QuickSlot1.y = _rows - 1;
-    QuickSlot2.y = _rows - 1;
-    QuickSlot3.y = _rows - 1;
+    QuickSlot1 = new Vector2i(5, GetRowIndex());
+    QuickSlot2 = new Vector2i(6, GetRowIndex());
+    QuickSlot3 = new Vector2i(7, GetRowIndex());
 
     ArmorSlots = [HelmetSlot, ChestSlot, LegsSlot, ShoulderSlot, UtilitySlot];
     QuickSlots = [QuickSlot1, QuickSlot2, QuickSlot3];
