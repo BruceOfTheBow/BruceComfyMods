@@ -21,20 +21,20 @@ static class InventoryGridPatch {
   static void UpdatePlayerGrid(InventoryGrid inventoryGrid) {
     QuickSlotsManager.ShouldRefreshPlayerGrid = false;
     
-    SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8], "Head");
-    SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 1], "Chest");
-    SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 2], "Legs");
-    SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 3], "Cape");
-    SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 4], "Util");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8], "Head");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 1], "Chest");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 2], "Legs");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 3], "Cape");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 4], "Util");
 
     if (EnableQuickslots.Value) {
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 5], KeyCodeUtils.ToShortString(QuickSlot1.Value));
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 6], KeyCodeUtils.ToShortString(QuickSlot2.Value));
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 7], KeyCodeUtils.ToShortString(QuickSlot3.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 5], KeyCodeUtils.ToShortString(QuickSlot1.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 6], KeyCodeUtils.ToShortString(QuickSlot2.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 7], KeyCodeUtils.ToShortString(QuickSlot3.Value));
     } else {
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 5], string.Empty, enabled: false);
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 6], string.Empty, enabled: false);
-      SetupBindingLabel(inventoryGrid.m_elements[(QuickSlotsManager.GetRows() - 1) * 8 + 7], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 5], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 6], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 7], string.Empty, enabled: false);
     }
   }
 

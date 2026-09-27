@@ -121,6 +121,7 @@
     <Compile Include="Core\ConfigPositionedElement.cs" />
     <Compile Include="Core\HotKeyBarManager.cs" />
     <Compile Include="Core\QuickSlotsManager.cs" />
+    <Compile Include="Core\TombstoneManager.cs" />
     <Compile Include="Core\Utils\InventoryLogger.cs" />
     <Compile Include="Core\Utils\KeyCodeUtils.cs" />
     <Compile Include="Patches\FejdStartupPatch.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Patches\InventoryGuiPatch.cs" />
     <Compile Include="Patches\InventoryPatch.cs" />
     <Compile Include="Patches\PlayerPatch.cs" />
+    <Compile Include="Patches\StoreGuiPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

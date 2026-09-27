@@ -50,6 +50,7 @@ public static class QuickSlotsManager {
   public static bool OnMenuLoad = false;
 
   public static bool ShouldRefreshPlayerGrid { get; set; }
+  public static bool IsPurchasingItem = false;
 
   public static void RefreshBindings() {
     ShouldRefreshPlayerGrid = true;
@@ -75,7 +76,6 @@ public static class QuickSlotsManager {
         continue;
       }
 
-      ComfyQuickSlots.LogInfo($"Equipping {item.m_shared.m_name} to {armorSlot}");
       EquipItem(player, item);
     }
   }
@@ -221,16 +221,12 @@ public static class QuickSlotsManager {
 
     FirstLoad = true;
 
-    List<ItemDrop.ItemData> initialEquippedArmor = player.m_inventory.m_inventory.Where(x => x.m_equipped && IsArmor(x)).ToList();
-    
-    foreach (ItemDrop.ItemData armorPiece in InitialEquippedArmor) {
-      UnequipItem(player, armorPiece);
-      player.GetInventory().AddItem(armorPiece);
+    foreach (ItemDrop.ItemData armorPiece in player.m_inventory.m_inventory.Where(x => x.m_equipped && IsArmor(x)).ToList()) {
       player.EquipItem(armorPiece);
-      Vector2i armorSlot = GetArmorSlot(armorPiece);
-      MoveArmorItemToSlot(player, armorPiece, armorSlot.x, armorSlot.y);
-      player.GetInventory().Changed();
     }
+
+    MoveEquippedArmorToArmorSlots();
+    player.GetInventory().Changed();
   }
 
   public static void MoveArmorItemToSlot(Humanoid humanoid, ItemDrop.ItemData item, int x, int y) {
@@ -263,7 +259,20 @@ public static class QuickSlotsManager {
     MoveArmorItemToSlot(Player.m_localPlayer, Player.m_localPlayer.m_legItem, LegsSlot.x, LegsSlot.y);
     MoveArmorItemToSlot(Player.m_localPlayer, Player.m_localPlayer.m_shoulderItem, ShoulderSlot.x, ShoulderSlot.y);
     MoveArmorItemToSlot(Player.m_localPlayer, Player.m_localPlayer.m_utilityItem, UtilitySlot.x, UtilitySlot.y);
-}
+  }
+
+  public static void MoveQuickSlotItems(Player player) {
+    if (player == null || player.GetInventory() == null) {
+      return;
+    }
+
+    foreach (Vector2i quickSlot in QuickSlots) {
+      ItemDrop.ItemData item = player.GetInventory().GetItemAt(quickSlot.x, quickSlot.y - 1);
+      item.m_gridPos = quickSlot;
+    }
+
+    player.GetInventory().Changed();
+  }
 
   public static bool Save(Player player) {
     ZPackage pkg = new();
@@ -290,6 +299,20 @@ public static class QuickSlotsManager {
     humanoid.GetInventory().Changed();
 
     return false;
+  }
+
+  public static bool UnequipAllArmor(Player player) {
+    Inventory playerInventory = player.GetInventory();
+
+    for (int i = 0; i < 5; i++) {
+      ItemDrop.ItemData item = playerInventory.GetItemAt(i, 4);
+
+      if (item != null) {
+        UnequipItem(player, item);
+      }
+    }
+
+    return true;
   }
 
   public static bool UnequipItem(Humanoid player, ItemDrop.ItemData item) {

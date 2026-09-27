@@ -14,10 +14,7 @@ static class InventoryPatch {
     }
 
     if (QuickSlotsManager.FirstLoad && QuickSlotsManager.IsArmor(item) && item.m_equipped) {
-      if (!QuickSlotsManager.InitialEquippedArmor.Contains((item))) {
-        QuickSlotsManager.InitialEquippedArmor.Add(item);
-      }
-      return false;
+      return true;
     }
 
     if (item.m_equipped && QuickSlotsManager.IsArmor(item) && Player.m_localPlayer != null) {

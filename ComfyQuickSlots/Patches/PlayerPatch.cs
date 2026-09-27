@@ -1,9 +1,7 @@
 ﻿namespace ComfyQuickSlots;
 
-using BepInEx.Logging;
 using HarmonyLib;
-using System.Diagnostics.Eventing.Reader;
-using static ComfyQuickSlots;
+
 
 [HarmonyPatch(typeof(Player))]
 static class PlayerPatch {
@@ -33,6 +31,12 @@ static class PlayerPatch {
   static void SetInventorySizePostfix(Player __instance, int rows) {
     QuickSlotsManager.SetRows(rows + 1);
     QuickSlotsManager.MoveEquippedArmorToArmorSlots();
+
+    if (QuickSlotsManager.IsPurchasingItem) {
+      QuickSlotsManager.MoveQuickSlotItems(__instance);
+      QuickSlotsManager.ShouldRefreshPlayerGrid = true;
+      return;
+    }
   }
 
   // Prevents interaction with item stands and armor stands while item is equipping
@@ -45,5 +49,11 @@ static class PlayerPatch {
     }
 
     return true;
+  }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Player.CreateTombStone))]
+  static void CreateTombStonePrefix(Player __instance) {
+    QuickSlotsManager.UnequipAllArmor(__instance);
   }
 }
