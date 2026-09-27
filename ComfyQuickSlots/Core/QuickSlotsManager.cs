@@ -268,6 +268,11 @@ public static class QuickSlotsManager {
 
     foreach (Vector2i quickSlot in QuickSlots) {
       ItemDrop.ItemData item = player.GetInventory().GetItemAt(quickSlot.x, quickSlot.y - 1);
+
+      if (item == null) {
+        continue;
+      }
+
       item.m_gridPos = quickSlot;
     }
 
@@ -304,8 +309,8 @@ public static class QuickSlotsManager {
   public static bool UnequipAllArmor(Player player) {
     Inventory playerInventory = player.GetInventory();
 
-    for (int i = 0; i < 5; i++) {
-      ItemDrop.ItemData item = playerInventory.GetItemAt(i, 4);
+    foreach (Vector2i armorSlot in ArmorSlots) {
+      ItemDrop.ItemData item = playerInventory.GetItemAt(armorSlot.x, armorSlot.y);
 
       if (item != null) {
         UnequipItem(player, item);
@@ -423,6 +428,20 @@ public static class QuickSlotsManager {
     }
 
     return stackSpace;
+  }
+
+  public static int GetEmptyInventorySlots(Inventory inventory) {
+    int emptySlots = (inventory.m_width * inventory.m_height) - 5;
+
+    foreach (ItemDrop.ItemData itemData in inventory.m_inventory) {
+      if (IsArmorSlot(itemData.m_gridPos)) {
+        continue;
+      }
+
+      emptySlots--;
+    }
+
+    return emptySlots;
   }
 
   public static int GetRows() {

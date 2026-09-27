@@ -19,6 +19,10 @@ static class InventoryGridPatch {
   }
 
   static void UpdatePlayerGrid(InventoryGrid inventoryGrid) {
+    if (inventoryGrid.m_elements.Count < QuickSlotsManager.GetRowIndex() * 8 + 2) {
+      return;
+    }
+
     QuickSlotsManager.ShouldRefreshPlayerGrid = false;
     
     SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8], "Head");
@@ -36,22 +40,6 @@ static class InventoryGridPatch {
       SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 6], string.Empty, enabled: false);
       SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 7], string.Empty, enabled: false);
     }
-  }
-
-  static RectTransform GetOrCreateBackground(InventoryGrid inventoryGrid, string name) {
-    Transform existingBkg = inventoryGrid.transform.parent.Find(name);
-
-    if (!existingBkg) {
-      Transform bkg = inventoryGrid.transform.parent.Find("Bkg");
-
-      GameObject background = Object.Instantiate(bkg.gameObject, bkg.parent);
-      background.name = name;
-
-      existingBkg = background.transform;
-      existingBkg.SetSiblingIndex(bkg.GetSiblingIndex() + 1);
-    }
-
-    return existingBkg as RectTransform;
   }
 
   static void SetupBindingLabel(InventoryElement element, string text, bool enabled = true) {

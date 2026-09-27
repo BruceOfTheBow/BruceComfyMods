@@ -107,6 +107,18 @@ static class InventoryPatch {
     return true;
   }
 
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Inventory.GetEmptySlots))]
+  static bool GetEmptySlotsPrefix(Inventory __instance, int __result) {
+    if (__instance != Player.m_localPlayer.m_inventory) {
+      return true;
+    }
+
+    __result = QuickSlotsManager.GetEmptyInventorySlots(__instance);
+    return false;
+  }
+
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Inventory.FindFreeStackSpace))]
   static bool FindFreeStackSpacePrefix(Inventory __instance, string name, float worldLevel, ref int __result) {

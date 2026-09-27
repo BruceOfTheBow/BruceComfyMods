@@ -29,12 +29,11 @@ static class PlayerPatch {
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.SetInventorySize))]
   static void SetInventorySizePostfix(Player __instance, int rows) {
-    QuickSlotsManager.SetRows(rows + 1);
     QuickSlotsManager.MoveEquippedArmorToArmorSlots();
+    QuickSlotsManager.ShouldRefreshPlayerGrid = true;
 
     if (QuickSlotsManager.IsPurchasingItem) {
       QuickSlotsManager.MoveQuickSlotItems(__instance);
-      QuickSlotsManager.ShouldRefreshPlayerGrid = true;
       return;
     }
   }
@@ -54,6 +53,10 @@ static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.CreateTombStone))]
   static void CreateTombStonePrefix(Player __instance) {
+    if (ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathKeepEquip) || ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathDeleteUnequipped)) {
+      return;
+    }
+
     QuickSlotsManager.UnequipAllArmor(__instance);
   }
 }
