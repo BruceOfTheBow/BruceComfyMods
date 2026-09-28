@@ -56,19 +56,7 @@ public static class QuickSlotsManager {
     ShouldRefreshPlayerGrid = true;
   }
 
-  public static bool AddItemToSlot(Humanoid humanoid, ItemDrop.ItemData item, int x, int y) {
-    humanoid.GetInventory().m_inventory.Add(item);
-    item.m_gridPos = new Vector2i(x, y);
-    return true;
-  }
-
-  public static void EquipAndAddItem(Humanoid humanoid, ItemDrop.ItemData item) {
-    humanoid.m_inventory.AddItem(item);
-    EquipItem(humanoid, item);
-  }
-
   public static void EquipArmorInArmorSlots(Player player) {
-    
     foreach (Vector2i armorSlot in ArmorSlots) {
       ItemDrop.ItemData item = player.GetInventory().GetItemAt(armorSlot.x, armorSlot.y);
 
@@ -76,7 +64,7 @@ public static class QuickSlotsManager {
         continue;
       }
 
-      EquipItem(player, item);
+      player.EquipItem(item);
     }
   }
 
@@ -212,6 +200,13 @@ public static class QuickSlotsManager {
     }
 
     if (player.m_knownTexts.ContainsKey(PlayerDataKey)) {
+      // Clear armor references for compatibility
+      player.m_helmetItem = null;
+      player.m_chestItem = null;
+      player.m_legItem = null;
+      player.m_shoulderItem = null;
+      player.m_utilityItem = null;
+
       player.GetInventory().Load(new ZPackage(player.m_knownTexts[PlayerDataKey]));
       EquipArmorInArmorSlots(player);
       player.GetInventory().Changed();
