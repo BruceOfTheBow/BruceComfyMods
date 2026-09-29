@@ -34,6 +34,7 @@ public static class PluginConfig {
     SnapDivisions.OnSettingChanged(RotationManager.ResetRotationConditional);
 
     BindKeysConfig(config);
+    BindButtonsConfig(config);
     BindGizmoColorsConfig(config);
 
     ShowGizmoPrefab =
@@ -124,6 +125,16 @@ public static class PluginConfig {
   public static ConfigEntry<KeyboardShortcut> SelectTargetPieceKey { get; private set; }
   public static ConfigEntry<KeyboardShortcut> SnapDivisionIncrementKey { get; private set; }
   public static ConfigEntry<KeyboardShortcut> SnapDivisionDecrementKey { get; private set; }
+  
+  public static ConfigEntry<string> XRotationButton { get; private set; }
+  public static ConfigEntry<string> ZRotationButton { get; private set; }
+  public static ConfigEntry<string> ResetRotationButton { get; private set; }
+  public static ConfigEntry<string> ResetAllRotationButton { get; private set; }
+  public static ConfigEntry<string> ChangeRotationModeButton { get; private set; }
+  public static ConfigEntry<string> CopyPieceRotationButton { get; private set; }
+  public static ConfigEntry<string> SelectTargetPieceButton { get; private set; }
+  public static ConfigEntry<string> SnapDivisionIncrementButton { get; private set; }
+  public static ConfigEntry<string> SnapDivisionDecrementButton { get; private set; }
 
   public static void BindKeysConfig(ConfigFile config) {
     XRotationKey =
@@ -187,7 +198,72 @@ public static class PluginConfig {
             "Keys",
             "snapDivisionDecrement",
             new KeyboardShortcut(KeyCode.PageDown),
+            "Halves snap divisions from current.");
+  }
+  
+  public static void BindButtonsConfig(ConfigFile config) {
+    XRotationButton =
+        config.BindInOrder(
+            "Controller",
+            "xRotationButton",
+            "JoyDPadLeft",
+            "Hold this key to rotate on the x-axis/plane (red circle).");
+
+    ZRotationButton =
+        config.BindInOrder(
+            "Controller",
+            "zRotationButton",
+            "JoyDPadRight",
+            "Hold this key to rotate on the z-axis/plane (blue circle).");
+
+    ResetRotationButton =
+        config.BindInOrder(
+            "Controller",
+            "resetRotationButton",
+            "JoyButtonY",
+            "Press this key to reset the selected axis to zero rotation.");
+
+    ResetAllRotationButton =
+        config.BindInOrder(
+            "Controller",
+            "resetAllRotationButton",
+            "JoyButtonBack",
+            "Press this key to reset _all axis_ rotations to zero rotation.");
+
+    ChangeRotationModeButton =
+        config.BindInOrder(
+            "Controller",
+            "changeRotationModeButton",
+            "JoyButtonX",
+            "Press this key to toggle rotation modes.");
+
+    CopyPieceRotationButton =
+        config.BindInOrder(
+            "Controller",
+            "copyPieceRotationButton",
+            "JoyLBumper",
+            "Press this key to copy targeted piece's rotation.");
+
+    SelectTargetPieceButton =
+        config.BindInOrder(
+            "Controller",
+            "selectTargetPieceButton",
+            "StickRButton",
+            "Selects target piece to be used.");
+
+    SnapDivisionIncrementButton =
+        config.BindInOrder(
+            "Controller",
+            "snapDivisionIncrementButton",
+            "JoyDPadUp",
             "Doubles snap divisions from current.");
+
+    SnapDivisionDecrementButton =
+        config.BindInOrder(
+            "Controller",
+            "snapDivisionDecrementButton",
+            "JoyDPadDown",
+            "Halves snap divisions from current.");
   }
 
   public static ConfigEntry<Color> XGizmoColor { get; private set; }
