@@ -1,13 +1,12 @@
 ﻿namespace WeightlessCoins;
 
 using static PluginConfig;
-using static Version;
 
 public sealed class WeightManager {
   public static int CoinsItemHashCode = "$item_coins".GetStableHashCode();
 
   public static bool IsCoins(ItemDrop.ItemData itemData) {
-    if (itemData == null) {
+    if (itemData == null || itemData.m_shared == null || itemData.m_shared.m_name == null) {
       return false;
     }
 

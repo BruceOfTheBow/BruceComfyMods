@@ -10,7 +10,7 @@ using static PluginConfig;
 public sealed class WeightlessCoins : BaseUnityPlugin {
   public const string PluginGuid = "bruce.valheim.weightlesscoins";
   public const string PluginName = "WeightlessCoins";
-  public const string PluginVersion = "1.0.0";
+  public const string PluginVersion = "1.0.1";
 
   Harmony _harmony;
 
