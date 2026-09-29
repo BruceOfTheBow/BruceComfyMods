@@ -2,43 +2,20 @@
 
 using HarmonyLib;
 
+
 [HarmonyPatch(typeof(Player))]
 static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.Awake))]
   static void AwakePrefix(Player __instance) {
-    QuickSlotsManager.SetupPlayerInventory(__instance.m_inventory);
+    QuickSlotsManager.SetupPlayerInventory(__instance);
   }
-
 
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.Load))]
   static void LoadPostFix(Player __instance) {
-    if (__instance.m_knownTexts.ContainsKey(QuickSlotsManager.PlayerDataKey)) {
-      ZPackage pkg = new(__instance.m_knownTexts[QuickSlotsManager.PlayerDataKey]);
-      __instance.GetInventory().Load(pkg);
-      QuickSlotsManager.EquipArmorInArmorSlots(__instance);
-      __instance.GetInventory().Changed();
-    } else {
-      QuickSlotsManager.FirstLoad = true;
-
-      foreach (ItemDrop.ItemData armorPiece in QuickSlotsManager.InitialEquippedArmor) {
-        QuickSlotsManager.UnequipItem(__instance, armorPiece);
-        __instance.GetInventory().AddItem(armorPiece);
-        __instance.EquipItem(armorPiece);
-        Vector2i armorSlot = QuickSlotsManager.GetArmorSlot(armorPiece);
-        QuickSlotsManager.MoveArmorItemToSlot(__instance, armorPiece, armorSlot.x, armorSlot.y);
-        __instance.GetInventory().Changed();
-      }
-
-      QuickSlotsManager.InitialEquippedArmor.Clear();
-    }
-
-    foreach (ItemDrop.ItemData item in __instance.GetInventory().m_inventory) {
-      if (item.IsEquipable() && !QuickSlotsManager.IsArmor(item) && item.m_equipped) {
-        __instance.EquipItem(item);
-      }
-    }
+    QuickSlotsManager.SetupPlayerInventory(__instance);
+    QuickSlotsManager.LoadSavedData(__instance);
   }
 
   [HarmonyPrefix]
@@ -47,6 +24,18 @@ static class PlayerPatch {
     QuickSlotsManager.FirstLoad = false;
 
     return QuickSlotsManager.Save(__instance);
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Player.SetInventorySize))]
+  static void SetInventorySizePostfix(Player __instance, int rows) {
+    QuickSlotsManager.MoveEquippedArmorToArmorSlots();
+    QuickSlotsManager.ShouldRefreshPlayerGrid = true;
+
+    if (QuickSlotsManager.IsPurchasingItem) {
+      QuickSlotsManager.MoveQuickSlotItems(__instance);
+      return;
+    }
   }
 
   // Prevents interaction with item stands and armor stands while item is equipping
@@ -64,15 +53,10 @@ static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.CreateTombStone))]
   static void CreateTombStonePrefix(Player __instance) {
-    TombStoneManager.CreateTombStone(__instance);
-  }
+    if (ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathKeepEquip) || ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathDeleteUnequipped)) {
+      return;
+    }
 
-  [HarmonyPostfix]
-  [HarmonyPatch(nameof(Player.CreateTombStone))]
-  static void CreateTombStonePostfix(Player __instance) {
-    Inventory playerInventory = __instance.GetInventory();
-
-    playerInventory.m_height = QuickSlotsManager.Rows;
-    playerInventory.m_width = QuickSlotsManager.Columns;
+    QuickSlotsManager.UnequipAllArmor(__instance);
   }
 }

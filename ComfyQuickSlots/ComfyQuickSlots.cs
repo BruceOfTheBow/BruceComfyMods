@@ -15,7 +15,7 @@ using static PluginConfig;
 public sealed class ComfyQuickSlots : BaseUnityPlugin {
   public const string PluginGuid = "com.bruce.valheim.comfyquickslots";
   public const string PluginName = "ComfyQuickSlots";
-  public const string PluginVersion = "1.9.0";
+  public const string PluginVersion = "1.10.0";
 
   static ManualLogSource _logger;
 
@@ -39,14 +39,14 @@ public sealed class ComfyQuickSlots : BaseUnityPlugin {
 
     ItemDrop.ItemData item = null;
 
-    if (ZInput.GetKeyDown(QuickSlot3.Value)) {
-      item = player.GetInventory().GetItemAt(7, 4);
+    if (ZInput.GetKeyDown(QuickSlot1.Value)) {
+      item = player.GetInventory().GetItemAt(QuickSlotsManager.QuickSlot1.x, QuickSlotsManager.QuickSlot1.y);
     }
     if (ZInput.GetKeyDown(QuickSlot2.Value)) {
-      item = player.GetInventory().GetItemAt(6, 4);
+      item = player.GetInventory().GetItemAt(QuickSlotsManager.QuickSlot2.x, QuickSlotsManager.QuickSlot2.y);
     }
-    if (ZInput.GetKeyDown(QuickSlot1.Value)) {
-      item = player.GetInventory().GetItemAt(5, 4);
+    if (ZInput.GetKeyDown(QuickSlot3.Value)) {
+      item = player.GetInventory().GetItemAt(QuickSlotsManager.QuickSlot3.x, QuickSlotsManager.QuickSlot3.y);
 
     }
 

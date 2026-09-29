@@ -15,7 +15,19 @@ static class InventoryGuiPatch {
       SetContainerGridAnchoredPosition(__instance);
     }
 
-    QuickSlotsManager.ShouldRefreshPlayerGrid = true;
+    QuickSlotsManager.RefreshBindings();
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(InventoryGui.SetInventorySize))]
+  static void SetInventorySize(InventoryGui __instance, int rows) {
+    QuickSlotsManager.SetRows(rows + 1);
+
+    Player.m_localPlayer.m_inventory.m_height = QuickSlotsManager.GetRows();
+
+    __instance.m_player.sizeDelta 
+        = new Vector2(__instance.m_player.sizeDelta.x, __instance.m_playerHeight 
+            + (QuickSlotsManager.GetRows() - 4) * __instance.m_invGridHeight);
   }
 
   static void SetContainerGridAnchoredPosition(InventoryGui inventoryGui) {
@@ -27,11 +39,11 @@ static class InventoryGuiPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(InventoryGui.OnSelectedItem))]
   static bool OnSelectedItemPrefix(InventoryGrid grid, ItemDrop.ItemData item, Vector2i pos) {
-    if (QuickSlotsManager.IsArmorSlot(pos)) {
-      return false;
+    if (grid.m_inventory.m_name != QuickSlotsManager.PlayerInventoryName) {
+      return true;
     }
 
-    if (Player.m_localPlayer.IsEquipActionQueued(item)) {
+    if (QuickSlotsManager.IsArmorSlot(pos) || Player.m_localPlayer.IsEquipActionQueued(item)) {
       return false;
     }
 

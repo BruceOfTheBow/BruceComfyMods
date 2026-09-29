@@ -19,53 +19,31 @@ static class InventoryGridPatch {
   }
 
   static void UpdatePlayerGrid(InventoryGrid inventoryGrid) {
+    if (inventoryGrid.m_elements.Count < QuickSlotsManager.GetRowIndex() * 8 + 2) {
+      return;
+    }
+
     QuickSlotsManager.ShouldRefreshPlayerGrid = false;
-
-    int addedRows = QuickSlotsManager.Rows - 4;
-    float offset = -35f * addedRows;
-
-    RectTransform gridBkg = GetOrCreateBackground(inventoryGrid, "ExtInvGrid");
-    gridBkg.anchoredPosition = new Vector2(0f, offset);
-    gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 590f);
-    gridBkg.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f + 75f * addedRows);
-
-    //Add Quick slots and equipment overlays
-    //for(int i = 36; i < rows*columns - 1; i++) {
-    SetupBindingLabel(inventoryGrid.m_elements[32], "Head");
-    SetupBindingLabel(inventoryGrid.m_elements[33], "Chest");
-    SetupBindingLabel(inventoryGrid.m_elements[34], "Legs");
-    SetupBindingLabel(inventoryGrid.m_elements[35], "Cape");
-    SetupBindingLabel(inventoryGrid.m_elements[36], "Util");
+    
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8], "Head");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 1], "Chest");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 2], "Legs");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 3], "Cape");
+    SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 4], "Util");
 
     if (EnableQuickslots.Value) {
-      SetupBindingLabel(inventoryGrid.m_elements[37], KeyCodeUtils.ToShortString(QuickSlot1.Value));
-      SetupBindingLabel(inventoryGrid.m_elements[38], KeyCodeUtils.ToShortString(QuickSlot2.Value));
-      SetupBindingLabel(inventoryGrid.m_elements[39], KeyCodeUtils.ToShortString(QuickSlot3.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 5], KeyCodeUtils.ToShortString(QuickSlot1.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 6], KeyCodeUtils.ToShortString(QuickSlot2.Value));
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 7], KeyCodeUtils.ToShortString(QuickSlot3.Value));
     } else {
-      SetupBindingLabel(inventoryGrid.m_elements[37], string.Empty, enabled: false);
-      SetupBindingLabel(inventoryGrid.m_elements[38], string.Empty, enabled: false);
-      SetupBindingLabel(inventoryGrid.m_elements[39], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 5], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 6], string.Empty, enabled: false);
+      SetupBindingLabel(inventoryGrid.m_elements[QuickSlotsManager.GetRowIndex() * 8 + 7], string.Empty, enabled: false);
     }
   }
 
-  static RectTransform GetOrCreateBackground(InventoryGrid inventoryGrid, string name) {
-    Transform existingBkg = inventoryGrid.transform.parent.Find(name);
-
-    if (!existingBkg) {
-      Transform bkg = inventoryGrid.transform.parent.Find("Bkg");
-
-      GameObject background = Object.Instantiate(bkg.gameObject, bkg.parent);
-      background.name = name;
-
-      existingBkg = background.transform;
-      existingBkg.SetSiblingIndex(bkg.GetSiblingIndex() + 1);
-    }
-
-    return existingBkg as RectTransform;
-  }
-
-  static void SetupBindingLabel(InventoryGrid.Element element, string text, bool enabled = true) {
-    Transform binding = element.m_go.transform.Find("binding");
+  static void SetupBindingLabel(InventoryElement element, string text, bool enabled = true) {
+    Transform binding = element.gameObject.transform.Find("binding");
 
     if (binding && binding.TryGetComponent(out TMP_Text label)) {
       label.text = text;
