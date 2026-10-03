@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="ComfyGizmo.cs" />
     <Compile Include="ComfyLib\Config\ToggleStringListConfigEntry.cs" />
+    <Compile Include="ComfyLib\Collections\PieceSelectionCache.cs" />
     <Compile Include="ComfyLib\Utils\AssetUtils.cs" />
     <Compile Include="Core\Rotators\AbstractRotator.cs" />
     <Compile Include="Core\Rotators\DefaultRotator.cs" />

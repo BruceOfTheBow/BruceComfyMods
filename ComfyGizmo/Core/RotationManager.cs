@@ -13,11 +13,51 @@ public static class RotationManager {
   static LocalFrameRotator _localFrameRotator;
   static RoofRotator _roofRotator;
 
+  public static bool IsInitialized { get; private set; }
+
+  public static bool TryInitialize() {
+    if (IsInitialized && !AreRotatorsAlive()) {
+      ComfyGizmo.LogSource?.LogInfo("Detected destroyed ComfyGizmo Unity objects; recreating rotators.");
+      DestroyRotators();
+    }
+
+    if (IsInitialized) {
+      return true;
+    }
+
+    try {
+      _defaultRotator = new DefaultRotator();
+      _internalRotator = new InternalRotator();
+      _localFrameRotator = new LocalFrameRotator();
+      _roofRotator = new RoofRotator();
+      IsInitialized = true;
+      return true;
+    } catch (Exception exception) {
+      try {
+        DestroyRotators();
+      } catch (Exception cleanupException) {
+        ComfyGizmo.LogSource?.LogError($"Could not clean up partially initialized rotators. {cleanupException}");
+      }
+
+      ComfyGizmo.LogSource?.LogError($"Could not initialize ComfyGizmo rotators; placement rotation is disabled. {exception}");
+      return false;
+    }
+  }
+
+  static bool AreRotatorsAlive() {
+    return
+        _defaultRotator != null
+        && _defaultRotator.IsAlive
+        && _internalRotator != null
+        && _internalRotator.IsAlive
+        && _localFrameRotator != null
+        && _localFrameRotator.IsAlive
+        && _roofRotator != null
+        && _roofRotator.IsAlive;
+  }
+
   public static void Initialize() {
-    _defaultRotator = new DefaultRotator();
-    _internalRotator = new InternalRotator();
-    _localFrameRotator = new LocalFrameRotator();
-    _roofRotator = new RoofRotator();
+    TryInitialize();
   }
 
   public static void Rotate(Vector3 rotationAxis) {
@@ -117,6 +157,8 @@ public static class RotationManager {
   }
 
   public static void DestroyRotators() {
+    IsInitialized = false;
+
     if (_defaultRotator != null) {
       _defaultRotator.Destroy();
       _defaultRotator = null;
@@ -211,6 +253,16 @@ public static class RotationManager {
   }
 
   public static bool TryGetRotation(out Quaternion rotation) {
+    if (!IsInitialized) {
+      rotation = Quaternion.identity;
+      return false;
+    }
+
+    if (!TryInitialize()) {
+      rotation = Quaternion.identity;
+      return false;
+    }
+
     if (IsIgnoredPrefab || (IsTerrainOpPrefab && IgnoreTerrainOpPrefab.Value)) {
       rotation = Quaternion.identity;
       return false;
