@@ -110,7 +110,7 @@ static class InventoryPatch {
 
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Inventory.GetEmptySlots))]
-  static bool GetEmptySlotsPrefix(Inventory __instance, int __result) {
+  static bool GetEmptySlotsPrefix(Inventory __instance, ref int __result) {
     if (__instance != Player.m_localPlayer.m_inventory) {
       return true;
     }

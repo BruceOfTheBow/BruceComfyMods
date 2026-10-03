@@ -1,5 +1,14 @@
 ## Changelog
 
+
+### 1.10.1
+
+  * Fixed bug where certain upgrades blocked by inventory space message when sufficient inventory space available.
+
+### 1.10.0
+
+  * Updated for 1.0 release.
+
 ### 1.9.0
 
   * Added support for GlobalKey `DeathKeepEquip`.
