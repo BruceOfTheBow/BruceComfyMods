@@ -1,0 +1,8 @@
+{
+  "name": "SnapPointsByComfy",
+  "version_number": "1.0.0",
+  "author": "ComfyMods",
+  "description": "Snap Points by Comfy",
+  "website_url": "https://github.com/BruceOfTheBow/BruceComfyMods/tree/main/SnapPointsByComfy",
+  "dependencies": [ "denikson-BepInExPack_Valheim-5.4.2202" ]
+}

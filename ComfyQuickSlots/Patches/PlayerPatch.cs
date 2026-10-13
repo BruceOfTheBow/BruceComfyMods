@@ -58,5 +58,21 @@ static class PlayerPatch {
     }
 
     QuickSlotsManager.UnequipAllArmor(__instance);
+
+    foreach (ItemDrop.ItemData item in __instance.GetInventory().m_inventory) {
+      ComfyQuickSlots.LogInfo($"Pre tombstone item equipped: {item.m_shared.m_name}");
+    }
+  }
+
+  [HarmonyPostfix]
+  [HarmonyPatch(nameof(Player.CreateTombStone))]
+  static void CreateTombstonePostfix(Player __instance) {
+    if (ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathKeepEquip) || ZoneSystem.instance.GetGlobalKey(GlobalKeys.DeathDeleteUnequipped)) {
+      return;
+    }
+
+    foreach (ItemDrop.ItemData item in __instance.GetInventory()?.m_inventory) {
+      ComfyQuickSlots.LogInfo($"Post tombstone item: {item.m_shared.m_name}\n\tEquipped: {item.m_equipped}\n\tQuest item: {item.m_shared.m_questItem}");
+    }
   }
 }

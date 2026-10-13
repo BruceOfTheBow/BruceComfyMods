@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComfyFirstPerson", "ComfyFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadialRebind", "RadialRebind\RadialRebind.csproj", "{48BD2883-34B3-47AA-ADD4-7FD4CA3BE21D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnapPointsByComfy", "SnapPointsByComfy\SnapPointsByComfy.csproj", "{BA8FAE5C-3F48-4108-B869-47DAFCA0AACF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{48BD2883-34B3-47AA-ADD4-7FD4CA3BE21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48BD2883-34B3-47AA-ADD4-7FD4CA3BE21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48BD2883-34B3-47AA-ADD4-7FD4CA3BE21D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA8FAE5C-3F48-4108-B869-47DAFCA0AACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA8FAE5C-3F48-4108-B869-47DAFCA0AACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA8FAE5C-3F48-4108-B869-47DAFCA0AACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA8FAE5C-3F48-4108-B869-47DAFCA0AACF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
