@@ -8,12 +8,13 @@ static class PlayerPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(Player.Awake))]
   static void AwakePrefix(Player __instance) {
+    ComfyQuickSlots.LogInfo("Setting up player inventory for CQS.");
     QuickSlotsManager.SetupPlayerInventory(__instance);
   }
 
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.Load))]
-  static void LoadPostFix(Player __instance) {
+  static void LoadPostFix(Player __instance, ZPackage pkg) {
     QuickSlotsManager.SetupPlayerInventory(__instance);
     QuickSlotsManager.LoadSavedData(__instance);
   }

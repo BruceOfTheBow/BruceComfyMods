@@ -4,7 +4,6 @@ using HarmonyLib;
 
 using UnityEngine;
 
-using static ComfyFirstPerson;
 using static PluginConfig;
 
 [HarmonyPatch(typeof(GameCamera))]

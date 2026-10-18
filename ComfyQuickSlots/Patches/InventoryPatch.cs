@@ -129,4 +129,21 @@ static class InventoryPatch {
 
     return true;
   }
+
+  [HarmonyPrefix]
+  [HarmonyPatch(nameof(Inventory.Save))]
+  static bool InventorySavePrefix(Inventory __instance, ZPackage pkg) {
+    pkg.Write(110);
+    pkg.Write((ushort) (__instance.m_inventory.Count - QuickSlotsManager.GetItemsInExtendedSlots(__instance).Count));
+
+    foreach (ItemDrop.ItemData itemData in __instance.m_inventory) {
+      if (QuickSlotsManager.ArmorSlots.Contains(itemData.m_gridPos) || QuickSlotsManager.QuickSlots.Contains(itemData.m_gridPos)) {
+        continue;
+      }
+
+      itemData.Save(pkg);
+    }
+
+    return false;
+  }
 }

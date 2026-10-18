@@ -139,6 +139,32 @@ public static class QuickSlotsManager {
     return new Vector2i(-1, -1);
   }
 
+  public static List<ItemDrop.ItemData> GetItemsInExtendedSlots(Inventory inventory) {
+    List<ItemDrop.ItemData> items = new();
+
+    foreach (Vector2i armorSlot in ArmorSlots) {
+      ItemDrop.ItemData item = inventory.GetItemAt(armorSlot.x, armorSlot.y);
+
+      if (item == null) {
+        continue;
+      }
+
+      items.Add(item);
+    }
+
+    foreach(Vector2i quickSlot in QuickSlots) {
+      ItemDrop.ItemData item = inventory.GetItemAt(quickSlot.x, quickSlot.y);
+
+      if (item == null) {
+        continue;
+      }
+
+      items.Add(item);
+    }
+
+    return items;
+  }
+
   public static bool IsArmor(ItemDrop.ItemData item) {
     ItemDrop.ItemData.ItemType itemType = item.m_shared.m_itemType;
 
@@ -286,7 +312,13 @@ public static class QuickSlotsManager {
 
   public static bool Save(Player player) {
     ZPackage pkg = new();
-    player.GetInventory().Save(pkg);
+
+    pkg.Write(110);
+    pkg.Write((ushort) player.GetInventory().m_inventory.Count);
+
+    foreach (ItemDrop.ItemData item in player.GetInventory().m_inventory) {
+      item.Save(pkg);
+    }
 
     if (player.m_knownTexts.ContainsKey(PlayerDataKey)) {
       player.m_knownTexts[PlayerDataKey] = pkg.GetBase64();

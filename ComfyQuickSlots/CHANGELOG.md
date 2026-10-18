@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.10.3
+
+  * Fixed bug where extended inventory saved in vanilla save mechanism.
+
 ### 1.10.2
 
   * Fixed bug where equipped non-armor items remained equipped after death due to stale Humanoid references.
