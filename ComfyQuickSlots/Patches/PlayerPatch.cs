@@ -1,7 +1,12 @@
 ﻿namespace ComfyQuickSlots;
 
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+
 using HarmonyLib;
 
+using static PluginConfig;
 
 [HarmonyPatch(typeof(Player))]
 static class PlayerPatch {
@@ -59,5 +64,37 @@ static class PlayerPatch {
     }
 
     QuickSlotsManager.UnequipAllArmor(__instance);
+  }
+
+  [HarmonyTranspiler]
+  [HarmonyPatch(nameof(Player.Save))]
+  static IEnumerable<CodeInstruction> SaveTranspiler(IEnumerable<CodeInstruction> instructions) {
+    return new CodeMatcher(instructions)
+        .Start()
+        .MatchStartForward(
+            new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Humanoid), nameof(Humanoid.m_inventory))))
+        .ThrowIfInvalid("Could not patch Player.Save()! (set inventory contents)")
+        .Advance(offset: 1)
+        .InsertAndAdvance(
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PlayerPatch), nameof(GetReducedInventory))))
+        .InstructionEnumeration();
+  }
+
+  static Inventory GetReducedInventory(Inventory inventory) {
+    if (!IsModEnabled.Value) {
+      return inventory;
+    }
+
+    Inventory reducedInventory = new Inventory("Inventory", null, QuickSlotsManager.Columns, QuickSlotsManager.GetRows() - 1);
+
+    foreach (ItemDrop.ItemData item in reducedInventory.m_inventory) {
+      if (QuickSlotsManager.ArmorSlots.Contains(item.m_gridPos) || QuickSlotsManager.QuickSlots.Contains(item.m_gridPos)) {
+        continue;
+      }
+
+      reducedInventory.AddItem(item.Clone());
+    }
+
+    return reducedInventory;
   }
 }

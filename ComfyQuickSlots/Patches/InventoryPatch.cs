@@ -1,8 +1,14 @@
 ﻿namespace ComfyQuickSlots;
 
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+
 using HarmonyLib;
 
 using UnityEngine;
+
+using static PluginConfig;
 
 [HarmonyPatch(typeof(Inventory))]
 static class InventoryPatch {
@@ -54,7 +60,7 @@ static class InventoryPatch {
         typeof(bool),
         typeof(bool)
       ])]
-  static void AddItemStringIntIntIntLongStringVector2iBoolPrefix(Inventory __instance,ref Vector2i position) {
+  static void AddItemStringIntIntIntLongStringVector2iBoolPrefix(Inventory __instance, ref Vector2i position) {
     if (__instance.m_name != QuickSlotsManager.PlayerInventoryName || !QuickSlotsManager.IsArmorSlot(position)) {
       return;
     }
@@ -70,7 +76,7 @@ static class InventoryPatch {
     if (__instance.m_name != QuickSlotsManager.PlayerInventoryName || !QuickSlotsManager.IsArmorSlot(new Vector2i(x, y))) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -128,22 +134,5 @@ static class InventoryPatch {
     }
 
     return true;
-  }
-
-  [HarmonyPrefix]
-  [HarmonyPatch(nameof(Inventory.Save))]
-  static bool InventorySavePrefix(Inventory __instance, ZPackage pkg) {
-    pkg.Write(110);
-    pkg.Write((ushort) (__instance.m_inventory.Count - QuickSlotsManager.GetItemsInExtendedSlots(__instance).Count));
-
-    foreach (ItemDrop.ItemData itemData in __instance.m_inventory) {
-      if (QuickSlotsManager.ArmorSlots.Contains(itemData.m_gridPos) || QuickSlotsManager.QuickSlots.Contains(itemData.m_gridPos)) {
-        continue;
-      }
-
-      itemData.Save(pkg);
-    }
-
-    return false;
   }
 }
