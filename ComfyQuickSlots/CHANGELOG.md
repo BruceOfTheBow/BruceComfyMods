@@ -1,5 +1,8 @@
 ## Changelog
 
+### 1.10.2
+
+  * Fixed bug where equipped non-armor items remained equipped after death due to stale Humanoid references.
 
 ### 1.10.1
 

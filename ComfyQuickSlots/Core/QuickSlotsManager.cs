@@ -4,23 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 public static class QuickSlotsManager {
+  public const string PlayerDataKey = "ComfyQuickSlotsInventory";
   public const string PlayerInventoryName = "ComfyQuickSlotsInventory";
+
   public const int Columns = 8;
   private static int _rows = 5;
-
-
-  public static void SetupPlayerInventory(Player player) {
-    player.m_inventory.m_name = PlayerInventoryName;
-    player.m_inventory.m_width = Columns;
-
-    if (player.TryGetUniqueKeyValue("invrows", out string rowStr) && int.TryParse(rowStr, out int rows)) {
-      SetRows(rows + 1);
-    }
-
-    player.m_inventory.m_height = _rows;
-  }
-
-  public const string PlayerDataKey = "ComfyQuickSlotsInventory";
   public const int QuickSlotsCount = 3;
 
   public static readonly List<ItemDrop.ItemData.ItemType> ArmorSlotTypes = [
@@ -32,7 +20,6 @@ public static class QuickSlotsManager {
   ];
 
   public static bool FirstLoad = false;
-  public static List<ItemDrop.ItemData> InitialEquippedArmor = [];
 
   public static Vector2i HelmetSlot = new(0, 4);
   public static Vector2i ChestSlot = new(1, 4);
@@ -51,6 +38,17 @@ public static class QuickSlotsManager {
 
   public static bool ShouldRefreshPlayerGrid { get; set; }
   public static bool IsPurchasingItem = false;
+
+  public static void SetupPlayerInventory(Player player) {
+    player.m_inventory.m_name = PlayerInventoryName;
+    player.m_inventory.m_width = Columns;
+
+    if (player.TryGetUniqueKeyValue("invrows", out string rowStr) && int.TryParse(rowStr, out int rows)) {
+      SetRows(rows + 1);
+    }
+
+    player.m_inventory.m_height = _rows;
+  }
 
   public static void RefreshBindings() {
     ShouldRefreshPlayerGrid = true;
@@ -200,15 +198,27 @@ public static class QuickSlotsManager {
     }
 
     if (player.m_knownTexts.ContainsKey(PlayerDataKey)) {
-      // Clear armor references for compatibility
+      // Clear stale references to equipped vanilla inventory items overwritten by CQS saved data
       player.m_helmetItem = null;
       player.m_chestItem = null;
       player.m_legItem = null;
       player.m_shoulderItem = null;
       player.m_utilityItem = null;
+      player.m_rightItem = null;
+      player.m_leftItem = null;
+      player.m_ammoItem = null;
+      player.m_trinketItem = null;
 
       player.GetInventory().Load(new ZPackage(player.m_knownTexts[PlayerDataKey]));
       EquipArmorInArmorSlots(player);
+
+      // Re-equip items from CQS inventory
+      foreach (ItemDrop.ItemData item in player.GetInventory().m_inventory) {
+        if (item.IsEquipable() && !IsArmor(item) && item.m_equipped) {
+          player.EquipItem(item);
+        }
+      }
+
       player.GetInventory().Changed();
       
       return;

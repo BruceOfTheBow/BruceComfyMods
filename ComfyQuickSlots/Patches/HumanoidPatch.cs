@@ -1,7 +1,6 @@
 ﻿namespace ComfyQuickSlots;
 
 using HarmonyLib;
-using System.Diagnostics.Eventing.Reader;
 
 [HarmonyPatch(typeof(Humanoid))]
 static class HumanoidPatch {

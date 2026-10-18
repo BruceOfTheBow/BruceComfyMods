@@ -7,7 +7,6 @@ static class FejdStartupPatch {
   [HarmonyPrefix]
   [HarmonyPatch(nameof(FejdStartup.SetupCharacterPreview))]
   static void SetupCharacterPreviewPrefix() {
-    QuickSlotsManager.InitialEquippedArmor.Clear();
     QuickSlotsManager.FirstLoad = false;
   }
 }
