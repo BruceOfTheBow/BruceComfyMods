@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 
 using HarmonyLib;
@@ -15,6 +16,10 @@ static class PlayerPatch {
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Player.UpdatePlacement))]
   static void UpdatePlacementPostfix(Player __instance, bool takeInput) {
+    if (!RotationManager.TryInitialize()) {
+      return;
+    }
+
     RotationManager.HideGizmos();
     RotationManager.ShowGizmos(__instance);
 
@@ -92,13 +97,15 @@ static class PlayerPatch {
     return player
         && player.GetHoveringPiece()
         && player.m_buildPieces
-        && player.m_buildPieces.m_availablePieces != default;
+        && player.m_buildPieces.m_availablePieces != null
+        && player.m_buildPieces.m_availablePieces.Count > 0;
   }
 
   [HarmonyTranspiler]
   [HarmonyPatch(nameof(Player.UpdatePlacementGhost))]
   static IEnumerable<CodeInstruction> UpdatePlacementGhostTranspiler(IEnumerable<CodeInstruction> instructions) {
-    return new CodeMatcher(instructions)
+    List<CodeInstruction> code = instructions.ToList();
+    CodeMatcher matcher = new CodeMatcher(code)
         .Start()
         .MatchStartForward(
             new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Player), nameof(Player.m_placeRotation))),
@@ -106,12 +113,20 @@ static class PlayerPatch {
             new CodeMatch(OpCodes.Mul),
             new CodeMatch(OpCodes.Ldc_R4),
             new CodeMatch(OpCodes.Call),
-            new CodeMatch(OpCodes.Stloc_S))
-        .ThrowIfInvalid($"Could not patch Player.UpdatePlacementGhost()! (place-rotation)")
+            new CodeMatch(OpCodes.Stloc_S));
+
+    if (!matcher.IsValid) {
+      ComfyGizmo.LogSource?.LogWarning(
+          "Could not patch Player.UpdatePlacementGhost()! (place-rotation); leaving the original method unchanged.");
+      return code;
+    }
+
+    matcher
         .Advance(offset: 5)
         .InsertAndAdvance(
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PlayerPatch), nameof(PlaceRotationDelegate))))
-        .InstructionEnumeration();
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PlayerPatch), nameof(PlaceRotationDelegate))));
+
+    return matcher.InstructionEnumeration();
   }
 
   static Quaternion PlaceRotationDelegate(Quaternion rotation) {

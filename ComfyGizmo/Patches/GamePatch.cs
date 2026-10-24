@@ -7,6 +7,6 @@ static class GamePatch {
   [HarmonyPostfix]
   [HarmonyPatch(nameof(Game.Start))]
   static void StartPostfix() {
-    RotationManager.Initialize();
+    RotationManager.TryInitialize();
   }
 }

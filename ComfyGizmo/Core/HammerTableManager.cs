@@ -17,7 +17,8 @@ public sealed class HammerTableManager {
   static BaseUnityPlugin _searsCatalog = null;
   static ConfigEntry<int> _searsCatalogColumnsConfigEntry;
 
-  static Dictionary<string, Vector2Int> _pieceLocations = [];
+  static readonly PieceSelectionCache<Piece> _pieceCache =
+      new(piece => piece ? GetPieceIdentifier(piece) : null);
   static int _cachedAvailablePieceCount = -1;
 
 
@@ -36,12 +37,13 @@ public sealed class HammerTableManager {
       CacheHammerTable(player);
     }
 
-    if (!HasCachedPiece(player.GetHoveringPiece())) {
+    Piece targetPiece = player.GetHoveringPiece();
+
+    if (!HasCachedPiece(targetPiece)) {
       return;
     }
 
-    _targetSelection = true;
-    SetSelectedPiece(player, player.GetHoveringPiece());
+    SetSelectedPiece(player, targetPiece);
   }
 
   public static bool IsTargetSelected() {
@@ -57,23 +59,16 @@ public sealed class HammerTableManager {
   }
 
   public static bool HasCachedPiece(Piece piece) {
-    return _pieceLocations.ContainsKey(GetPieceIdentifier(piece));
+    return piece && _pieceCache.TryGet(piece, out _);
   }
 
   public static void SetSelectedPiece(Player player, Piece piece) {
-    Vector2Int pieceLocation = _pieceLocations[GetPieceIdentifier(piece)];
-    Piece.PieceCategory previousCategory = player.m_buildPieces.m_selectedCategory;
+    if (!player || !piece || !player.m_buildPieces) {
+      return;
+    }
 
-    player.m_buildPieces.m_selectedCategory = (Piece.PieceCategory) pieceLocation.x;
-    player.SetSelectedPiece(new Vector2Int(pieceLocation.y % GetColumnCount(), pieceLocation.y / GetColumnCount()));
-    player.SetupPlacementGhost();
-
-    if (previousCategory != player.m_buildPieces.m_selectedCategory) {
-      Hud.m_instance.UpdatePieceList(
-          player,
-          new Vector2Int(pieceLocation.y % 15, pieceLocation.y / 15),
-          (Piece.PieceCategory) pieceLocation.x,
-          updateAllBuildStatuses: true);
+    if (_pieceCache.TryGet(piece, out Piece selectedPiece)) {
+      _targetSelection = player.SetSelectedPiece(selectedPiece);
     }
   }
 
@@ -83,42 +78,18 @@ public sealed class HammerTableManager {
 
   public static void CacheHammerTable(Player player) {
     PieceTable hammerPieceTable = player.m_buildPieces;
-    _cachedAvailablePieceCount = 0;
-    _pieceLocations = [];
-
-    for (int i = 0; i < hammerPieceTable.m_availablePiecesByCategory.Count; i++) {
-      List<Piece> categoryPieces = hammerPieceTable.m_availablePiecesByCategory[i];
-
-      for (int j = 0; j < categoryPieces.Count; j++) {
-        if (_pieceLocations.ContainsKey(GetPieceIdentifier(categoryPieces[j]))) {
-          continue;
-        }
-
-        
-        _pieceLocations.Add(GetPieceIdentifier(categoryPieces[j]), new Vector2Int(i, j));
-        _cachedAvailablePieceCount++;
-      }
-    }
+    _pieceCache.Rebuild(hammerPieceTable.m_availablePieces);
+    _cachedAvailablePieceCount = _pieceCache.Count;
   }
 
   public static bool IsHammerTableChanged(Player player) {
     if (!player || !player.m_buildPieces || player.m_buildPieces.m_availablePieces == null) {
       return false;
     }
-    int currentPieceCount = 0;
-
-    for (int i = 0; i < player.m_buildPieces.m_availablePiecesByCategory.Count; i++) {
-      currentPieceCount += player.m_buildPieces.m_availablePiecesByCategory[i].Count;
-    }
-
-    if (currentPieceCount == _cachedAvailablePieceCount) {
-      return false;
-    }
-
-    return true;
+    return !_pieceCache.Matches(player.m_buildPieces.m_availablePieces);
   }
   private static string GetPieceIdentifier(Piece piece) {
-    return piece.m_name + piece.m_description;
+    return Utils.GetPrefabName(piece.gameObject);
   }
 
   public static bool IsSearsCatalogEnabled() {

@@ -64,6 +64,8 @@ public sealed class Gizmos {
     SetupComponentsAndRoots();
   }
 
+  public bool IsAlive => _gizmo && _gizmoRoot;
+
   public void Show(Player player) {
     if (!player.m_placementMarkerInstance) {
       return;
@@ -158,6 +160,7 @@ public sealed class Gizmos {
   }
 
   public void Destroy() {
+    _gizmoInstances.Remove(this);
     UnityEngine.Object.Destroy(_gizmo);
   }
 
