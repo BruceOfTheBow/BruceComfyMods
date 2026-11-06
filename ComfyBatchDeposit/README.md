@@ -5,7 +5,8 @@
   * Dump like-type items into chest with a single button press (D).
     * Toggle to sort automatically after dumping player inventory contents.
   * Mass drops or adds to container/inventory using left alt + left click by default.
-  *   Modifier key configurable
+    * Modifier key configurable
+  * Fixes vanilla TakeAll button behavior where items don't stack.
 
 ## Instructions
 
@@ -23,41 +24,3 @@
   * Button code and sort code taken in part from StorageUtils by turtton [https://github.com/turtton/StorageUtils]
   * License maintained as GPL
   * Icon provided by Lyka on Comfy AKA @Jenniely on twitter.
-
-## Changelog
-
-### 1.3.1
-  
-  * Removed logging statements
-
-### 1.3.0
-
-  * Update for TMP changes in patch 0.217.22
-  * Updated manifest reference to BruceComfyMods repo and bepniex dependency to 5.4.2200
-
-### 1.2.1
-
-  * Fixed performance issue.
-
-### 1.2.0
-
-  * Added dump feature
-    * Deposits all items from your inventory that are in the currently opened chest/container.
-  * Added toggle to sort items whenever dumped into chest.
-
-### 1.1.0
-
-  * Added sorting function pulled from StorageUtils by turtton
-  * Fixed sort function to not stack fish of differing qualities
-  * Fixed sort function to properly store items with TopFirst
-
-### 1.0.2
-  * Updated icon
-
-### 1.0.1
-  * Changed deposit order to be reverse of ctrl + click order.
-  * Added configurable keybind for modifier + Lclick for batch deposit.
-
-### 1.0.0
-
-  * Initial release.
